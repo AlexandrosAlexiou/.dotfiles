@@ -30,6 +30,19 @@ local function hover_on_new_window()
     end)
 end
 
+local function goto_definition_vsplit()
+    local params = vim.lsp.util.make_position_params()
+    vim.lsp.buf_request(0, "textDocument/definition", params, function(_, result, ctx, _)
+        if result and result[1] then
+            vim.cmd "vsplit"
+            local location = result[1]
+            local client = vim.lsp.get_client_by_id(ctx.client_id)
+            local offset_encoding = client and client.offset_encoding or "utf-8"
+            vim.lsp.util.jump_to_location(location, offset_encoding)
+        end
+    end)
+end
+
 function M.on_attach(_, bufnr)
     local function opts(desc)
         return { desc = desc, buffer = bufnr }
@@ -39,6 +52,7 @@ function M.on_attach(_, bufnr)
     utils.map("n", "K", vim.lsp.buf.hover, opts "Display hover information about symbol")
     utils.map("n", "<leader>K", hover_on_new_window, opts "Display hover information about symbol on new window")
     utils.map("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts "Go to the definition of the symbol")
+    utils.map("n", "gv", goto_definition_vsplit, opts "Go to the definition of the symbol in a vertical split")
     utils.map("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts "Go to the declaration of the symbol")
     utils.map("n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", opts "Go to the implementation of the symbol")
     utils.map("n", "dl", "<Cmd>lua vim.diagnostic.setloclist()<CR>", opts "Add buffer diagnostics to the loclist")

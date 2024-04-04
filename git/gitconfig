@@ -1,8 +1,8 @@
 ; vim: sw=2 ft=gitconfig
 
 [user]
-  name = Tsakiris Tryfon
-  email = tr.tsakiris@gmail.com
+  name = Alexandros Alexiou
+  email = alex.alexiouu@gmail.com
 
 [alias]
   lg = log --graph --pretty=format:'%C(bold red)%h%Creset - %s %C(yellow bold)%d%Creset %C(bold green)(%cr) %C(bold cyan)<%an>%Creset' --abbrev-commit

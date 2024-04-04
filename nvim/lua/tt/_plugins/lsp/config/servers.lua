@@ -10,6 +10,7 @@ M.lsp_servers = {
         },
     },
     cmake = {},
+    cssls = {},
     eslint = {
         settings = {
             codeAction = {
@@ -24,6 +25,30 @@ M.lsp_servers = {
                 desc = "Fixes all eslint errors on save",
             })
         end,
+    },
+    graphql = { filetypes = {
+        "graphql",
+    } },
+    jdtls = {
+        root_dir = function()
+            return vim.fn.getcwd()
+        end,
+    },
+    kotlin_language_server = {
+        filetypes = {
+            "kotlin",
+        },
+        root_dir = function()
+            return vim.fn.getcwd()
+        end,
+        settings = {
+            kotlin = { compiler = { jvm = { target = "21" } } },
+            hints = {
+                typeHints = true,
+                parameterHints = true,
+                chainedHints = true,
+            },
+        },
     },
     lua_ls = {
         settings = {
@@ -61,6 +86,17 @@ M.lsp_servers = {
             },
         },
     },
+    pyright = {},
+    rust_analyzer = {
+        settings = {
+            ["rust-analyzer"] = {
+                check = {
+                    command = "clippy",
+                },
+                checkOnSave = true,
+            },
+        },
+    },
     tsserver = {
         settings = {
             typescript = {
@@ -88,6 +124,33 @@ M.lsp_servers = {
         },
     },
     yamlls = {},
+    volar = {
+        filetypes = { "vue" },
+        init_options = {
+            vue = {
+                hybridMode = false,
+            },
+            languageFeatures = {
+                implementation = true,
+                references = true,
+                definition = true,
+                typeDefinition = true,
+                callHierarchy = true,
+                hover = true,
+                rename = true,
+                renameFileRefactoring = true,
+                signatureHelp = true,
+                codeAction = true,
+                workspaceSymbol = true,
+                completion = {
+                    defaultTagNameCase = "both",
+                    defaultAttrNameCase = "kebabCase",
+                    getDocumentNameCasesRequest = false,
+                    getDocumentSelectionRequest = false,
+                },
+            },
+        },
+    },
 }
 
 -- List of servers that should be manually installed via Mason

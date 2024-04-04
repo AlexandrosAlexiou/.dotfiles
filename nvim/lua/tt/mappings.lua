@@ -51,6 +51,9 @@ end)
 utils.map("n", "<C-s>", "<Cmd>update<CR>")
 utils.map({ "i", "v" }, "<C-s>", "<Esc><Cmd>update<CR>")
 
+--- Save current session
+utils.map("n", "<leader>SS", ":SSave<CR>", { desc = "Save a new session" })
+
 -- Keymaps to quit current buffer with ctrl+q
 utils.map({ "n", "i", "v" }, "<C-q>", "<Esc>:q<CR>", { desc = "Quit current window" })
 
@@ -145,3 +148,24 @@ utils.map("n", "<leader>cP", function()
         end
     end)
 end, { desc = "Copy current filename according to the supplied modifier" })
+
+-- Neovide specific mappings
+if vim.g.neovide then
+    vim.api.nvim_set_keymap(
+        "n",
+        "<C-+>",
+        ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>",
+        { silent = true }
+    )
+    vim.api.nvim_set_keymap(
+        "n",
+        "<C-->",
+        ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>",
+        { silent = true }
+    )
+    vim.api.nvim_set_keymap("n", "<C-0>", ":lua vim.g.neovide_scale_factor = 1<CR>", { silent = true })
+
+    vim.keymap.set({ "n", "v", "s", "x", "o", "i", "l", "c", "t" }, "<D-v>", function()
+        vim.api.nvim_paste(vim.fn.getreg "+", true, -1)
+    end, { noremap = true, silent = true })
+end
