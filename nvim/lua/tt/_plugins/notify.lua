@@ -8,7 +8,7 @@ function M.setup()
         level = "info",
         minimum_width = 50,
         timeout = 3000,
-        fps = 30,
+        fps = 144,
         icons = {
             DEBUG = "",
             ERROR = "",

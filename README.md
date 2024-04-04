@@ -37,8 +37,8 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── git/
 │       │   │   ├── diffview.lua
 │       │   │   ├── git-conflict.lua
-│       │   │   ├── gitlinker.lua
 │       │   │   ├── git-messenger.lua
+│       │   │   ├── gitlinker.lua
 │       │   │   └── gitsigns.lua
 │       │   ├── lsp/
 │       │   │   ├── config/
@@ -70,8 +70,9 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── indent-blankline.lua
 │       │   ├── lualine.lua
 │       │   ├── mini-indentscope.lua
-│       │   ├── neogen.lua
 │       │   ├── neo-tree.lua
+│       │   ├── neogen.lua
+│       │   ├── neotest.lua
 │       │   ├── nightfox.lua
 │       │   ├── noice.lua
 │       │   ├── notify.lua
@@ -79,7 +80,6 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── nvim-autopairs.lua
 │       │   ├── nvim-cmp.lua
 │       │   ├── nvim-surround.lua
-│       │   ├── nvim-ufo.lua
 │       │   ├── smart-splits.lua
 │       │   ├── spectre.lua
 │       │   ├── startify.lua
@@ -113,7 +113,7 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 <h2 align="center">Installer</h2>
 
 The installer is a text-based user-interface (TUI) made with
-[`whiptail`](https://linux.die.net/man/1/whiptail) in bash.
+[`dialog`](https://invisible-island.net/dialog/#synopsis) in zsh.
 It allows for easy installation of the commonly used packages/binaries that I
 use in my setup.
 

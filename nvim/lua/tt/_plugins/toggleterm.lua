@@ -63,11 +63,15 @@ M.custom_terminals = {
         keymap = "<leader>bt",
         float_opts = {},
     },
+    lazydocker = {
+        cmd = "lazydocker",
+        keymap = "<leader>ld",
+    },
     lazygit = {
         cmd = "lazygit",
         float_opts = {
-            width = math.floor(vim.o.columns * 0.9),
-            height = math.floor(vim.o.lines * 0.9),
+            width = math.floor(vim.o.columns),
+            height = math.floor(vim.o.lines),
         },
         keymap = "<leader>lt",
     },

@@ -6,12 +6,17 @@ local M = {}
 ---@type table<string, boolean>
 M.filetypes = {
     cpp = false,
-    sh = true,
+    graphql = false,
+    java = false,
+    javascript = false,
+    kotlin = false,
     lua = true,
-    javascript = true,
-    javascriptreact = true,
-    typescript = true,
+    python = true,
+    rust = true,
+    sh = true,
+    typescript = false,
     typescriptreact = true,
+    vue = true,
 }
 
 --- A set of buffers for which format should be disabled.

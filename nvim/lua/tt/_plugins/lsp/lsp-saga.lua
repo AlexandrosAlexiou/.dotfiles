@@ -8,8 +8,7 @@ function M.setup()
             enable = false,
         },
         lightbulb = {
-            sign = false,
-            virtual_text = true,
+            enable = false,
         },
         diagnostic = {
             on_insert = false, -- Remove diagnostics on insert mode at the top right winbar

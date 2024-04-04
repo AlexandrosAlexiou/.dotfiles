@@ -19,10 +19,10 @@ function update_readme_tree() {
         end=$(grep -n $end_marker $readme | cut -d ":" -f1)
 
         # Clear out the previous tree output
-        sed -i "$((start + 1)),$((end - 1))d" $readme
+        gsed -i "$((start + 1)),$((end - 1))d" $readme
 
         # Write tree output there
-        sed -i "${start}r ${tree_output_file}" $readme
+        gsed -i "${start}r ${tree_output_file}" $readme
 
         # Add the file to the index before the commit
         git add $readme
