@@ -63,6 +63,10 @@ M.custom_terminals = {
         keymap = "<leader>bt",
         float_opts = {},
     },
+    lazydocker = {
+        cmd = "lazydocker",
+        keymap = "<leader>ld",
+    },
     lazygit = {
         cmd = "lazygit",
         float_opts = {

@@ -2,8 +2,23 @@ notARepository: "skip"
 
 gui:
   nerdFontsVersion: "3"
+  showIcons: true
+  theme:
+    selectedLineBgColor:
+      - reverse
+      - bold
 
 git:
   paging:
     colorArg: always
     pager: delta --dark --paging=never
+
+os:
+  open: 'neovide {{filename}}'
+  editAtLine: "neovide {{filename}} +{{line}}"
+
+keybinding:
+  universal:
+    goInto: "o"
+    openFile: "<enter>"
+

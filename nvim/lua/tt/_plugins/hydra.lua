@@ -85,7 +85,7 @@ local function setup_git_hydra()
     Hydra {
         name = "Git",
         mode = { "n", "x" },
-        body = "<leader>gg",
+        body = "<leader>hd",
         hint = hint,
         config = {
             color = "pink",
