@@ -11,7 +11,7 @@ function M.setup()
         sort_case_insensitive = false,
         window = {
             position = "left",
-            width = 40,
+            width = 70,
             mapping_options = {
                 noremap = true,
                 nowait = true,
@@ -114,8 +114,8 @@ function M.setup()
         },
         filesystem = {
             filtered_items = {
-                visible = false, -- When true, they will just be displayed differently than normal items
-                hide_dotfiles = true,
+                visible = true, -- When true, they will just be displayed differently than normal items
+                hide_dotfiles = false,
                 hide_gitignored = true,
                 hide_hidden = true, -- only works on Windows for hidden files/directories
                 hide_by_name = {
