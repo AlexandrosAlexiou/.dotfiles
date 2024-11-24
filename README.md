@@ -23,7 +23,7 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 
 <details>
   <summary>
-    Click to toggle directory structure view.
+    Click to toggle directory structure view
   </summary>
 
 ```bash
@@ -37,8 +37,8 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── git/
 │       │   │   ├── diffview.lua
 │       │   │   ├── git-conflict.lua
-│       │   │   ├── gitlinker.lua
 │       │   │   ├── git-messenger.lua
+│       │   │   ├── gitlinker.lua
 │       │   │   └── gitsigns.lua
 │       │   ├── lsp/
 │       │   │   ├── config/
@@ -71,19 +71,21 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── indent-blankline.lua
 │       │   ├── lualine.lua
 │       │   ├── mini-surround.lua
-│       │   ├── neogen.lua
 │       │   ├── neo-tree.lua
+│       │   ├── neogen.lua
+│       │   ├── neotest.lua
 │       │   ├── nightfox.lua
 │       │   ├── noice.lua
+│       │   ├── notify.lua
 │       │   ├── numb.lua
 │       │   ├── nvim-autopairs.lua
 │       │   ├── nvim-cmp.lua
-│       │   ├── nvim-ufo.lua
 │       │   ├── oil.lua
 │       │   ├── resession.lua
 │       │   ├── rose-pine.lua
 │       │   ├── smart-splits.lua
 │       │   ├── snacks.lua
+│       │   ├── startify.lua
 │       │   ├── statuscol.lua
 │       │   ├── syntax-tree-surfer.lua
 │       │   ├── toggleterm.lua
@@ -114,7 +116,7 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 <h2 align="center">Installer</h2>
 
 The installer is a text-based user-interface (TUI) made with
-[`whiptail`](https://linux.die.net/man/1/whiptail) in bash.
+[`dialog`](https://invisible-island.net/dialog/#synopsis) in zsh.
 It allows for easy installation of the commonly used packages/binaries that I
 use in my setup.
 

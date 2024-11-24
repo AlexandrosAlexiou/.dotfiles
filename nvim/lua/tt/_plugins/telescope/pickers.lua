@@ -18,7 +18,7 @@ M.pickers = {
     buffers = {
         mappings = {
             i = {
-                ["<M-d>"] = actions.delete_buffer,
+                ["<C-w>"] = actions.delete_buffer,
             },
         },
     },

@@ -8,7 +8,7 @@ local icons = require "tt.icons"
 local function get_dashboard_items()
     local header = table.concat({
         [[                                                                    ]],
-        [[      ████ ██████           █████      ██                TT   ]],
+        [[      ████ ██████           █████      ██                     ]],
         [[     ███████████             █████                             ]],
         [[     █████████ ███████████████████ ███   ███████████   ]],
         [[    █████████  ███    █████████████ █████ ██████████████   ]],
@@ -26,7 +26,7 @@ local function get_dashboard_items()
             vim.version().patch,
         }, ".")
         local info_items = {
-            icons.misc.Github .. " Tryfon Tsakiris, tr.tsakiris@gmail.com",
+            icons.misc.Github .. " Alexandros Alexiou, alex.alexiouu@gmail.com",
             icons.misc.Calendar .. " " .. datetime,
             icons.misc.GitCompare .. " Neovim Version: " .. version,
         }
@@ -176,6 +176,8 @@ function M.setup()
     end, { desc = "Force delete current buffer" })
 
     utils.map("n", "<leader>so", Snacks.scratch.open, { desc = "Open scratch buffer" })
+
+    utils.map("n", "<leader>sO", Snacks.scratch.select, { desc = "Select scratch buffer" })
 
     vim.api.nvim_create_user_command("Rename", Snacks.rename.rename_file, { desc = "Rename current file" })
 end

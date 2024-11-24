@@ -1,3 +1,15 @@
+---@param config {args?:string[]|fun():string[]?}
+local function get_args(config)
+    local args = type(config.args) == "function" and (config.args() or {}) or config.args or {}
+    config = vim.deepcopy(config)
+    ---@cast args string[]
+    config.args = function()
+        local new_args = vim.fn.input("Run with args: ", table.concat(args, " ")) --[[@as string]]
+        return vim.split(vim.fn.expand(new_args) --[[@as string]], " ")
+    end
+    return config
+end
+
 return {
     -- Colorschemes
     {
@@ -70,24 +82,6 @@ return {
         },
         config = function()
             require("tt._plugins.noice").setup()
-        end,
-    },
-
-    -- Cursor animation with a smear effect
-    {
-        "sphamba/smear-cursor.nvim",
-        event = "BufRead",
-        config = function()
-            require("smear_cursor").setup {
-                -- When "none" it matches the text color at the target position
-                cursor_color = "none",
-            }
-
-            local enabled = true
-            vim.api.nvim_create_user_command("SmearToggle", function()
-                enabled = not enabled
-                require("smear_cursor").enabled = enabled
-            end, { desc = "Toggle smear cursor" })
         end,
     },
 
@@ -362,27 +356,6 @@ return {
         end,
     },
 
-    -- Fold enhancements
-    {
-        "kevinhwang91/nvim-ufo",
-        event = "VeryLazy",
-        dependencies = {
-            { "kevinhwang91/promise-async" },
-            {
-                "luukvbaal/statuscol.nvim",
-                config = function()
-                    require("tt._plugins.statuscol").setup()
-                end,
-            },
-        },
-        init = function()
-            require("tt._plugins.nvim-ufo").init()
-        end,
-        config = function()
-            require("tt._plugins.nvim-ufo").setup()
-        end,
-    },
-
     -- Navigation enhancements
     {
         "folke/flash.nvim",
@@ -597,6 +570,7 @@ return {
         "nvim-neo-tree/neo-tree.nvim",
         branch = "v3.x",
         cmd = "Neotree",
+        event = "VimEnter",
         keys = {
             "<leader>nf",
             "<leader>nt",
@@ -714,7 +688,6 @@ return {
     {
         "cathyprime/hydra.nvim",
         keys = {
-            "<leader>gg",
             "<leader>w",
         },
         dependencies = "lewis6991/gitsigns.nvim",
@@ -762,36 +735,6 @@ return {
         config = function()
             require("tt._plugins.smart-splits").setup()
         end,
-    },
-
-    -- Run lines/block of code within Neovim
-    {
-        "michaelb/sniprun",
-        branch = "master",
-        build = "sh install.sh",
-        cmd = {
-            "SnipRun",
-            "SnipClose",
-        },
-        keys = {
-            {
-                "<leader>xx",
-                function()
-                    local helper = require "tt.helper"
-                    helper.preserve_cursor_position ":%SnipRun<CR>"
-                end,
-                mode = "n",
-                desc = "Sniprun the whole buffer",
-            },
-            { "<leader>xx", "<Plug>SnipRun", mode = "v", desc = "Sniprun visually selected lines" },
-            { "<leader>xc", "<Plug>SnipClose", desc = "SnipClose" },
-            { "<leader>xr", "<Plug>SnipReset", desc = "SnipReset" },
-        },
-        opts = {
-            display = { "TempFloatingWindow" },
-            show_no_output = { "TempFloatingWindow" },
-            live_mode_toggle = "enable",
-        },
     },
 
     -- Color highlighter
@@ -889,4 +832,193 @@ return {
             vim.g.startuptime_tries = 10
         end,
     },
+
+    -- Interacting with tests within neovim
+    {
+        "nvim-neotest/neotest",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-neotest/neotest-plenary",
+            "nvim-neotest/neotest-vim-test",
+            "nvim-neotest/nvim-nio",
+            "antoinemadec/FixCursorHold.nvim",
+            "nvim-treesitter/nvim-treesitter",
+            "marilari88/neotest-vitest",
+            "thenbe/neotest-playwright",
+            "nvim-neotest/neotest-python",
+        },
+        config = function()
+            require("tt._plugins.neotest").setup()
+        end,
+    },
+
+    -- Debugging inside Neovim
+    {
+        "mfussenegger/nvim-dap",
+
+        dependencies = {
+            -- fancy UI for the debugger
+            {
+                "rcarriga/nvim-dap-ui",
+                -- stylua: ignore
+                keys = {
+                    { "<leader>du", function() require("dapui").toggle({ }) end, desc = "Dap UI" },
+                    { "<leader>de", function() require("dapui").eval() end, desc = "Eval", mode = {"n", "v"} },
+                },
+                opts = {},
+                config = function(_, opts)
+                    -- setup dap config by VsCode launch.json file
+                    -- require("dap.ext.vscode").load_launchjs()
+                    local dap = require "dap"
+                    local dapui = require "dapui"
+                    dapui.setup(opts)
+                    dap.listeners.after.event_initialized["dapui_config"] = function()
+                        dapui.open {}
+                    end
+                    dap.listeners.before.event_terminated["dapui_config"] = function()
+                        dapui.close {}
+                    end
+                    dap.listeners.before.event_exited["dapui_config"] = function()
+                        dapui.close {}
+                    end
+                end,
+            },
+
+            -- virtual text for the debugger
+            {
+                "theHamsta/nvim-dap-virtual-text",
+                opts = {},
+            },
+
+            -- mason.nvim integration
+            {
+                "jay-babu/mason-nvim-dap.nvim",
+                dependencies = "mason.nvim",
+                cmd = { "DapInstall", "DapUninstall" },
+                opts = {
+                    -- Makes a best effort to setup the various debuggers with
+                    -- reasonable debug configurations
+                    automatic_installation = true,
+
+                    -- You can provide additional configuration to the handlers,
+                    -- see mason-nvim-dap README for more information
+                    handlers = {},
+
+                    -- You'll need to check that you have the required things installed
+                    -- online, please don't ask me how to install them :)
+                    ensure_installed = {
+                        -- Update this to ensure that you have the debuggers for the langs you want
+                    },
+                },
+            },
+
+            {
+                "jbyuki/one-small-step-for-vimkind",
+                config = function()
+                    local dap = require "dap"
+                    dap.adapters.nlua = function(callback, conf)
+                        local adapter = {
+                            type = "server",
+                            host = conf.host or "127.0.0.1",
+                            port = conf.port or 8086,
+                        }
+                        if conf.start_neovim then
+                            local dap_run = dap.run
+                            dap.run = function(c)
+                                adapter.port = c.port
+                                adapter.host = c.host
+                            end
+                            require("osv").run_this()
+                            dap.run = dap_run
+                        end
+                        callback(adapter)
+                    end
+                    dap.configurations.lua = {
+                        {
+                            type = "nlua",
+                            request = "attach",
+                            name = "Run this file",
+                            start_neovim = {},
+                        },
+                        {
+                            type = "nlua",
+                            request = "attach",
+                            name = "Attach to running Neovim instance (port = 8086)",
+                            port = 8086,
+                        },
+                    }
+                end,
+            },
+        },
+
+        -- stylua: ignore
+        keys = {
+            { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Breakpoint Condition" },
+            { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
+            { "<leader>dc", function() require("dap").continue() end, desc = "Continue" },
+            { "<leader>da", function() require("dap").continue({ before = get_args }) end, desc = "Run with Args" },
+            { "<leader>dC", function() require("dap").run_to_cursor() end, desc = "Run to Cursor" },
+            { "<leader>dg", function() require("dap").goto_() end, desc = "Go to line (no execute)" },
+            { "<leader>di", function() require("dap").step_into() end, desc = "Step Into" },
+            { "<leader>dj", function() require("dap").down() end, desc = "Down" },
+            { "<leader>dk", function() require("dap").up() end, desc = "Up" },
+            { "<leader>dl", function() require("dap").run_last() end, desc = "Run Last" },
+            { "<leader>do", function() require("dap").step_out() end, desc = "Step Out" },
+            { "<leader>dO", function() require("dap").step_over() end, desc = "Step Over" },
+            { "<leader>dp", function() require("dap").pause() end, desc = "Pause" },
+            { "<leader>dr", function() require("dap").repl.toggle() end, desc = "Toggle REPL" },
+            { "<leader>ds", function() require("dap").session() end, desc = "Session" },
+            { "<leader>dt", function() require("dap").terminate() end, desc = "Terminate" },
+            { "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
+            { "<leader>dd", function() require("osv").launch({port = 8086}) end, desc = "Launch the osv server in the debuggee" },
+        },
+        config = function()
+            vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+            local icons = require "tt.icons"
+            for name, sign in pairs(icons.dap) do
+                -- Check if sign is already a table
+                if type(sign) == "table" then
+                    -- If it's a table, use it directly
+                    vim.fn.sign_define(
+                        "Dap" .. name,
+                        { text = sign[1], texthl = sign[2] or "DiagnosticInfo", linehl = sign[3], numhl = sign[3] }
+                    )
+                else
+                    -- If it's not a table, assume it's a string and create a table
+                    vim.fn.sign_define("Dap" .. name, { text = sign, texthl = "DiagnosticInfo" })
+                end
+            end
+        end,
+    },
+
+    -- Interact with Github Copilot through Neovim
+    { "github/copilot.vim" },
+
+    -- Install nvim-metals for Scala development
+    {
+        "scalameta/nvim-metals",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        },
+        ft = { "scala", "sbt", "java" },
+        opts = function()
+            local metals_config = require("metals").bare_config()
+            metals_config.on_attach = function(_, _) end
+
+            return metals_config
+        end,
+        config = function(self, metals_config)
+            local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+            vim.api.nvim_create_autocmd("FileType", {
+                pattern = self.ft,
+                callback = function()
+                    require("metals").initialize_or_attach(metals_config)
+                end,
+                group = nvim_metals_group,
+            })
+        end,
+    },
+
+    -- Git integration
+    { "tpope/vim-fugitive" },
 }
