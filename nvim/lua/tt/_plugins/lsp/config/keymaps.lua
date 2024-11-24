@@ -30,6 +30,29 @@ local function hover_on_new_window()
     end)
 end
 
+local function goto_definition_split(split_type)
+    local definition_done = false -- Add a flag to prevent multiple splits
+
+    vim.lsp.buf_request(0, "textDocument/definition", vim.lsp.util.make_position_params(), function(_, result, ctx)
+        -- Prevent multiple splits if one result has already been processed
+        if definition_done then
+            return
+        end
+
+        -- Ensure we have a valid result
+        if result and result[1] then
+            definition_done = true -- Set the flag to true after handling the first result
+
+            -- Perform the split based on the provided type (vertical or horizontal)
+            vim.cmd(split_type == "v" and "vsplit" or "split")
+
+            -- Get the client by ID and jump to the location with the appropriate encoding
+            local client = vim.lsp.get_client_by_id(ctx.client_id)
+            vim.lsp.util.show_document(result[1], client and client.offset_encoding or "utf-8")
+        end
+    end)
+end
+
 function M.on_attach(_, bufnr)
     local function opts(desc)
         return { desc = desc, buffer = bufnr }
@@ -38,6 +61,12 @@ function M.on_attach(_, bufnr)
     utils.map("n", "<C-LeftMouse>", "<Cmd>TroubleToggle lsp_references<CR>", opts "Open lsp references in Trouble")
     utils.map("n", "K", vim.lsp.buf.hover, opts "Display hover information about symbol")
     utils.map("n", "<leader>K", hover_on_new_window, opts "Display hover information about symbol on new window")
+    utils.map("n", "gv", function()
+        goto_definition_split "v"
+    end, opts "Go to the definition of the symbol in a vertical split")
+    utils.map("n", "gh", function()
+        goto_definition_split "h"
+    end, opts "Go to the definition of the symbol in a horizontal split")
     utils.map("n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", opts "Go to the implementation of the symbol")
     utils.map("n", "dl", "<Cmd>lua vim.diagnostic.setloclist()<CR>", opts "Add buffer diagnostics to the loclist")
     utils.map("n", "dq", "<Cmd>lua vim.diagnostic.setqflist()<CR>", opts "Add buffer diagnostics to the qflist")

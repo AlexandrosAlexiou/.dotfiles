@@ -21,6 +21,23 @@ local colors = {
 config.font = wezterm.font("CaskaydiaMono Nerd Font")
 config.font_size = 12
 
+config.colors = {
+	tab_bar = {
+		active_tab = {
+			fg_color = "#24273A",
+			bg_color = "#C6A0F6",
+		},
+		inactive_tab = {
+			bg_color = "rgb(0 0 0 0)",
+			fg_color = "#CAD3F5",
+		},
+		inactive_tab_hover = {
+			bg_color = "#363A4F",
+			fg_color = "#B4BEFE",
+		},
+	},
+}
+
 -- Tab
 config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
@@ -29,7 +46,7 @@ config.tab_and_split_indices_are_zero_based = true
 
 -- Window
 config.window_decorations = "RESIZE"
-config.window_background_opacity = 0.9
+config.window_background_opacity = 1
 config.adjust_window_size_when_changing_font_size = false
 
 -- Pane
@@ -62,18 +79,39 @@ wezterm.on("update-status", function(window)
 	}))
 end)
 
--- Set the tab title, preferring any custom title manually set, or falls back to the cwd
+-- Set the tab title, showing tab index, command, and cwd
 wezterm.on("format-tab-title", function(tab)
 	local tab_title = tab.tab_title
+	local active_process = tab.active_pane.foreground_process_name
+	local process_name = active_process and wezterm.basename(active_process) or ""
+
+	-- Get just the folder name instead of full path
+	local cwd = wezterm_extras.get_cwd(tab)
+	local folder_name = wezterm.basename(cwd)
 
 	local title
-	if tab_title and #tab_title > 0 then
-		title = tab.tab_titlee
+	if process_name ~= "" then
+		-- If there's an active process, show: [index] process • folder
+		title = string.format(" %s %s • %s ", tab.tab_index, process_name, folder_name)
 	else
-		title = wezterm_extras.get_cwd(tab)
+		-- If no active process, show just: [index] folder
+		title = string.format(" %s %s ", tab.tab_index, folder_name)
 	end
 
-	return string.format("  %s•%s  ", tab.tab_index, title)
+	-- If there's a custom tab title, use that instead
+	if tab_title and #tab_title > 0 then
+		title = string.format(" %s %s ", tab.tab_index, tab_title)
+	end
+
+	-- Make active tab bold
+	if tab.is_active then
+		return {
+			{ Attribute = { Intensity = "Bold" } },
+			{ Text = title },
+		}
+	end
+
+	return title
 end)
 
 return config

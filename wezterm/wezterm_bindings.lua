@@ -37,12 +37,12 @@ local keys = {
 	},
 	{
 		key = "c",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER",
 		action = wezterm.action.CopyTo("Clipboard"),
 	},
 	{
 		key = "v",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER",
 		action = wezterm.action.PasteFrom("Clipboard"),
 	},
 	{
@@ -52,8 +52,8 @@ local keys = {
 	},
 	{
 		key = "W",
-		mods = "SUPER",
-		action = action.CloseCurrentTab({ confirm = true }),
+		mods = "CTRL|SHIFT",
+		action = action.CloseCurrentPane({ confirm = true }),
 	},
 	{
 		key = "9",
@@ -98,6 +98,51 @@ local keys = {
 		key = "Tab",
 		mods = "CTRL|SHIFT",
 		action = action.ActivateTabRelative(-1),
+	},
+	{
+		key = "1",
+		mods = "CTRL|SHIFT",
+		action = action.ActivateTab(0),
+	},
+	{
+		key = "2",
+		mods = "CTRL|SHIFT",
+		action = action.ActivateTab(1),
+	},
+	{
+		key = "3",
+		mods = "CTRL|SHIFT",
+		action = action.ActivateTab(2),
+	},
+	{
+		key = "4",
+		mods = "CTRL|SHIFT",
+		action = action.ActivateTab(3),
+	},
+	{
+		key = "5",
+		mods = "CTRL|SHIFT",
+		action = action.ActivateTab(4),
+	},
+	{
+		key = "6",
+		mods = "CTRL|SHIFT",
+		action = action.ActivateTab(5),
+	},
+	{
+		key = "7",
+		mods = "CTRL|SHIFT",
+		action = action.ActivateTab(6),
+	},
+	{
+		key = "8",
+		mods = "CTRL|SHIFT",
+		action = action.ActivateTab(7),
+	},
+	{
+		key = "9",
+		mods = "CTRL|SHIFT",
+		action = action.ActivateTab(-1),
 	},
 	{
 		key = "LeftArrow",
