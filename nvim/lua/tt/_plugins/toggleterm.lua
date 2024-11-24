@@ -63,6 +63,10 @@ M.custom_terminals = {
         keymap = "<leader>bt",
         float_opts = {},
     },
+    lazydocker = {
+        cmd = "lazydocker",
+        keymap = "<leader>ld",
+    },
 }
 
 --- Checks whether the supplied terminal is one of the custom terminals.
