@@ -1,7 +1,6 @@
 local actions = require "telescope.actions"
 local actions_state = require "telescope.actions.state"
 local builtin = require "telescope.builtin"
-local config = require("telescope.config").values
 local extensions = require("telescope").extensions
 local finders = require "telescope.finders"
 local make_entry = require "telescope.make_entry"
@@ -18,7 +17,7 @@ M.pickers = {
     buffers = {
         mappings = {
             i = {
-                ["<M-d>"] = actions.delete_buffer,
+                ["<C-w>"] = actions.delete_buffer,
             },
         },
     },
