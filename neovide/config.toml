@@ -1,0 +1,7 @@
+[font]
+normal = ["CaskaydiaMono Nerd Font Mono"]
+size = 12
+
+srgb = false
+frame = "full"
+neovim-bin = "/usr/local/bin/nvim"
