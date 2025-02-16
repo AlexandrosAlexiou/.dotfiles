@@ -32,7 +32,7 @@ local function setup_picker_keymaps()
     utils.map("n", "<leader>fa", Snacks.picker.autocmds, { desc = "Search autocommands" })
     utils.map("n", "<leader>fb", Snacks.picker.buffers, { desc = "Search for open buffers" })
     utils.map("n", "<leader>fc", Snacks.picker.commands, { desc = "Search commands" })
-    utils.map("n", "<leader>fe", Snacks.picker.explorer, { desc = "Snacks explorer" })
+    utils.map("n", "<leader>e", Snacks.picker.explorer, { desc = "Snacks explorer" })
     utils.map("n", "<leader>ff", Snacks.picker.files, { desc = "Search for files" })
     utils.map("n", "<leader>fg", Snacks.picker.grep, { desc = "Live grep" })
     utils.map("n", "<leader>fh", Snacks.picker.help, { desc = "Search for help tags" })
@@ -75,8 +75,8 @@ local function setup_terminal_keymaps()
             win = {
                 border = "rounded",
                 position = "float",
-                height = 0.85,
-                width = 0.85,
+                height = 0.99,
+                width = 0.99,
             },
         })
     end, { desc = "Toggle float terminal" })
