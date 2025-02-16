@@ -11,8 +11,7 @@ function M.setup()
             enable = false,
         },
         lightbulb = {
-            sign = false,
-            virtual_text = true,
+            enable = false,
         },
         diagnostic = {
             on_insert = false, -- Remove diagnostics on insert mode at the top right winbar
@@ -79,7 +78,6 @@ function M.on_attach(_, bufnr)
     end
 
     local utils = require "tt.utils"
-    utils.map("n", "<leader>ca", "<Cmd>Lspsaga code_action<CR>", opts "Open code action menu")
     utils.map("n", "gd", "<Cmd>Lspsaga goto_definition<CR>", opts "Goto definition")
     utils.map("n", "gD", "<Cmd>Lspsaga goto_type_definition<CR>", opts "Goto type definition")
     utils.map("n", "gp", "<Cmd>Lspsaga peek_definition<CR>", opts "Peek definition")
@@ -87,6 +85,12 @@ function M.on_attach(_, bufnr)
     utils.map("n", "do", "<Cmd>Lspsaga show_cursor_diagnostics<CR>", opts "Show cursor diagnostics")
     utils.map("n", "dn", "<Cmd>Lspsaga diagnostic_jump_next<CR>", opts "Jump to next diagnostic")
     utils.map("n", "dp", "<Cmd>Lspsaga diagnostic_jump_prev<CR>", opts "Jump to previous diagnostic")
+    utils.map("n", "gr", "<Cmd>Lspsaga finder<CR>", opts "Find definition and references of current symbol")
+    utils.map("n", "gR", "<Cmd>Lspsaga rename<CR>", opts "Rename symbol")
+    utils.map("n", "<leader>ca", "<Cmd>Lspsaga code_action<CR>", opts "Open code action menu")
+    utils.map("n", "<leader>IC", "<Cmd>Lspsaga incoming_calls<CR>", opts "Show incoming calls")
+    utils.map("n", "<leader>OC", "<Cmd>Lspsaga outgoing_calls<CR>", opts "Show outgoing calls")
+    utils.map("n", "<leader>OL", "<Cmd>Lspsaga outline<CR>", opts "Show outline")
 end
 
 return M

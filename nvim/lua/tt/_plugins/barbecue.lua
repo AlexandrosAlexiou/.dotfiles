@@ -37,9 +37,10 @@ function M.setup()
         },
 
         ---Returns a string to be shown at the start of winbar.
-        ---@type fun(bufnr: number): string
+        ---@type fun(bufnr: number): table<string>
         lead_custom_section = function()
-            return ""
+            -- https://github.com/neovide/neovide/pull/2165
+            return { { " ", "WinBar" } }
         end,
 
         ---Returns a string to be shown at the end of winbar.

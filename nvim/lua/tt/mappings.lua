@@ -154,3 +154,35 @@ utils.map("n", "<leader>cP", function()
         end
     end)
 end, { desc = "Copy current filename according to the supplied modifier" })
+
+-- Neovide specific mappings
+if vim.g.neovide then
+    vim.g.neovide_position_animation_length = 0
+    vim.g.neovide_cursor_animation_length = 0.00
+    vim.g.neovide_cursor_trail_size = 0
+    vim.g.neovide_cursor_animate_in_insert_mode = false
+    vim.g.neovide_cursor_animate_command_line = false
+    vim.g.neovide_scroll_animation_far_lines = 0
+    vim.g.neovide_scroll_animation_length = 0.00
+    vim.g.neovide_input_macos_option_key_is_meta = "both"
+    vim.api.nvim_set_keymap(
+        "n",
+        "<C-+>",
+        ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>",
+        { silent = true }
+    )
+    vim.api.nvim_set_keymap(
+        "n",
+        "<C-->",
+        ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>",
+        { silent = true }
+    )
+    vim.api.nvim_set_keymap("n", "<C-0>", ":lua vim.g.neovide_scale_factor = 1<CR>", { silent = true })
+
+    vim.keymap.set({ "n", "v", "s", "x", "o", "i", "l", "c", "t" }, "<D-v>", function()
+        vim.api.nvim_paste(vim.fn.getreg "+", true, -1)
+    end, { noremap = true, silent = true })
+end
+
+-- Use Ctrl-i to jump to the last cursor position
+utils.map("n", "<c-i>", "<c-i>")
