@@ -20,6 +20,7 @@ end
 local function extended_vimgrep_arguments()
     local vimgrep_arguments = telescope_config.values.vimgrep_arguments
     table.insert(vimgrep_arguments, "--follow")
+    table.insert(vimgrep_arguments, "--threads=3")
     return vimgrep_arguments
 end
 
@@ -37,15 +38,12 @@ function M.setup()
             layout_config = {
                 prompt_position = "bottom",
                 horizontal = {
-                    width = { padding = 0.1 },
-                    height = { padding = 0.1 },
+                    width = 0.95,
+                    height = 0.95,
                     preview_width = 0.5,
                     mirror = false,
                 },
                 vertical = {
-                    width = { padding = 0.1 },
-                    height = { padding = 0.1 },
-                    preview_height = 0.65,
                     mirror = false,
                 },
             },
