@@ -6,13 +6,6 @@
 # The defined functions below follow the POSIX standard for functions.
 # i.e. without using the keyword `function`
 
-# This function returns an approximation of the memory usage of a process
-# https://stackoverflow.com/questions/3853655/in-linux-how-to-tell-how-much-memory-processes-are-using
-mem() {
-    ps -eo rss,pid,euser,args:100 --sort %mem | grep --color=auto -v grep | grep --color=auto -i "$@" \
-        | awk '{printf $1/1024 " MB"; $1=""; print }'
-}
-
 # This function extracts any archive supplied as argument
 extract() {
     for archive in "$@"; do
@@ -173,9 +166,62 @@ function y() {
 	rm -f -- "$tmp"
 }
 
+
 # Make zoxide 'z' change to directory when arguments are provided
 # otherwise display an interactive 'fzf' prompt
 unalias z 2>/dev/null
 z() {
     [ $# -gt 0 ] && __zoxide_z "$@" || __zoxide_zi
+}
+
+# Dynamically switch between installed JDK versions on macOS
+sjdk() {
+
+    local CURRENT_SELECTION="/usr/libexec/java_home -X | jc --plist | jq -r --arg version "$(echo {1})" '.[] | select(.JVMVersion == \$version)'"
+
+    local jdk_version=$(
+        echo $(/usr/libexec/java_home -X) \
+        | jc --plist \
+        | jq -r '.[].JVMVersion' \
+        | sort \
+        | fzf \
+            --prompt=" JDK>" \
+            --preview-window '50%,rounded,<50(up,85%,border-bottom)' \
+            --preview "${CURRENT_SELECTION} | col -bx | bat --language=json --plain --color always"
+    )
+    if [ -z "$jdk_version" ]; then
+        echo "${RED}No JDK version selected.${NC}"
+        return 1
+    fi
+
+    export JAVA_HOME=$(/usr/libexec/java_home -v "$jdk_version")
+
+    echo "${BLUE}$(java --version)${NC}"
+
+    echo "${RED}JAVA_HOME: ${JAVA_HOME} ${NC}"
+}
+
+# Dynamically switch between installed Python versions using conda
+spy() {
+
+    local CURRENT_SELECTION="conda list -n "$(echo {1})" --json | jq -r '.[] | {name, version}'"
+
+    local python_env=$(
+            printf '%s\n' $(conda env list | tail -n +3 | awk '{print $1}') \
+            | fzf \
+            --prompt=" Python env>" \
+            --preview-window '50%,rounded,<50(up,85%,border-bottom)' \
+            --preview "${CURRENT_SELECTION} | col -bx | bat --language=json --plain --color always"
+    )
+
+    if [ -z "$python_env" ]; then
+        echo "${RED}No Python environment selected.${NC}"
+        return 1
+    fi
+
+    conda activate "$python_env"
+
+    echo "${BLUE}$(python -VV)${NC}"
+
+    echo "${RED}Location: $(where python) ${NC}"
 }
