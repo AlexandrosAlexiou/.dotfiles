@@ -5,21 +5,26 @@ function M.setup_treesitter()
 
     -- Ensure that these parsers are installed. This is a no-op if the parsers are already installed.
     require("nvim-treesitter").install {
+        "astro",
         "bash",
         "c",
         "cmake",
         "comment",
         "cpp",
         "css",
+        "scala",
         "dockerfile",
         "git_config",
         "git_rebase",
         "gitcommit",
         "gitignore",
+        "graphql",
         "html",
+        "java",
         "javascript",
         "jsdoc",
         "json",
+        "kotlin",
         "lua",
         "luadoc",
         "make",
@@ -34,6 +39,8 @@ function M.setup_treesitter()
         "vim",
         "vimdoc",
         "yaml",
+        "vue",
+        "xml",
     }
 
     -- Setup syntax highlighting
