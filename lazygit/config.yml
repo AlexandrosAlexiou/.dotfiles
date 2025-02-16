@@ -23,13 +23,20 @@ gui:
       - "#8cb6ff"
     inactiveBorderColor:
       - "#7b7c7e"
+  showIcons: true
 
 git:
   pagers:
     - pager: delta --dark --paging=never
       colorArg: always
 
+os:
+  open: 'neovide {{filename}}'
+  editAtLine: "neovide {{filename}} +{{line}}"
+
 keybinding:
   universal:
+    goInto: "o"
+    openFile: "<enter>"
     prevBlock: <c-k>
     nextBlock: <c-j>

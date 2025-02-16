@@ -49,23 +49,33 @@ function M.setup()
     require("conform").setup {
         formatters_by_ft = {
             cpp = { "clang-format" },
+            graphql = { "prettierd" },
+            java = { "google-java-format" },
+            kotlin = { "ktfmt" },
             lua = { "stylua" },
+            python = { "autopep8" },
             sh = { "shfmt" },
             javascript = { "prettierd" },
             javascriptreact = { "prettierd" },
             typescript = { "prettierd" },
             typescriptreact = { "prettierd" },
-            ["*"] = { "codespell" },
+            vue = { "prettierd" },
         },
         formatters = {
-            shfmt = {
-                prepend_args = { "-i", "4", "-bn", "-ci", "-sr" },
-            },
             ["clang-format"] = {
                 prepend_args = { "-style=file" },
             },
+            ktfmt = {
+                prepend_args = { "--kotlinlang-style" },
+            },
+            shfmt = {
+                prepend_args = { "-i", "4", "-bn", "-ci", "-sr" },
+            },
         },
         format_on_save = function(bufnr)
+            if vim.b.disable_autoformat or vim.g.disable_autoformat then
+                return
+            end
             local filetype = vim.bo[bufnr].filetype
             if format_utils.should_format(filetype, bufnr) then
                 format_utils.run_pre_format_handlers(bufnr)

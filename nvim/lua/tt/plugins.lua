@@ -1,3 +1,15 @@
+---@param config {args?:string[]|fun():string[]?}
+local function get_args(config)
+    local args = type(config.args) == "function" and (config.args() or {}) or config.args or {}
+    config = vim.deepcopy(config)
+    ---@cast args string[]
+    config.args = function()
+        local new_args = vim.fn.input("Run with args: ", table.concat(args, " ")) --[[@as string]]
+        return vim.split(vim.fn.expand(new_args) --[[@as string]], " ")
+    end
+    return config
+end
+
 return {
     -- Colorschemes
     {
@@ -70,24 +82,6 @@ return {
         },
         config = function()
             require("tt._plugins.noice").setup()
-        end,
-    },
-
-    -- Cursor animation with a smear effect
-    {
-        "sphamba/smear-cursor.nvim",
-        event = "BufRead",
-        config = function()
-            require("smear_cursor").setup {
-                -- When "none" it matches the text color at the target position
-                cursor_color = "none",
-            }
-
-            local enabled = true
-            vim.api.nvim_create_user_command("SmearToggle", function()
-                enabled = not enabled
-                require("smear_cursor").enabled = enabled
-            end, { desc = "Toggle smear cursor" })
         end,
     },
 
@@ -432,27 +426,6 @@ return {
         end,
     },
 
-    -- Fold enhancements
-    {
-        "kevinhwang91/nvim-ufo",
-        event = "VeryLazy",
-        dependencies = {
-            { "kevinhwang91/promise-async" },
-            {
-                "luukvbaal/statuscol.nvim",
-                config = function()
-                    require("tt._plugins.statuscol").setup()
-                end,
-            },
-        },
-        init = function()
-            require("tt._plugins.nvim-ufo").init()
-        end,
-        config = function()
-            require("tt._plugins.nvim-ufo").setup()
-        end,
-    },
-
     -- Navigation enhancements
     {
         "folke/flash.nvim",
@@ -467,10 +440,17 @@ return {
         "aaronik/treewalker.nvim",
         dependencies = "nvim-treesitter/nvim-treesitter",
         keys = {
-            { "<M-J>", "<Cmd>Treewalker SwapDown<CR>", mode = "n", desc = "Swap node down" },
-            { "<M-K>", "<Cmd>Treewalker SwapUp<CR>", mode = "n", desc = "Swap node up" },
-            { "<M-j>", "<Cmd>Treewalker SwapRight<CR>", mode = "n", desc = "Swap node right" },
-            { "<M-k>", "<Cmd>Treewalker SwapLeft<CR>", mode = "n", desc = "Swap node left" },
+            -- movement (normal and visual modes)
+            { "<C-S-k>", "<cmd>Treewalker Up<cr>", mode = { "n", "v" }, desc = "Move up" },
+            { "<C-S-j>", "<cmd>Treewalker Down<cr>", mode = { "n", "v" }, desc = "Move down" },
+            { "<C-S-h>", "<cmd>Treewalker Left<cr>", mode = { "n", "v" }, desc = "Move left" },
+            { "<C-S-l>", "<cmd>Treewalker Right<cr>", mode = { "n", "v" }, desc = "Move right" },
+
+            -- swapping (normal mode only)
+            { "<C-k>", "<cmd>Treewalker SwapUp<cr>", mode = "n", desc = "Swap node up" },
+            { "<C-j>", "<cmd>Treewalker SwapDown<cr>", mode = "n", desc = "Swap node down" },
+            { "<C-h>", "<cmd>Treewalker SwapLeft<cr>", mode = "n", desc = "Swap node left" },
+            { "<C-l>", "<cmd>Treewalker SwapRight<cr>", mode = "n", desc = "Swap node right" },
         },
         opts = {},
     },
@@ -518,6 +498,8 @@ return {
         keys = {
             "<leader>fp",
             "<leader>T",
+            "<leader>gb",
+            -- "<leader>gv",
         },
         dependencies = {
             { "nvim-lua/plenary.nvim" },
@@ -728,8 +710,7 @@ return {
     {
         "nvimtools/hydra.nvim",
         keys = {
-            "<leader>gg",
-            "<leader>ww",
+            "<leader>w",
             "<leader>rs",
         },
         dependencies = { "lewis6991/gitsigns.nvim", "mrjones2014/smart-splits.nvim" },
@@ -776,36 +757,6 @@ return {
         config = function()
             require("tt._plugins.smart-splits").setup()
         end,
-    },
-
-    -- Run lines/block of code within Neovim
-    {
-        "michaelb/sniprun",
-        branch = "master",
-        build = "sh install.sh",
-        cmd = {
-            "SnipRun",
-            "SnipClose",
-        },
-        keys = {
-            {
-                "<leader>xx",
-                function()
-                    local helper = require "tt.helper"
-                    helper.preserve_cursor_position ":%SnipRun<CR>"
-                end,
-                mode = "n",
-                desc = "Sniprun the whole buffer",
-            },
-            { "<leader>xx", "<Plug>SnipRun", mode = "v", desc = "Sniprun visually selected lines" },
-            { "<leader>xc", "<Plug>SnipClose", desc = "SnipClose" },
-            { "<leader>xr", "<Plug>SnipReset", desc = "SnipReset" },
-        },
-        opts = {
-            display = { "TempFloatingWindow" },
-            show_no_output = { "TempFloatingWindow" },
-            live_mode_toggle = "enable",
-        },
     },
 
     -- Color highlighter
@@ -903,4 +854,51 @@ return {
             vim.g.startuptime_tries = 10
         end,
     },
+
+    -- Interacting with tests within neovim
+    {
+        "nvim-neotest/neotest",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-neotest/neotest-plenary",
+            "nvim-neotest/neotest-vim-test",
+            "nvim-neotest/nvim-nio",
+            "antoinemadec/FixCursorHold.nvim",
+            "nvim-treesitter/nvim-treesitter",
+            "marilari88/neotest-vitest",
+            "thenbe/neotest-playwright",
+            "nvim-neotest/neotest-python",
+        },
+        config = function()
+            require("tt._plugins.neotest").setup()
+        end,
+    },
+
+    -- Install nvim-metals for Scala development
+    {
+        "scalameta/nvim-metals",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        },
+        ft = { "scala", "sbt", "java" },
+        opts = function()
+            local metals_config = require("metals").bare_config()
+            metals_config.on_attach = function(_, _) end
+
+            return metals_config
+        end,
+        config = function(self, metals_config)
+            local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+            vim.api.nvim_create_autocmd("FileType", {
+                pattern = self.ft,
+                callback = function()
+                    require("metals").initialize_or_attach(metals_config)
+                end,
+                group = nvim_metals_group,
+            })
+        end,
+    },
+
+    -- Git integration
+    { "tpope/vim-fugitive" },
 }

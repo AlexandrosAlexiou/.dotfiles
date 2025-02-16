@@ -8,7 +8,7 @@
 #                                                     #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-alias ls='ls --color=always -hN --group-directories-first'
+alias ls='ls --color=always -h'
 alias l='ls'
 alias l1='ls -1'
 alias lf='ls | grep'
@@ -20,6 +20,7 @@ alias la1='ls -A1'
 alias lla='la -l'
 alias llaf='la -l | grep'
 alias li='ls -i'
+alias x='eza --icons --all --long --header'
 
 alias duf='du -sh * | sort -hr'
 alias fstat='stat --format "%a"'
@@ -68,8 +69,11 @@ alias nvimu='nvim -u $HOME/.config/nvim/minimal_init.lua'
 # Set nvim as the pager for man pages
 alias man=nvim_man_pager
 
-# Lazy
+
+# Lazygit
 alias lg='lazygit'
+
+# Lazydocker
 alias ld='lazydocker'
 
 # Make z start in interactive mode

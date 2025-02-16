@@ -29,7 +29,7 @@ function M.setup()
         },
         lsp = {
             progress = {
-                enabled = false,
+                enabled = true,
             },
             signature = {
                 auto_open = {

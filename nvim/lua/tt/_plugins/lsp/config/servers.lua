@@ -8,6 +8,7 @@ local base_on_attach = {
 
 -- Custom lsp server settings
 M.lsp_servers = {
+    astro = {},
     bashls = {},
     clangd = {
         cmd = {
@@ -21,6 +22,7 @@ M.lsp_servers = {
         },
     },
     cmake = {},
+    cssls = {},
     eslint = {
         settings = {
             codeAction = {
@@ -36,6 +38,25 @@ M.lsp_servers = {
                 desc = "Fixes all eslint errors on save",
             })
         end,
+    },
+    graphql = { filetypes = {
+        "graphql",
+    } },
+    kotlin_language_server = {
+        filetypes = {
+            "kotlin",
+        },
+        root_dir = function()
+            return vim.fn.getcwd()
+        end,
+        settings = {
+            kotlin = { compiler = { jvm = { target = "21" } } },
+            hints = {
+                typeHints = true,
+                parameterHints = true,
+                chainedHints = true,
+            },
+        },
     },
     lua_ls = {
         settings = {
@@ -106,6 +127,33 @@ M.lsp_servers = {
         },
     },
     yamlls = {},
+    volar = {
+        filetypes = { "vue" },
+        init_options = {
+            vue = {
+                hybridMode = false,
+            },
+            languageFeatures = {
+                implementation = true,
+                references = true,
+                definition = true,
+                typeDefinition = true,
+                callHierarchy = true,
+                hover = true,
+                rename = true,
+                renameFileRefactoring = true,
+                signatureHelp = true,
+                codeAction = true,
+                workspaceSymbol = true,
+                completion = {
+                    defaultTagNameCase = "both",
+                    defaultAttrNameCase = "kebabCase",
+                    getDocumentNameCasesRequest = false,
+                    getDocumentSelectionRequest = false,
+                },
+            },
+        },
+    },
 }
 
 -- List of servers that should be manually installed via Mason

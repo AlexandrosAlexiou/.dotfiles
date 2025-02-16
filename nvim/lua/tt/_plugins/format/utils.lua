@@ -10,11 +10,16 @@ local M = {}
 M.filetypes = {
     cpp = true,
     sh = true,
+    graphql = false,
+    java = false,
+    javascript = false,
+    kotlin = true,
     lua = true,
-    javascript = true,
-    javascriptreact = true,
-    typescript = true,
+    python = true,
+    rust = true,
+    typescript = false,
     typescriptreact = true,
+    vue = true,
 }
 
 --- A set of buffers for which format should be disabled.

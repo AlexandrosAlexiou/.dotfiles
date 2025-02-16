@@ -21,6 +21,23 @@ local colors = {
 config.font = wezterm.font("CaskaydiaMono Nerd Font")
 config.font_size = 12
 
+config.colors = {
+	tab_bar = {
+		active_tab = {
+			fg_color = "#24273A",
+			bg_color = "#C6A0F6",
+		},
+		inactive_tab = {
+			bg_color = "rgb(0 0 0 0)",
+			fg_color = "#CAD3F5",
+		},
+		inactive_tab_hover = {
+			bg_color = "#363A4F",
+			fg_color = "#B4BEFE",
+		},
+	},
+}
+
 -- Tab
 config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
@@ -29,7 +46,7 @@ config.tab_and_split_indices_are_zero_based = true
 
 -- Window
 config.window_decorations = "RESIZE"
-config.window_background_opacity = 0.9
+config.window_background_opacity = 1
 config.adjust_window_size_when_changing_font_size = false
 
 -- Pane

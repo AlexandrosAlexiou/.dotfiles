@@ -1,6 +1,8 @@
 --- Defines which kind source to use
 local kind_source = (_G.IsWSL and _G.IsWSL() and "default") or "vscode"
 
+--- asdasdas
+
 local kind = {
     default = {
         Class = "󰠱  ",
@@ -72,6 +74,14 @@ local kind_trimmed = (function()
     end
     return result
 end)()
+
+local dap = {
+    Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
+    Breakpoint = " ",
+    BreakpointCondition = " ",
+    BreakpointRejected = { " ", "DiagnosticError" },
+    LogPoint = ".>",
+}
 
 local diagnostics = {
     Error = " ",
@@ -159,6 +169,7 @@ return {
     kind = kind[kind_source],
     kind_trimmed = kind_trimmed,
     breadcrumps = kind_trimmed,
+    dap = dap,
     diagnostics = diagnostics,
     document = document,
     git = git,

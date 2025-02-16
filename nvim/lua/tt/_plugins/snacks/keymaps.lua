@@ -40,8 +40,8 @@ local function setup_terminal_keymaps()
             win = {
                 border = "rounded",
                 position = "float",
-                height = 0.85,
-                width = 0.85,
+                height = 0.99,
+                width = 0.99,
             },
         })
     end, { desc = "Toggle float terminal" })

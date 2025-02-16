@@ -72,6 +72,10 @@ function M.setup()
             -- The border to use for the UI window. Accepts same border values as |nvim_open_win()|
             border = "none",
 
+            width = 0.8,
+
+            height = 0.9,
+
             icons = {
                 -- The list icon to use for installed packages
                 package_installed = icons.misc.CheckMark,
@@ -126,6 +130,9 @@ function M.setup()
     -- Make sure to install required servers
     local ensure_installed_servers = vim.list_extend(formatters, servers.mason_servers)
     ensure_installed(ensure_installed_servers)
+
+    -- Ensure all other non-plugin related servers are properly installed
+    ensure_installed(servers.mason_servers)
 
     utils.map("n", "<leader>m", vim.cmd.Mason)
 end

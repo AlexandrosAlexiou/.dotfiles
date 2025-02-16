@@ -8,7 +8,7 @@ local M = {}
 local function get_dashboard_items()
     local header = table.concat({
         [[                                                                    ]],
-        [[      ████ ██████           █████      ██                TT   ]],
+        [[      ████ ██████           █████      ██                AA   ]],
         [[     ███████████             █████                             ]],
         [[     █████████ ███████████████████ ███   ███████████   ]],
         [[    █████████  ███    █████████████ █████ ██████████████   ]],
@@ -26,7 +26,7 @@ local function get_dashboard_items()
             vim.version().patch,
         }, ".")
         local info_items = {
-            icons.misc.Github .. " Tryfon Tsakiris, tr.tsakiris@gmail.com",
+            icons.misc.Github .. " Alexandros Alexiou, alex.alexiouu@gmail.com",
             icons.misc.Calendar .. " " .. datetime,
             icons.misc.GitCompare .. " Neovim Version: " .. version,
         }
