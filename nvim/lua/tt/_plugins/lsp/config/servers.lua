@@ -2,6 +2,7 @@ local M = {}
 
 -- Custom lsp server settings
 M.lsp_servers = {
+    astro = {},
     bashls = {},
     clangd = {
         capabilities = {
@@ -10,6 +11,7 @@ M.lsp_servers = {
         },
     },
     cmake = {},
+    cssls = {},
     eslint = {
         settings = {
             codeAction = {
@@ -24,6 +26,26 @@ M.lsp_servers = {
                 desc = "Fixes all eslint errors on save",
             })
         end,
+    },
+    graphql = { filetypes = {
+        "graphql",
+    } },
+    jdtls = {},
+    kotlin_language_server = {
+        filetypes = {
+            "kotlin",
+        },
+        root_dir = function()
+            return vim.fn.getcwd()
+        end,
+        settings = {
+            kotlin = { compiler = { jvm = { target = "21" } } },
+            hints = {
+                typeHints = true,
+                parameterHints = true,
+                chainedHints = true,
+            },
+        },
     },
     lua_ls = {
         settings = {
@@ -61,6 +83,17 @@ M.lsp_servers = {
             },
         },
     },
+    pyright = {},
+    rust_analyzer = {
+        settings = {
+            ["rust-analyzer"] = {
+                check = {
+                    command = "clippy",
+                },
+                checkOnSave = true,
+            },
+        },
+    },
     ts_ls = {
         settings = {
             typescript = {
@@ -88,6 +121,33 @@ M.lsp_servers = {
         },
     },
     yamlls = {},
+    volar = {
+        filetypes = { "vue" },
+        init_options = {
+            vue = {
+                hybridMode = false,
+            },
+            languageFeatures = {
+                implementation = true,
+                references = true,
+                definition = true,
+                typeDefinition = true,
+                callHierarchy = true,
+                hover = true,
+                rename = true,
+                renameFileRefactoring = true,
+                signatureHelp = true,
+                codeAction = true,
+                workspaceSymbol = true,
+                completion = {
+                    defaultTagNameCase = "both",
+                    defaultAttrNameCase = "kebabCase",
+                    getDocumentNameCasesRequest = false,
+                    getDocumentSelectionRequest = false,
+                },
+            },
+        },
+    },
 }
 
 -- List of servers that should be manually installed via Mason
@@ -95,21 +155,10 @@ M.mason_servers = {
     "shellcheck",
 }
 
-local function extend_capabilities(capabilities)
-    if vim.F.npcall(require, "ufo") then
-        capabilities.textDocument.foldingRange = {
-            dynamicRegistration = false,
-            lineFoldingOnly = true,
-        }
-    end
-end
-
 function M.setup()
     local common_opts = {
         capabilities = require("cmp_nvim_lsp").default_capabilities(),
     }
-
-    extend_capabilities(common_opts.capabilities)
 
     for _, server in ipairs(vim.tbl_keys(M.lsp_servers)) do
         local server_opts = vim.tbl_deep_extend("force", common_opts, M.lsp_servers[server])
