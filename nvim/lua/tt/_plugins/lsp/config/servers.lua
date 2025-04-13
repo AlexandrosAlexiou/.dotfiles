@@ -95,6 +95,20 @@ M.lsp_servers = {
         },
     },
     ts_ls = {
+        init_options = {
+            embeddedLanguages = {
+                html = true,
+            },
+            plugins = {
+                {
+                    name = "@vue/typescript-plugin",
+                    location = "node_modules/@vue/typescript-plugin",
+                    languages = { "javascript", "typescript", "vue" },
+                    enableForWorkspaceTypeScriptVersions = true,
+                },
+            },
+        },
+        filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
         settings = {
             typescript = {
                 inlayHints = {
@@ -122,29 +136,10 @@ M.lsp_servers = {
     },
     yamlls = {},
     volar = {
-        filetypes = { "vue" },
+        filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
         init_options = {
             vue = {
-                hybridMode = false,
-            },
-            languageFeatures = {
-                implementation = true,
-                references = true,
-                definition = true,
-                typeDefinition = true,
-                callHierarchy = true,
-                hover = true,
-                rename = true,
-                renameFileRefactoring = true,
-                signatureHelp = true,
-                codeAction = true,
-                workspaceSymbol = true,
-                completion = {
-                    defaultTagNameCase = "both",
-                    defaultAttrNameCase = "kebabCase",
-                    getDocumentNameCasesRequest = false,
-                    getDocumentSelectionRequest = false,
-                },
+                hybridMode = true,
             },
         },
     },
