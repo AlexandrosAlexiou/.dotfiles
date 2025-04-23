@@ -345,13 +345,6 @@ return {
         end,
     },
 
-    --Tiny plugin to enhance Neovim's native comments
-    {
-        "folke/ts-comments.nvim",
-        event = "VeryLazy",
-        opts = {},
-    },
-
     -- Lightweight powerful formatter plugin
     {
         "stevearc/conform.nvim",
@@ -453,6 +446,20 @@ return {
         },
         config = function()
             require("tt._plugins.telescope").setup()
+        end,
+    },
+
+    -- Smart and powerful comment plugin
+    {
+        "numToStr/Comment.nvim",
+        keys = {
+            { "gc", mode = { "n", "v" } },
+            { "gb", mode = { "n", "v" } },
+            { "<leader><leader>", mode = { "n", "v" } },
+        },
+        dependencies = { "folke/ts-comments.nvim" },
+        config = function()
+            require("tt._plugins.comment").setup()
         end,
     },
 
