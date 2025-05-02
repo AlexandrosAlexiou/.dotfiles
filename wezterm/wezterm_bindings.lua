@@ -12,17 +12,17 @@ local keys = {
 	},
 	{
 		key = "O",
-		mods = "CTRL|SHIFT",
+		mods = "CTRL",
 		action = action.ShowDebugOverlay,
 	},
 	{
-		key = "+",
-		mods = "CTRL|SHIFT",
+		key = "=",
+		mods = "CTRL",
 		action = action.IncreaseFontSize,
 	},
 	{
-		key = "_",
-		mods = "CTRL|SHIFT",
+		key = "-",
+		mods = "CTRL",
 		action = action.DecreaseFontSize,
 	},
 	{
