@@ -175,10 +175,6 @@ export JAVA_HOME=`/usr/libexec/java_home -v 21`
 # To automatically run fnm use when a directory contains a .node-version or .nvmrc files
 eval "$(fnm env --use-on-cd)"
 
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/alexioualexandros/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
-
 # Setup the path for ripgrep configuration
 export RIPGREP_CONFIG_PATH="$HOME/.config/rg/config"
 
@@ -193,3 +189,7 @@ export PATH="$HOME/.local/bin:$PATH"
 # Neovide config variables
 export NEOVIDE_FRAMELESS=true
 export NEOVIDE_FRAME=none
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="$HOME/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
