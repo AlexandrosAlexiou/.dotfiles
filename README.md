@@ -80,6 +80,7 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── grug-far.lua
 │       │   ├── hydra.lua
 │       │   ├── indent-blankline.lua
+│       │   ├── jdtls.lua
 │       │   ├── lualine.lua
 │       │   ├── mini-surround.lua
 │       │   ├── namu.lua

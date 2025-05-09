@@ -1,15 +1,3 @@
----@param config {args?:string[]|fun():string[]?}
-local function get_args(config)
-    local args = type(config.args) == "function" and (config.args() or {}) or config.args or {}
-    config = vim.deepcopy(config)
-    ---@cast args string[]
-    config.args = function()
-        local new_args = vim.fn.input("Run with args: ", table.concat(args, " ")) --[[@as string]]
-        return vim.split(vim.fn.expand(new_args) --[[@as string]], " ")
-    end
-    return config
-end
-
 return {
     -- Colorschemes
     {
@@ -753,6 +741,10 @@ return {
     -- Resize windows easily
     {
         "mrjones2014/smart-splits.nvim",
+        event = "VeryLazy",
+        dependencies = {
+            "pogyomo/submode.nvim",
+        },
         keys = {
             "<M-h>",
             "<M-l>",
@@ -881,31 +873,15 @@ return {
         end,
     },
 
-    -- Install nvim-metals for Scala development
-    {
-        "scalameta/nvim-metals",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-        },
-        ft = { "scala", "sbt", "java" },
-        opts = function()
-            local metals_config = require("metals").bare_config()
-            metals_config.on_attach = function(_, _) end
-
-            return metals_config
-        end,
-        config = function(self, metals_config)
-            local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
-            vim.api.nvim_create_autocmd("FileType", {
-                pattern = self.ft,
-                callback = function()
-                    require("metals").initialize_or_attach(metals_config)
-                end,
-                group = nvim_metals_group,
-            })
-        end,
-    },
-
     -- Git integration
     { "tpope/vim-fugitive" },
+
+    {
+        "mfussenegger/nvim-jdtls",
+        ft = { "java" },
+        dependencies = { "neovim/nvim-lspconfig" },
+        config = function()
+            require("tt._plugins.jdtls").setup()
+        end,
+    },
 }
