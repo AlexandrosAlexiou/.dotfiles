@@ -90,7 +90,7 @@ wezterm.on("format-tab-title", function(tab)
 		title = wezterm_extras.get_cwd(tab)
 	end
 
-	return string.format("  %s•%s  ", tab.tab_index, title)
+	return string.format("  %s•%s  ", tab.tab_index + 1, title)
 end)
 
 return config
