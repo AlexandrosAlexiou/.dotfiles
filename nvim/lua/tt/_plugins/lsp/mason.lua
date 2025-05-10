@@ -1,9 +1,10 @@
+--- @class MasonModule
 local M = {}
 
 local extension_name = "Mason"
 
 --- Install the passed in servers via Mason.
----@param servers table: A table with server names.
+--- @param servers string[] A table with server names.
 local function ensure_installed(servers)
     local registry = require "mason-registry"
 
@@ -47,6 +48,7 @@ local function ensure_installed(servers)
     end
 end
 
+--- Setup function for Mason
 function M.setup()
     local icons = require "tt.icons"
     local utils = require "tt.utils"
@@ -117,6 +119,14 @@ function M.setup()
             },
         },
     }
+
+    -- Get all server names from lsp_servers but filter out jdtls
+    local lsp_server_names = {}
+    for server_name, _ in pairs(servers.lsp_servers) do
+        if server_name ~= "jdtls" then
+            table.insert(lsp_server_names, server_name)
+        end
+    end
 
     -- Bridge between 'mason' and 'lspconfig' allowing for easy installation and setup of LSP severs
     require("mason-lspconfig").setup {
