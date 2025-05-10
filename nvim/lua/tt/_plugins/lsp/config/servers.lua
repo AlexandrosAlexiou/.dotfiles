@@ -30,7 +30,6 @@ M.lsp_servers = {
     graphql = { filetypes = {
         "graphql",
     } },
-    jdtls = {},
     kotlin_language_server = {
         filetypes = {
             "kotlin",
