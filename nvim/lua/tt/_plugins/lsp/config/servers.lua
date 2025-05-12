@@ -42,6 +42,7 @@ M.lsp_servers = {
     graphql = { filetypes = {
         "graphql",
     } },
+    jdtls = {},
     kotlin_language_server = {
         filetypes = {
             "kotlin",
@@ -189,11 +190,18 @@ function M.setup()
         capabilities = capabilities,
     })
 
+    -- Define servers to exclude
+    local excluded_servers = { jdtls = true }
+
     -- Setup settings per server and enable auto start
-    for _, server in ipairs(vim.tbl_keys(M.lsp_servers)) do
-        vim.lsp.config(server, M.lsp_servers[server])
-        vim.lsp.enable(server)
+    local function configure_server(server)
+        if not excluded_servers[server] then
+            vim.lsp.config(server, M.lsp_servers[server])
+            vim.lsp.enable(server)
+        end
     end
+
+    vim.tbl_map(configure_server, vim.tbl_keys(M.lsp_servers))
 end
 
 return M
