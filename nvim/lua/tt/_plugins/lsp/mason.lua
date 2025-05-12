@@ -120,14 +120,6 @@ function M.setup()
         },
     }
 
-    -- Get all server names from lsp_servers but filter out jdtls
-    local lsp_server_names = {}
-    for server_name, _ in pairs(servers.lsp_servers) do
-        if server_name ~= "jdtls" then
-            table.insert(lsp_server_names, server_name)
-        end
-    end
-
     -- Bridge between 'mason' and 'lspconfig' allowing for easy installation and setup of LSP severs
     require("mason-lspconfig").setup {
         -- A list of servers to automatically install if they're not already installed
