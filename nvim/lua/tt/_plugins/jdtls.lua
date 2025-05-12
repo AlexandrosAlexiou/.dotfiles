@@ -55,10 +55,10 @@ function M.setup_jdtls()
 
     -- Find root directory for the project
     local root_markers = {
+        "gradlew",
         ".git",
         "mvnw",
-        ".mvn",
-        "gradlew",
+        "settings.gradle",
     }
     local root_dir = require("jdtls.setup").find_root(root_markers)
 
@@ -85,8 +85,13 @@ function M.setup_jdtls()
 
     -- Set up Lombok
     local lombok_path = home .. "/.local/share/nvim/java-libs/lombok.jar"
-    if vim.fn.filereadable(lombok_path) == 0 then
-        vim.notify("Lombok installation not found at: " .. lombok_path, vim.log.levels.ERROR)
+    -- Skip lombok if not available rather than failing completely
+    local use_lombok = vim.fn.filereadable(lombok_path) == 1
+    if not use_lombok then
+        vim.notify(
+            "Lombok jar not found at: " .. lombok_path .. ". Continuing without Lombok support.",
+            vim.log.levels.WARN
+        )
     end
 
     -- Determine OS-specific configuration
@@ -101,7 +106,10 @@ function M.setup_jdtls()
 
     -- Find available bundles
     local bundles = {}
-    table.insert(bundles, lombok_path) -- Add Lombok jar
+    -- Only add lombok if it exists
+    if use_lombok then
+        table.insert(bundles, lombok_path)
+    end
 
     -- Java debug adapter
     local java_debug_path = home .. "/.local/share/nvim/java-debug"
@@ -133,39 +141,56 @@ function M.setup_jdtls()
     -- Simplified: Use direct path to java executable
     local java_cmd = "/usr/bin/java"
 
+    -- Build the command table
+    local cmd = {
+        java_cmd,
+        "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+        "-Dosgi.bundles.defaultStartLevel=4",
+        "-Declipse.product=org.eclipse.jdt.ls.core.product",
+        "-Dlog.protocol=true",
+        "-Dlog.level=ALL",
+        -- JVM memory settings
+        "-Xmx10G",
+        "-Xms10G",
+        -- Avoid file locking issues
+        "-Dosgi.locking=none",
+        -- Add modules and opens
+        "--add-modules=ALL-SYSTEM",
+        "--add-opens",
+        "java.base/java.util=ALL-UNNAMED",
+        "--add-opens",
+        "java.base/java.lang=ALL-UNNAMED",
+    }
+
+    -- Only add lombok agent if it exists
+    if use_lombok then
+        table.insert(cmd, "-javaagent:" .. lombok_path)
+    end
+
+    -- Add the remaining arguments
+    vim.list_extend(cmd, {
+        "-jar",
+        vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
+        "-configuration",
+        jdtls_path .. "/" .. os_config,
+        "-data",
+        workspace_dir,
+    })
+
     -- JDTLS configuration
     local config = {
-        cmd = {
-            java_cmd,
-            "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-            "-Dosgi.bundles.defaultStartLevel=4",
-            "-Declipse.product=org.eclipse.jdt.ls.core.product",
-            "-Dlog.protocol=true",
-            "-Dlog.level=ALL",
-            "-Xmx2g",
-            "-Dosgi.locking=none",
-            "-javaagent:" .. lombok_path,
-            "--add-modules=ALL-SYSTEM",
-            "--add-opens",
-            "java.base/java.util=ALL-UNNAMED",
-            "--add-opens",
-            "java.base/java.lang=ALL-UNNAMED",
-            "-jar",
-            vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
-            "-configuration",
-            jdtls_path .. "/" .. os_config,
-            "-data",
-            workspace_dir,
-        },
+        cmd = cmd,
         root_dir = root_dir,
         settings = {
             java = {
+                -- Basic settings - keeping it simple to avoid the error
                 configuration = {
                     updateBuildConfiguration = "automatic",
-                    maven = {
-                        downloadSources = true,
-                        updateSnapshots = true,
-                        userSettings = home .. "/.m2/settings.xml",
+                    -- Gradle settings - simplified
+                    gradle = {
+                        checksums = {
+                            sha256 = false,
+                        },
                     },
                 },
                 format = { enabled = true },
