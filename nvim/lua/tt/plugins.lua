@@ -709,9 +709,6 @@ return {
     {
         "mrjones2014/smart-splits.nvim",
         event = "VeryLazy",
-        dependencies = {
-            "pogyomo/submode.nvim",
-        },
         keys = {
             "<M-h>",
             "<M-l>",
