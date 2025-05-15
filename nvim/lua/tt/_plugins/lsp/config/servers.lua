@@ -190,7 +190,7 @@ function M.setup()
         capabilities = capabilities,
     })
 
-    -- Define servers to exclude
+    -- Define servers to exclude from config
     local excluded_servers = { jdtls = true }
 
     -- Setup settings per server and enable auto start
