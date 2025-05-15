@@ -150,8 +150,8 @@ function M.setup_jdtls()
         "-Dlog.protocol=true",
         "-Dlog.level=ALL",
         -- JVM memory settings
-        "-Xmx10G",
-        "-Xms10G",
+        "-Xmx16G",
+        "-Xms16G",
         -- Avoid file locking issues
         "-Dosgi.locking=none",
         -- Add modules and opens
