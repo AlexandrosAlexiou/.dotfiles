@@ -44,12 +44,15 @@ M.lsp_servers = {
     } },
     jdtls = {},
     kotlin_language_server = {
+        root_markers = {
+            "gradlew",
+            ".git",
+            "mvnw",
+            "settings.gradle",
+        },
         filetypes = {
             "kotlin",
         },
-        root_dir = function()
-            return vim.fn.getcwd()
-        end,
         settings = {
             kotlin = { compiler = { jvm = { target = "21" } } },
             hints = {
