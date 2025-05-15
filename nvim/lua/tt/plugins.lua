@@ -847,6 +847,7 @@ return {
     -- Git integration
     { "tpope/vim-fugitive" },
 
+    -- Java development utilities
     {
         "mfussenegger/nvim-jdtls",
         ft = { "java" },
