@@ -225,3 +225,8 @@ spy() {
 
     echo "${RED}Location: $(where python) ${NC}"
 }
+
+# Open the current directory in Neovide
+nvid() {
+  (nohup /Applications/Neovide.app/Contents/MacOS/neovide "$(pwd)" > /dev/null 2>&1 &)
+}
