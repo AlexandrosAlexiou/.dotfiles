@@ -16,6 +16,10 @@ function M.setup()
     vim.api.nvim_create_user_command("JdtCleanWorkspace", function()
         M.clean_workspace()
     end, { desc = "Clean JDTLS workspace for current project" })
+
+    vim.api.nvim_create_user_command("JdtStart", function()
+        M.setup_jdtls()
+    end, { desc = "Start JDTLS for current project" })
 end
 
 function M.clean_workspace()
