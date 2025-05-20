@@ -49,6 +49,37 @@ function M.clean_workspace()
     vim.notify("Workspace cleaned. Ready to restart JDTLS.", vim.log.levels.INFO)
 end
 
+-- New function to ensure lombok is available
+function M.ensure_lombok()
+    local home = os.getenv "HOME"
+    local lombok_dir = home .. "/.local/share/nvim/java-libs"
+    local lombok_path = home .. "/.local/share/nvim/java-libs/lombok.jar"
+
+    if vim.fn.filereadable(lombok_path) == 1 then
+        return lombok_path
+    end
+
+    if vim.fn.isdirectory(lombok_dir) == 0 then
+        vim.notify("Creating directory: " .. lombok_dir, vim.log.levels.INFO)
+        vim.fn.mkdir(lombok_dir, "p")
+    end
+
+    vim.notify("Downloading Lombok from projectlombok.org...", vim.log.levels.INFO)
+
+    local download_cmd = string.format("curl -sSL https://projectlombok.org/downloads/lombok.jar -o %s", lombok_path)
+
+    local result = vim.fn.system(download_cmd)
+    local success = vim.v.shell_error == 0
+
+    if success and vim.fn.filereadable(lombok_path) == 1 then
+        vim.notify("Lombok jar successfully downloaded to: " .. lombok_path, vim.log.levels.INFO)
+        return lombok_path
+    else
+        vim.notify("Failed to download Lombok jar. Error: " .. result, vim.log.levels.ERROR)
+        return nil
+    end
+end
+
 function M.setup_jdtls()
     local jdtls = require "jdtls"
     local home = os.getenv "HOME"
@@ -67,31 +98,24 @@ function M.setup_jdtls()
         root_dir = vim.fn.getcwd()
     end
 
-    -- Project name based on root directory name
     local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
     local workspace_dir = home .. "/.cache/jdtls-workspaces/" .. project_name
 
-    -- Ensure workspace directory exists
     vim.fn.mkdir(workspace_dir, "p")
 
-    -- Simplified: Use fixed path for JDTLS instead of mason's get_install_path
     local jdtls_path = home .. "/.local/share/nvim/mason/packages/jdtls"
 
-    -- Check if the JDTLS path exists
     if vim.fn.isdirectory(jdtls_path) ~= 1 then
         vim.notify("JDTLS installation not found at: " .. jdtls_path, vim.log.levels.ERROR)
         return
     end
 
-    -- Set up Lombok
-    local lombok_path = home .. "/.local/share/nvim/java-libs/lombok.jar"
-    -- Skip lombok if not available rather than failing completely
-    local use_lombok = vim.fn.filereadable(lombok_path) == 1
+    -- Set up Lombok - try to download if not available
+    local lombok_path = M.ensure_lombok()
+    local use_lombok = lombok_path ~= nil
+
     if not use_lombok then
-        vim.notify(
-            "Lombok jar not found at: " .. lombok_path .. ". Continuing without Lombok support.",
-            vim.log.levels.WARN
-        )
+        vim.notify("Lombok jar not available. Continuing without Lombok support.", vim.log.levels.WARN)
     end
 
     -- Determine OS-specific configuration
@@ -106,7 +130,6 @@ function M.setup_jdtls()
 
     -- Find available bundles
     local bundles = {}
-    -- Only add lombok if it exists
     if use_lombok then
         table.insert(bundles, lombok_path)
     end
@@ -138,7 +161,6 @@ function M.setup_jdtls()
         end
     end
 
-    -- Simplified: Use direct path to java executable
     local java_cmd = "/usr/bin/java"
 
     -- Build the command table
@@ -246,7 +268,6 @@ function M.setup_jdtls()
         config.capabilities = cmp_lsp.default_capabilities(config.capabilities)
     end
 
-    -- Start the JDTLS server
     jdtls.start_or_attach(config)
 end
 
