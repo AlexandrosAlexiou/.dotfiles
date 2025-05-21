@@ -133,6 +133,7 @@ M.lsp_servers = {
     yamlls = {},
     volar = {
         filetypes = { "vue" },
+
         init_options = {
             vue = {
                 hybridMode = false,
