@@ -150,7 +150,7 @@ M.lsp_servers = {
         },
     },
     yamlls = {},
-    volar = {
+    vue_ls = {
         filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
         init_options = {
             vue = {
