@@ -857,4 +857,10 @@ return {
             require("tt._plugins.jdtls").setup()
         end,
     },
+
+    -- Kotlin development utilities
+    {
+        "AlexandrosAlexiou/kotlin.nvim",
+        ft = { "kotlin" },
+    },
 }
