@@ -43,25 +43,6 @@ M.lsp_servers = {
         "graphql",
     } },
     jdtls = {},
-    kotlin_language_server = {
-        root_markers = {
-            "gradlew",
-            ".git",
-            "mvnw",
-            "settings.gradle",
-        },
-        filetypes = {
-            "kotlin",
-        },
-        settings = {
-            kotlin = { compiler = { jvm = { target = "21" } } },
-            hints = {
-                typeHints = true,
-                parameterHints = true,
-                chainedHints = true,
-            },
-        },
-    },
     lua_ls = {
         settings = {
             Lua = {
