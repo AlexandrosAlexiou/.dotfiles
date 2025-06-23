@@ -888,5 +888,18 @@ return {
     {
         "AlexandrosAlexiou/kotlin.nvim",
         ft = { "kotlin" },
+        dependencies = { "mason.nvim", "mason-lspconfig.nvim" },
+        config = function()
+            require("kotlin").setup {
+                root_markers = {
+                    "gradlew",
+                    ".git",
+                    "mvnw",
+                    "settings.gradle",
+                },
+                -- Optional: Specify a custom Java path
+                -- jre_path = "/path/to/jdk"
+            }
+        end,
     },
 }

@@ -43,6 +43,7 @@ M.lsp_servers = {
         "graphql",
     } },
     jdtls = {},
+    kotlin_lsp = {},
     lua_ls = {
         settings = {
             Lua = {
@@ -176,7 +177,7 @@ function M.setup()
     })
 
     -- Define servers to exclude from config
-    local excluded_servers = { jdtls = true }
+    local excluded_servers = { jdtls = true, kotlin_lsp = true }
 
     -- Setup settings per server and enable auto start
     local function configure_server(server)
