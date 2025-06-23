@@ -85,6 +85,10 @@ function M.ensure_lombok()
 end
 
 function M.setup_jdtls()
+    if vim.g.disable_lsp then
+        return
+    end
+
     local jdtls = require "jdtls"
     local home = os.getenv "HOME"
 
