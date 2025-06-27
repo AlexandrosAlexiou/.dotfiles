@@ -100,7 +100,7 @@ local function setup_picker_keymaps()
     utils.map("n", "<leader>fP", Snacks.picker.projects, { desc = "Search for projects" })
     utils.map("n", "<leader>f:", Snacks.picker.command_history, { desc = "Search for command history" })
     utils.map("n", "<leader>f/", Snacks.picker.search_history, { desc = "Search for search history" })
-    utils.map("n", "<leader>gb", Snacks.picker.grep_buffers, { desc = "Live grep in open buffers" })
+    utils.map("n", "<leader>bs", Snacks.picker.grep_buffers, { desc = "Live grep in open buffers" })
     utils.map("n", "<leader>so", Snacks.picker.smart, { desc = "Smart open" })
 
     utils.map("n", "<leader>G", custom_pickers.git_pickers, { desc = "Snacks git pickers" })
