@@ -897,8 +897,7 @@ return {
                     "mvnw",
                     "settings.gradle",
                 },
-                -- Optional: Specify a custom Java path
-                -- jre_path = "/path/to/jdk"
+                jre_path = os.getenv "JDK21",
             }
         end,
     },
