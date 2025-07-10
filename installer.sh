@@ -442,6 +442,13 @@ function _ideavim_config() {
     gln -sv --backup=numbered "${SCRIPT_DIR}/ideavim/ideavimrc" "$destination"
 }
 
+function _tmux_config() {
+    _check_file tmux/tmux.conf
+    _print s "Setting tmux config to ~/.tmux.conf"
+    local destination="$HOME/.tmux.conf"
+    gln -sv --backup=numbered "${SCRIPT_DIR}/tmux/tmux.conf" "$destination"
+}
+
 function _fzf_config() {
     _check_file fzf/fzf.config
     _check_file fzf/fzf.zsh
@@ -534,6 +541,7 @@ pkgs=(
     "    install fonts"
     "    install TinkerTool"
     "    ideavim config"
+    "    tmux config"
 )
 
 pkgs_functions=(
@@ -564,6 +572,7 @@ pkgs_functions=(
     _install_fonts
     _install_tinkertool
     _ideavim_config
+    _tmux_config
 )
 
 dotfiles_functions=(
