@@ -54,3 +54,4 @@ keybind = cmd+s>e=equalize_splits
 copy-on-select = clipboard
 
 macos-option-as-alt = true
+window-decoration = none
