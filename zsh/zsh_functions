@@ -201,29 +201,25 @@ sjdk() {
     echo "${RED}JAVA_HOME: ${JAVA_HOME} ${NC}"
 }
 
-# Dynamically switch between installed Python versions using conda
+# Dynamically switch between installed Python versions using pyenv
 spy() {
-
-    local CURRENT_SELECTION="conda list -n "$(echo {1})" --json | jq -r '.[] | {name, version}'"
-
-    local python_env=$(
-            printf '%s\n' $(conda env list | tail -n +3 | awk '{print $1}') \
-            | fzf \
-            --prompt=" Python env>" \
-            --preview-window '50%,rounded,<50(up,85%,border-bottom)' \
-            --preview "${CURRENT_SELECTION} | col -bx | bat --language=json --plain --color always"
+    local python_version=$(
+        pyenv versions | sed 's/^[* ]*//' | sed 's/ (set by.*)//' \
+        | fzf \
+            --prompt="🐍 pyenv version> " \
+            --preview-window 'up:3:wrap' \
+            --preview 'pyenv prefix {1}'
     )
 
-    if [ -z "$python_env" ]; then
-        echo "${RED}No Python environment selected.${NC}"
+    if [ -z "$python_version" ]; then
+        echo -e "\033[1;31mNo Python version selected.\033[0m"
         return 1
     fi
 
-    conda activate "$python_env"
+    pyenv local "$python_version"
 
-    echo "${BLUE}$(python -VV)${NC}"
-
-    echo "${RED}Location: $(where python) ${NC}"
+    echo -e "\033[1;34m$(python3 -VV)\033[0m"
+    echo -e "\033[1;31mLocation: $(which python3)\033[0m"
 }
 
 # Open the current directory in Neovide
