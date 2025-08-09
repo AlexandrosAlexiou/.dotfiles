@@ -36,26 +36,38 @@ local function hover_on_new_window()
 end
 
 local function goto_definition_split(split_type)
-    local definition_done = false -- Add a flag to prevent multiple splits
+    local definition_done = false
 
-    vim.lsp.buf_request(0, "textDocument/definition", vim.lsp.util.make_position_params(), function(_, result, ctx)
-        -- Prevent multiple splits if one result has already been processed
-        if definition_done then
-            return
+    vim.lsp.buf_request(
+        0,
+        "textDocument/definition",
+        vim.lsp.util.make_position_params(0, "utf-8"),
+        function(_, result, ctx)
+            if definition_done then
+                return
+            end
+
+            if result and result[1] then
+                definition_done = true
+
+                -- Always create the split first
+                vim.cmd(split_type == "v" and "vsplit" or "split")
+
+                -- Check if target is a directory
+                local uri = result[1].uri or result[1].targetUri
+                local target_path = vim.uri_to_fname(uri)
+
+                if vim.fn.isdirectory(target_path) == 1 then
+                    -- Open oil in the new split
+                    require("oil").open(target_path)
+                else
+                    -- Normal file, show document in the new split
+                    local client = vim.lsp.get_client_by_id(ctx.client_id)
+                    vim.lsp.util.show_document(result[1], client and client.offset_encoding or "utf-8")
+                end
+            end
         end
-
-        -- Ensure we have a valid result
-        if result and result[1] then
-            definition_done = true -- Set the flag to true after handling the first result
-
-            -- Perform the split based on the provided type (vertical or horizontal)
-            vim.cmd(split_type == "v" and "vsplit" or "split")
-
-            -- Get the client by ID and jump to the location with the appropriate encoding
-            local client = vim.lsp.get_client_by_id(ctx.client_id)
-            vim.lsp.util.show_document(result[1], client and client.offset_encoding or "utf-8")
-        end
-    end)
+    )
 end
 
 function M.on_attach(_, bufnr)
