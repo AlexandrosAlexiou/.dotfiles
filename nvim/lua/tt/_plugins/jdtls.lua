@@ -169,7 +169,7 @@ function M.setup_jdtls()
         end
     end
 
-    local java_cmd = "/usr/bin/java"
+    local java_cmd = os.getenv "JDK21" .. "/bin/java"
 
     -- Build the command table
     local cmd = {
