@@ -892,6 +892,10 @@ return {
                     "settings.gradle",
                 },
                 jre_path = os.getenv "JDK21",
+                jvm_args = {
+                    "-Xmx4G",
+                    "-Xms4G",
+                },
             }
         end,
     },
