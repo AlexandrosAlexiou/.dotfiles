@@ -56,8 +56,8 @@ end
 -- New function to ensure lombok is available
 function M.ensure_lombok()
     local home = os.getenv "HOME"
-    local lombok_dir = home .. "/.local/share/nvim/java-libs"
-    local lombok_path = home .. "/.local/share/nvim/java-libs/lombok.jar"
+    local lombok_dir = home .. "/.local/share/nvim/java/libs"
+    local lombok_path = home .. "/.local/share/nvim/java/libs/lombok.jar"
 
     if vim.fn.filereadable(lombok_path) == 1 then
         return lombok_path
@@ -140,6 +140,17 @@ function M.setup_jdtls()
     local bundles = {}
     if use_lombok then
         table.insert(bundles, lombok_path)
+    end
+
+    -- Add Eclipse PDE bundles
+    local eclipse_pde_path = home .. "/.local/share/nvim/eclipse-pde/server"
+    if vim.fn.isdirectory(eclipse_pde_path) == 1 then
+        local pde_bundles = vim.split(vim.fn.glob(eclipse_pde_path .. "/*.jar"), "\n")
+        for _, bundle in ipairs(pde_bundles) do
+            if bundle ~= "" then
+                table.insert(bundles, bundle)
+            end
+        end
     end
 
     -- Java debug adapter
