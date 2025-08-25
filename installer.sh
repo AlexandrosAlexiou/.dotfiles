@@ -250,8 +250,6 @@ function _nvim_config() {
 
 function _neovide() {
     _print i "neovide" ": No Nonsense Neovim Client in Rust"
-    # install Neovide but ignore the neovim dependency
-    # Neovide will use the one installed from _nvim_from_source
     brew install neovide --cask --ignore-dependencies neovim
 }
 
@@ -524,7 +522,6 @@ pkgs=(
     "    zsh_forgit"
     "    oh-my-zsh"
     "    set path for launchctl"
-    "    nvim from source"
     "    nvim config"
     "    neovide"
     "    neovide config"
@@ -555,7 +552,6 @@ pkgs_functions=(
     _zsh_forgit
     _oh_my_zsh
     _set_path_launchctl
-    _nvim_from_source
     _nvim_config
     _neovide
     _neovide_config
