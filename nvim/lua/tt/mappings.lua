@@ -162,17 +162,17 @@ if vim.g.neovide then
     vim.g.neovide_input_macos_option_key_is_meta = "both"
     vim.api.nvim_set_keymap(
         "n",
-        "<C-+>",
+        "<D-=>",
         ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>",
         { silent = true }
     )
     vim.api.nvim_set_keymap(
         "n",
-        "<C-_>",
+        "<D-->",
         ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>",
         { silent = true }
     )
-    vim.api.nvim_set_keymap("n", "<C-0>", ":lua vim.g.neovide_scale_factor = 1<CR>", { silent = true })
+    vim.api.nvim_set_keymap("n", "<D-0>", ":lua vim.g.neovide_scale_factor = 1<CR>", { silent = true })
 
     vim.keymap.set({ "n", "v", "s", "x", "o", "i", "l", "c", "t" }, "<D-v>", function()
         vim.api.nvim_paste(vim.fn.getreg "+", true, -1)
