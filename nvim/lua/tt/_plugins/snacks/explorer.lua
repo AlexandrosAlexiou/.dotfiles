@@ -7,12 +7,17 @@ local M = {}
 ---@type snacks.picker.Config
 M.explorer = {
     layout = {
-        -- This is the intended setting to keep the input automatically hidden if un-focused,
-        -- but for some weird reason after confirming the filter, it's stuck in insert mode,
-        -- so for now keep it commented out.
-        -- auto_hide = { "input" },
-
-        hidden = { "input" },
+        preview = "main",
+        layout = {
+            backdrop = false,
+            width = 80,
+            min_width = 40,
+            height = 0.5, -- Vertical size: 80% of screen height (or use absolute number like 50 for 50 lines)
+            position = "left",
+            box = "vertical",
+            { win = "input", height = 1 }, -- Search input at top
+            { win = "list", border = "none" }, -- File list below input
+        },
     },
     on_show = function(picker)
         local window_gap = 1
@@ -48,32 +53,33 @@ M.explorer = {
             end,
         }
 
+        picker.preview.win = preview_win
+
         root:on("WinResized", function()
             update(preview_win)
         end)
-
-        root:on("WinLeave", function()
-            vim.schedule(function()
-                if not picker:is_focused() then
-                    picker.preview.win:close()
-                end
-            end)
-        end)
-
-        picker.preview.win = preview_win
-        picker.main = preview_win.win
-    end,
-    on_close = function(picker)
-        picker.preview.win:close()
     end,
     actions = {
         toggle_preview = function(picker)
             picker.preview.win:toggle()
         end,
-        open = function(picker, ...)
-            local explorer_actions = require "snacks.explorer.actions"
-            picker.preview.win:close()
-            explorer_actions.actions.confirm(picker, ...)
+        scroll_down = function(picker)
+            if picker.list and picker.list.win and picker.list.win.win then
+                local height = vim.api.nvim_win_get_height(picker.list.win.win)
+                local scroll_amount = math.floor(height / 7)
+                for _ = 1, scroll_amount do
+                    picker:action "list_down"
+                end
+            end
+        end,
+        scroll_up = function(picker)
+            if picker.list and picker.list.win and picker.list.win.win then
+                local height = vim.api.nvim_win_get_height(picker.list.win.win)
+                local scroll_amount = math.floor(height / 7)
+                for _ = 1, scroll_amount do
+                    picker:action "list_up"
+                end
+            end
         end,
         expand_recursive = function(picker, item)
             local item_node = Tree:node(item.file)
@@ -109,9 +115,9 @@ M.explorer = {
         list = {
             keys = {
                 ["-"] = "explorer_up",
-                ["o"] = "open",
-                ["="] = "open",
-                ["+"] = "open",
+                ["o"] = "confirm",
+                ["="] = "confirm",
+                ["+"] = "confirm",
                 ["O"] = "explorer_open",
                 ["?"] = "toggle_help_list",
                 ["L"] = "expand_recursive",
@@ -119,7 +125,8 @@ M.explorer = {
                 ["<C-t>"] = "tab",
                 ["<C-f>"] = "focus_input",
                 ["<M-h>"] = false,
-                ["/"] = false,
+                ["<C-u>"] = "scroll_up", -- Scroll up with Ctrl+u
+                ["<C-d>"] = "scroll_down", -- Scroll down with Ctrl+d
             },
         },
     },
