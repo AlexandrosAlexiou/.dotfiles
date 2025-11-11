@@ -223,6 +223,6 @@ spy() {
 }
 
 # Open the current directory in Neovide
-nvid() {
+nvd() {
   (nohup /Applications/Neovide.app/Contents/MacOS/neovide "$(pwd)" > /dev/null 2>&1 &)
 }
