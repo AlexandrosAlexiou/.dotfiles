@@ -48,6 +48,7 @@ function M.setup()
 
     require("conform").setup {
         formatters_by_ft = {
+            c = { "clang-format" },
             cpp = { "clang-format" },
             graphql = { "prettierd" },
             java = { "google-java-format" },
