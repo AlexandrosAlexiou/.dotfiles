@@ -65,20 +65,12 @@ M.explorer = {
         end,
         scroll_down = function(picker)
             if picker.list and picker.list.win and picker.list.win.win then
-                local height = vim.api.nvim_win_get_height(picker.list.win.win)
-                local scroll_amount = math.floor(height / 7)
-                for _ = 1, scroll_amount do
-                    picker:action "list_down"
-                end
+                picker:action "list_down"
             end
         end,
         scroll_up = function(picker)
             if picker.list and picker.list.win and picker.list.win.win then
-                local height = vim.api.nvim_win_get_height(picker.list.win.win)
-                local scroll_amount = math.floor(height / 7)
-                for _ = 1, scroll_amount do
-                    picker:action "list_up"
-                end
+                picker:action "list_up"
             end
         end,
         expand_recursive = function(picker, item)
