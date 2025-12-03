@@ -75,16 +75,3 @@ function _G.ExportColorschemeToKitty()
     io.close(file)
     print(string.format("Colorscheme has been exported to '%s'", filename))
 end
-
--- Toggle autoformat-on-save
-vim.api.nvim_create_user_command("ToggleAutoformat", function()
-    vim.g.disable_autoformat = not vim.g.disable_autoformat
-    if vim.g.disable_autoformat then
-        vim.notify "Autoformat is disabled"
-    else
-        vim.notify "Autoformat is enabled"
-    end
-end, {
-    desc = "Toggle to enable or disable autoformat-on-save",
-    bang = true,
-})
