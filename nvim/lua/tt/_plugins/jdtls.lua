@@ -85,10 +85,6 @@ function M.ensure_lombok()
 end
 
 function M.setup_jdtls()
-    if vim.g.disable_lsp then
-        return
-    end
-
     local jdtls = require "jdtls"
     local home = os.getenv "HOME"
 
@@ -104,6 +100,12 @@ function M.setup_jdtls()
     -- If no root found, use current directory
     if not root_dir then
         root_dir = vim.fn.getcwd()
+    end
+
+    -- Check for .disable-jdtls marker file in the root directory
+    local disable_marker = root_dir .. "/.disable-jdtls"
+    if vim.fn.filereadable(disable_marker) == 1 then
+        return
     end
 
     local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
