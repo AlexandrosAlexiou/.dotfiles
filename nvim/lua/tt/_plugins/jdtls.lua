@@ -85,6 +85,11 @@ function M.ensure_lombok()
 end
 
 function M.setup_jdtls()
+    -- Check for buffer-local disable flag
+    if vim.b.disable_jdtls then
+        return
+    end
+
     local jdtls = require "jdtls"
     local home = os.getenv "HOME"
 
