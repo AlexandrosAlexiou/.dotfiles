@@ -67,12 +67,31 @@ function M.should_format_filetype(filetype)
     return M.filetypes[filetype]
 end
 
+--- Checks if a .disable-autoformat marker file exists in the root directory.
+---@return boolean
+function M.is_autoformat_disabled_by_marker()
+    local root_markers = { ".git", ".disable-autoformat" }
+    local root_dir = vim.fs.dirname(vim.fs.find(root_markers, { upward = true })[1])
+    
+    if root_dir then
+        local marker_file = root_dir .. "/.disable-autoformat"
+        return vim.fn.filereadable(marker_file) == 1
+    end
+    
+    return false
+end
+
 --- Checks whether format on save is enabled for the current filetype and buffer.
 --- Treats non-existing filetype entries as having formatting enabled.
 ---@param filetype Filetype
 ---@param bufnr Buffer
 ---@return boolean
 function M.should_format(filetype, bufnr)
+    -- Check for .disable-autoformat marker file
+    if M.is_autoformat_disabled_by_marker() then
+        return false
+    end
+    
     if M.has_filetype(filetype) then
         if M.should_format_filetype(filetype) then
             return M.should_format_buffer(bufnr)

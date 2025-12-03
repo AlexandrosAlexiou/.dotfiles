@@ -74,7 +74,7 @@ function M.setup()
             },
         },
         format_on_save = function(bufnr)
-            if vim.b.disable_autoformat or vim.g.disable_autoformat then
+            if vim.b.disable_autoformat then
                 return
             end
             local filetype = vim.bo[bufnr].filetype
