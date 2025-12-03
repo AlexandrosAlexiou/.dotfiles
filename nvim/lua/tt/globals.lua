@@ -76,19 +76,6 @@ function _G.ExportColorschemeToKitty()
     print(string.format("Colorscheme has been exported to '%s'", filename))
 end
 
--- Toggle LSP
-vim.api.nvim_create_user_command("ToggleLsp", function()
-    vim.g.disable_lsp = not vim.g.disable_lsp
-    if vim.g.disable_lsp then
-        vim.notify "LSP is disabled"
-    else
-        vim.notify "LSP is enabled"
-    end
-end, {
-    desc = "Toggle to enable or disable LSP",
-    bang = true,
-})
-
 -- Toggle autoformat-on-save
 vim.api.nvim_create_user_command("ToggleAutoformat", function()
     vim.g.disable_autoformat = not vim.g.disable_autoformat
