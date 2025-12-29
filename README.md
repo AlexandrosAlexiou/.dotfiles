@@ -91,7 +91,6 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── noice.lua
 │       │   ├── notify.lua
 │       │   ├── numb.lua
-│       │   ├── nvim-autopairs.lua
 │       │   ├── oil.lua
 │       │   ├── resession.lua
 │       │   ├── rose-pine.lua

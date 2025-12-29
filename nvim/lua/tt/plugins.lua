@@ -612,13 +612,6 @@ return {
         },
     },
 
-    -- Automatically add and manage character pairs
-    {
-        "nvim-mini/mini.pairs",
-        event = "InsertEnter",
-        opts = {},
-    },
-
     -- File explorer like buffer
     {
         "stevearc/oil.nvim",
