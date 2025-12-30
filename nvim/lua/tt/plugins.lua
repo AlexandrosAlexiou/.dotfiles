@@ -3,6 +3,7 @@ return {
     {
         {
             "EdenEast/nightfox.nvim",
+            lazy = true,
             config = function()
                 require("tt._plugins.nightfox").setup()
             end,
@@ -16,6 +17,23 @@ return {
             end,
         },
         { "Mofiqul/vscode.nvim", lazy = true },
+        {
+            "blazkowolf/gruber-darker.nvim",
+            config = function()
+                vim.cmd.colorscheme("gruber-darker")
+                
+                -- Match snacks explorer, pickers, and terminal to same black background
+                local bg = "#181818"
+                vim.api.nvim_set_hl(0, "SnacksExplorer", { bg = bg })
+                vim.api.nvim_set_hl(0, "SnacksPickerList", { link = "Normal" })
+                vim.api.nvim_set_hl(0, "SnacksPickerInput", { link = "Normal" })
+                vim.api.nvim_set_hl(0, "SnacksPickerPreview", { link = "Normal" })
+                vim.api.nvim_set_hl(0, "SnacksTerminal", { bg = bg })
+                vim.api.nvim_set_hl(0, "SnacksTerminalNormal", { bg = bg })
+                vim.api.nvim_set_hl(0, "SnacksTerminalNormalNC", { bg = bg })
+                vim.api.nvim_set_hl(0, "NormalFloat", { bg = bg })
+            end,
+        },
     },
 
     -- Snacks a collection of QoL plugins
