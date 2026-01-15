@@ -18,12 +18,6 @@ M.styles = {
         height = 0.65,
         relative = "editor",
     },
-    terminal = {
-        wo = {
-            winblend = 0,
-        },
-        bo = {},
-    },
 }
 
 return M
