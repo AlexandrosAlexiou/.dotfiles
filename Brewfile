@@ -28,6 +28,7 @@ brew "jq"
 brew 'ncdu'
 brew 'mas'
 brew "mise"
+brew "mole"
 brew "neofetch"
 brew "neovim"
 brew "node"
