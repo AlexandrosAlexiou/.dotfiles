@@ -1,3 +1,5 @@
+local format_utils = require "tt._plugins.format.utils"
+
 local M = {}
 
 --- Formats the current buffer, with optional customization through specified opts.
@@ -23,12 +25,25 @@ function M.get_formatters()
     return formatters
 end
 
+--- Adds a pre format handler to be invoked before formatting for the given bufnr.
+---@param bufnr Buffer
+---@param handler fun()
+function M.add_pre_format_handler(bufnr, handler)
+    format_utils.add_pre_format_handler(bufnr, handler)
+end
+
+--- Removes a handler from the pre format handlers table for the given bufnr.
+---@param bufnr Buffer
+---@param handler? fun()
+function M.remove_pre_format_handler(bufnr, handler)
+    format_utils.remove_pre_format_handler(bufnr, handler)
+end
+
 function M.init()
     vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 end
 
 function M.setup()
-    local format_utils = require "tt._plugins.format.utils"
     format_utils.setup()
 
     require("conform").setup {
@@ -53,6 +68,7 @@ function M.setup()
         format_on_save = function(bufnr)
             local filetype = vim.bo[bufnr].filetype
             if format_utils.should_format(filetype, bufnr) then
+                format_utils.run_pre_format_handlers(bufnr)
                 M.format()
             end
         end,

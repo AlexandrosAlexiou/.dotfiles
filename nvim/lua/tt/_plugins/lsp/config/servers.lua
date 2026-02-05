@@ -73,7 +73,13 @@ M.lsp_servers = {
             },
         },
     },
-    ts_ls = {
+    vtsls = {
+        on_attach = function(_, bufnr)
+            local conform = require "tt._plugins.format.conform"
+            conform.add_pre_format_handler(bufnr, function()
+                vim.cmd "VtsExec remove_unused_imports"
+            end)
+        end,
         settings = {
             typescript = {
                 inlayHints = {
