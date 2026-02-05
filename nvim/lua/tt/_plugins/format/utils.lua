@@ -26,9 +26,19 @@ M.filetypes = {
 ---@type Set
 M.ignored_buffers = Set()
 
---- Set of handlers for each filetype to run before format.
+--- Set of handlers for each buffer to run before formatting.
 ---@type table<Buffer, table<fun()>>
 M.pre_format_handlers = {}
+
+--- Helper that gets the current buffer number in case the bufnr is not supplied or 0.
+--- @param bufnr? Buffer
+--- @return Buffer
+local function resolve_bufnr(bufnr)
+    if not bufnr or bufnr == 0 then
+        return vim.api.nvim_get_current_buf()
+    end
+    return bufnr
+end
 
 --- Returns whether the buffer should be formatted, e.g. is not included in the ignored set.
 ---@param bufnr Buffer
@@ -118,19 +128,25 @@ function M.toggle_filetype(filetype)
 end
 
 --- Adds a handler to be invoked before formatting for the given buffer.
----@param bufnr Buffer
+--- If no bufnr is provided or 0, it will use the current buffer.
+---@param bufnr? Buffer
 ---@param handler fun()
 function M.add_pre_format_handler(bufnr, handler)
+    bufnr = resolve_bufnr(bufnr)
+
     local handlers = M.pre_format_handlers[bufnr] or {}
     table.insert(handlers, handler)
     M.pre_format_handlers[bufnr] = handlers
 end
 
 --- Removes a pre format handler from a specific buffer.
+--- If no bufnr is provided or 0, it will use the current buffer.
 --- If no handler is provided, all handlers for the buffer are removed.
----@param bufnr Buffer
+---@param bufnr? Buffer
 ---@param handler? fun()
 function M.remove_pre_format_handler(bufnr, handler)
+    bufnr = resolve_bufnr(bufnr)
+
     local handlers = M.pre_format_handlers[bufnr]
     if not handlers then
         return
@@ -154,8 +170,11 @@ function M.remove_pre_format_handler(bufnr, handler)
 end
 
 --- Runs all pre format handlers for the given buffer.
----@param bufnr Buffer
+--- If no bufnr is provided or 0, it will use the current buffer.
+---@param bufnr? Buffer
 function M.run_pre_format_handlers(bufnr)
+    bufnr = resolve_bufnr(bufnr)
+
     local handlers = M.pre_format_handlers[bufnr] or {}
     for _, handler in ipairs(handlers) do
         handler()
@@ -170,7 +189,7 @@ local function on_bufdelete(bufnr)
 end
 
 function M.setup()
-    --- Add a hook to update the ignored buffer set when a buffer gets deleted.
+    --- Add a hook to update internal states when a buffer is deleted
     vim.api.nvim_create_autocmd("BufDelete", {
         group = vim.api.nvim_create_augroup("tt.FormatUtils", { clear = true }),
         callback = function(args)

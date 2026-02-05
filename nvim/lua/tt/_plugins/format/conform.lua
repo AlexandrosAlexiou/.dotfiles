@@ -3,14 +3,15 @@ local format_utils = require "tt._plugins.format.utils"
 local M = {}
 
 --- Formats the current buffer, with optional customization through specified opts.
----@param opts? table
+---@param opts? conform.FormatOpts
 function M.format(opts)
-    local default_opts = {
+    ---@type conform.FormatOpts
+    local format_opts = vim.tbl_extend("force", {
         async = false,
         lsp_fallback = true,
         timeout_ms = 2500,
-    }
-    local format_opts = vim.tbl_extend("force", default_opts, opts or {})
+    }, opts or {})
+    format_utils.run_pre_format_handlers(format_opts.bufnr)
     require("conform").format(format_opts)
 end
 
@@ -26,14 +27,16 @@ function M.get_formatters()
 end
 
 --- Adds a pre format handler to be invoked before formatting for the given bufnr.
----@param bufnr Buffer
+--- If no bufnr is provided or 0, it will use the current buffer.
+---@param bufnr? Buffer
 ---@param handler fun()
 function M.add_pre_format_handler(bufnr, handler)
     format_utils.add_pre_format_handler(bufnr, handler)
 end
 
 --- Removes a handler from the pre format handlers table for the given bufnr.
----@param bufnr Buffer
+--- If no bufnr is provided or 0, it will use the current buffer.
+---@param bufnr? Buffer
 ---@param handler? fun()
 function M.remove_pre_format_handler(bufnr, handler)
     format_utils.remove_pre_format_handler(bufnr, handler)
@@ -79,8 +82,7 @@ function M.setup()
             end
             local filetype = vim.bo[bufnr].filetype
             if format_utils.should_format(filetype, bufnr) then
-                format_utils.run_pre_format_handlers(bufnr)
-                M.format()
+                M.format { bufnr = bufnr }
             end
         end,
     }
