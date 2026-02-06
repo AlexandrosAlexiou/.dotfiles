@@ -113,31 +113,11 @@ M.lsp_servers = {
         },
     },
     yamlls = {},
-    volar = {
-        filetypes = { "vue" },
-
+    vue_ls = {
+        filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
         init_options = {
             vue = {
-                hybridMode = false,
-            },
-            languageFeatures = {
-                implementation = true,
-                references = true,
-                definition = true,
-                typeDefinition = true,
-                callHierarchy = true,
-                hover = true,
-                rename = true,
-                renameFileRefactoring = true,
-                signatureHelp = true,
-                codeAction = true,
-                workspaceSymbol = true,
-                completion = {
-                    defaultTagNameCase = "both",
-                    defaultAttrNameCase = "kebabCase",
-                    getDocumentNameCasesRequest = false,
-                    getDocumentSelectionRequest = false,
-                },
+                hybridMode = true,
             },
         },
     },
