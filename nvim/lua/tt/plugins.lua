@@ -234,6 +234,7 @@ return {
                 "javascriptreact",
                 "typescript",
                 "typescriptreact",
+                "vue",
             },
             cmd = {
                 "VtsExec",
