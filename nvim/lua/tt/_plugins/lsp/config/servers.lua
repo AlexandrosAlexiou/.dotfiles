@@ -81,13 +81,30 @@ M.lsp_servers = {
         },
     },
     vtsls = {
+        filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
         on_attach = function(_, bufnr)
             local conform = require "tt._plugins.format.conform"
             conform.add_pre_format_handler(bufnr, function()
                 vim.cmd "VtsExec remove_unused_imports"
             end)
+            vim.lsp.enable "vue_ls"
         end,
         settings = {
+            vtsls = {
+                enableMoveToFileCodeAction = true,
+                tsserver = {
+                    globalPlugins = {
+                        {
+                            name = "@vue/typescript-plugin",
+                            location = vim.fn.stdpath "data"
+                                .. "/mason/packages/vue-language-server/node_modules/@vue/language-server",
+                            languages = { "vue" },
+                            configNamespace = "typescript",
+                            enableForWorkspaceTypeScriptVersions = true,
+                        },
+                    },
+                },
+            },
             typescript = {
                 inlayHints = {
                     includeInlayParameterNameHints = "all",
@@ -114,7 +131,7 @@ M.lsp_servers = {
     },
     yamlls = {},
     vue_ls = {
-        filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+        filetypes = { "vue" },
         init_options = {
             vue = {
                 hybridMode = true,
@@ -156,14 +173,19 @@ function M.setup()
         capabilities = capabilities,
     })
 
-    -- Define servers to exclude from config
+    -- Define servers to exclude from config and auto-enable
     local excluded_servers = { jdtls = true, kotlin_lsp = true }
+
+    -- Define servers to configure but not auto-enable (only enabled via on_attach)
+    local no_auto_enable = { vue_ls = true }
 
     -- Setup settings per server and enable auto start
     local function configure_server(server)
         if not excluded_servers[server] then
             vim.lsp.config(server, M.lsp_servers[server])
-            vim.lsp.enable(server)
+            if not no_auto_enable[server] then
+                vim.lsp.enable(server)
+            end
         end
     end
 
