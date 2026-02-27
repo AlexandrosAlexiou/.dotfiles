@@ -878,6 +878,17 @@ return {
         end,
     },
 
+    -- Rust development utilities
+    {
+        "mrcjkb/rustaceanvim",
+        version = "^7",
+        lazy = false,
+        ft = { "rust" },
+        init = function()
+            require("tt._plugins.rustaceanvim").setup()
+        end,
+    },
+
     -- Kotlin development utilities
     {
         "AlexandrosAlexiou/kotlin.nvim",

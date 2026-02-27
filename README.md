@@ -94,6 +94,7 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── oil.lua
 │       │   ├── resession.lua
 │       │   ├── rose-pine.lua
+│       │   ├── rustaceanvim.lua
 │       │   ├── smart-splits.lua
 │       │   ├── startify.lua
 │       │   ├── statuscol.lua
