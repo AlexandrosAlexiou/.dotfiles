@@ -53,6 +53,7 @@ function M.setup()
         formatters_by_ft = {
             c = { "clang-format" },
             cpp = { "clang-format" },
+            go = { "goimports", "gofumpt" },
             graphql = { "prettierd" },
             java = { "google-java-format" },
             kotlin = { "ktfmt" },

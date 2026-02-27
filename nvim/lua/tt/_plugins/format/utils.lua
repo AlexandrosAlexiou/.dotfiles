@@ -9,6 +9,7 @@ local M = {}
 ---@type table<Filetype, boolean>
 M.filetypes = {
     cpp = true,
+    go = true,
     sh = true,
     graphql = false,
     java = false,

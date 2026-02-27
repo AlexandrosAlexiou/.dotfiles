@@ -39,6 +39,28 @@ M.lsp_servers = {
             })
         end,
     },
+    gopls = {
+        settings = {
+            gopls = {
+                analyses = {
+                    unusedparams = true,
+                    unusedvariable = true,
+                    shadow = true,
+                },
+                gofumpt = true,
+                staticcheck = true,
+                hints = {
+                    assignVariableTypes = true,
+                    compositeLiteralFields = true,
+                    compositeLiteralTypes = true,
+                    constantValues = true,
+                    functionTypeParameters = true,
+                    parameterNames = true,
+                    rangeVariableTypes = true,
+                },
+            },
+        },
+    },
     graphql = { filetypes = {
         "graphql",
     } },
