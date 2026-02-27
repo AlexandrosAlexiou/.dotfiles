@@ -153,7 +153,7 @@ bindkey -s '^P' 'spy\n'
 export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 
 # Set to the default JDK
-export JAVA_HOME=`/usr/libexec/java_home -v 21`
+export JAVA_HOME=`/usr/libexec/java_home -v 25`
 
 # Environment variables need to be setup before you can start using fnm.
 # This is done by evaluating the output of fnm env.
