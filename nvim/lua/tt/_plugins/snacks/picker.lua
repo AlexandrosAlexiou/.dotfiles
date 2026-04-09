@@ -94,6 +94,7 @@ end
 
 ---@type snacks.picker.Config|{}
 M.picker = {
+    hidden = true,
     layouts = layouts,
     actions = {
         trouble_open = function(...)

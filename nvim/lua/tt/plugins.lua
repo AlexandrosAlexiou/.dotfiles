@@ -964,4 +964,21 @@ return {
             vim.g.loaded_netrwPlugin = 1
         end,
     },
+
+    -- Full-text search powered by Tantivy
+    {
+        dir = "/Users/alexioualexandros/sources/sakuin.nvim",
+        dependencies = { "nvim-telescope/telescope.nvim" },
+        lazy = false,
+        keys = {
+            { "<leader>si", "<cmd>Sakuin<cr>", desc = "Sakuin search" },
+            { "<leader>sW", "<cmd>SakuinCword<cr>", desc = "Sakuin search word under cursor" },
+            { "<leader>sW", ":<C-u>SakuinCword<cr>", mode = "v", desc = "Sakuin search visual selection" },
+        },
+        config = function()
+            require("sakuin").setup {
+                keymaps = false,
+            }
+        end,
+    },
 }

@@ -152,6 +152,7 @@ end, { desc = "Copy current filename according to the supplied modifier" })
 
 -- Neovide specific mappings
 if vim.g.neovide then
+    vim.opt.guifont = { "CaskaydiaMono Nerd Font Mono", ":h12" }
     vim.g.neovide_show_border = true
     vim.g.neovide_position_animation_length = 0
     vim.g.neovide_cursor_animation_length = 0.00

@@ -171,6 +171,9 @@ fi
 # Add ~/.local/bin to PATH
 export PATH="$HOME/.local/bin:$PATH"
 
+# Add the GNU libtool to PATH
+export PATH="/opt/homebrew/opt/libtool/libexec/gnubin:$PATH"
+
 # Neovide config variables
 export NEOVIDE_FRAMELESS=true
 export NEOVIDE_FRAME=none

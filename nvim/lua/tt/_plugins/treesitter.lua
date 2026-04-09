@@ -36,6 +36,7 @@ function M.setup_treesitter()
         "markdown_inline",
         "python",
         "regex",
+        "rust",
         "scss",
         "toml",
         "tsx",
