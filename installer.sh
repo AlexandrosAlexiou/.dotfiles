@@ -288,7 +288,7 @@ function _bat_config() {
     _print s "bat config"
     local destination="$HOME/.config/bat"
     _create_dir_if_not_exists "$destination"
-    ln -sv --backup=numbered "${SCRIPT_DIR}/bat/config" "${destination}/config"
+    gln -sv --backup=numbered "${SCRIPT_DIR}/bat/config" "${destination}/config"
 }
 
 function _rg_config() {
