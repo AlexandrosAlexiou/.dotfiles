@@ -341,19 +341,6 @@ return {
                     }
                 end,
             },
-            {
-                "zbirenbaum/copilot.lua",
-                enabled = true,
-                cmd = "Copilot",
-                event = "InsertEnter",
-                opts = {
-                    suggestion = { enabled = false },
-                    panel = { enabled = false },
-                },
-                dependencies = {
-                    "fang2hou/blink-copilot",
-                },
-            },
         },
         config = function()
             require("tt._plugins.blink-cmp").setup()
