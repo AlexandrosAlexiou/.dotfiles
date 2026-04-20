@@ -7,6 +7,13 @@ function M.setup()
 end
 
 local utils = require "tt.utils"
-utils.map("n", "<leader>li", vim.cmd.LspInfo)
+
+utils.map("n", "<leader>li", function()
+    vim.cmd.checkhealth { "vim.lsp" }
+end)
+
+utils.map("n", "<leader>lr", function()
+    vim.cmd.lsp { "restart" }
+end)
 
 return M
