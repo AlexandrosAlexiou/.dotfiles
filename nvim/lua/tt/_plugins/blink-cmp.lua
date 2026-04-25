@@ -1,7 +1,5 @@
 local M = {}
 
-local copilot_enabled = pcall(require, "copilot")
-
 local disabled_filetypes = {
     "DressingInput",
 }
@@ -68,9 +66,6 @@ function M.setup()
                     "path",
                     "snippets",
                 }
-                if copilot_enabled then
-                    table.insert(sources, 1, "copilot")
-                end
                 return sources
             end,
             providers = {
@@ -84,7 +79,6 @@ function M.setup()
                     module = "blink-copilot",
                     score_offset = 100,
                     async = true,
-                    enabled = copilot_enabled,
                     opts = {
                         kind_icon = require("tt.icons").kind_trimmed.Copilot,
                     },
