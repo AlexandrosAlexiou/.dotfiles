@@ -98,6 +98,7 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── smart-splits.lua
 │       │   ├── startify.lua
 │       │   ├── statuscol.lua
+│       │   ├── toggleterm.lua
 │       │   ├── treesitter.lua
 │       │   ├── treesj.lua
 │       │   └── trouble.lua

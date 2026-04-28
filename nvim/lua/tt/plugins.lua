@@ -912,6 +912,31 @@ return {
         end,
     },
 
+    -- Terminal manager with multiple orientations
+    {
+        "akinsho/toggleterm.nvim",
+        version = "*",
+        cmd = {
+            "ToggleTerm",
+            "ToggleTermToggleAll",
+            "ToggleTermSendCurrentLine",
+            "ToggleTermSendVisualLines",
+            "ToggleTermSendVisualSelection",
+            "TermExec",
+        },
+        keys = {
+            [[<C-\>]],
+            "<leader>th",
+            "<leader>tv",
+            "<leader>tf",
+            "<leader>tx",
+            "<leader>tA",
+        },
+        config = function()
+            require("tt._plugins.toggleterm").setup()
+        end,
+    },
+
     -- Plugin for the yazi terminal file manager
     {
         "mikavilpas/yazi.nvim",
