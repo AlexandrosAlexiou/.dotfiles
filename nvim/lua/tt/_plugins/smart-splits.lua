@@ -16,6 +16,8 @@ function M.setup()
 
     local utils = require "tt.utils"
     utils.map("n", "<M-h>", smart_splits.resize_left, { desc = "Resize window left" })
+    utils.map("n", "<M-j>", smart_splits.resize_down, { desc = "Resize window down" })
+    utils.map("n", "<M-k>", smart_splits.resize_up, { desc = "Resize window up" })
     utils.map("n", "<M-l>", smart_splits.resize_right, { desc = "Resize window right" })
     utils.map("n", "<C-w>h", smart_splits.move_cursor_left, { desc = "Move cursor left" })
     utils.map("n", "<C-w>j", smart_splits.move_cursor_down, { desc = "Move cursor down" })
