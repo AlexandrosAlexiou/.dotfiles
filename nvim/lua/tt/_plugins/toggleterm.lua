@@ -59,6 +59,20 @@ function M.setup()
         end
     end
 
+    -- Override `<C-w>o`/`:only` so terminal windows survive — closing other
+    -- non-terminal windows but leaving any terminal split intact.
+    local function only_non_terminals()
+        local current = vim.api.nvim_get_current_win()
+        for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+            if win ~= current then
+                local buf = vim.api.nvim_win_get_buf(win)
+                if vim.bo[buf].buftype ~= "terminal" then
+                    pcall(vim.api.nvim_win_close, win, false)
+                end
+            end
+        end
+    end
+
     local utils = require "tt.utils"
 
     -- stylua: ignore start
@@ -67,6 +81,8 @@ function M.setup()
     utils.map({ "n", "t" }, "<leader>tf", function() split_term("float") end,      { desc = "New floating terminal" })
     utils.map({ "n", "t" }, "<leader>tx", function() split_term("tab") end,        { desc = "Open terminal in new tab" })
     utils.map({ "n", "t" }, "<leader>tA", "<Cmd>ToggleTermToggleAll<CR>",          { desc = "Toggle all terminals" })
+    utils.map("n", "<C-w>o",    only_non_terminals, { desc = "Close other windows (keep terminals)" })
+    utils.map("n", "<C-w><C-o>", only_non_terminals, { desc = "Close other windows (keep terminals)" })
     -- stylua: ignore end
 end
 
