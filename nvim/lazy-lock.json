@@ -54,7 +54,7 @@
   "nvim-jdtls": { "branch": "master", "commit": "77ccaeb422f8c81b647605da5ddb4a7f725cda90" },
   "nvim-lsp-endhints": { "branch": "main", "commit": "a86e7ca7a92ef003008d7eb5d153c63bcc89f79c" },
   "nvim-lsp-file-operations": { "branch": "master", "commit": "b9c795d3973e8eec22706af14959bc60c579e771" },
-  "nvim-lspconfig": { "branch": "master", "commit": "bf5abe69c1874531f359a822d0cff4d73e26113f" },
+  "nvim-lspconfig": { "branch": "master", "commit": "b66a8ce16b141cd26576267e2d1f371d658b7bb7" },
   "nvim-navic": { "branch": "master", "commit": "f5eba192f39b453675d115351808bd51276d9de5" },
   "nvim-nio": { "branch": "master", "commit": "21f5324bfac14e22ba26553caf69ec76ae8a7662" },
   "nvim-treesitter": { "branch": "main", "commit": "4916d6592ede8c07973490d9322f187e07dfefac" },
@@ -89,5 +89,5 @@
   "vim-startuptime": { "branch": "master", "commit": "f10474b400c197787a0434548d842a2db583c333" },
   "vscode.nvim": { "branch": "main", "commit": "aa1102a7e15195c9cca22730b09224a7f7745ba8" },
   "workspace-diagnostics.nvim": { "branch": "main", "commit": "0dcd7d0a6c8f6e1ddb5bb72e1412aa4c9388718f" },
-  "yazi.nvim": { "branch": "main", "commit": "6c0dca6e7b5bd8cdcc5b97ce1a777b4ac64e5253" }
+  "yazi.nvim": { "branch": "main", "commit": "1a130a6bb2f9d7b6f5d172a37b3c1b0ecbc9c1fa" }
 }
