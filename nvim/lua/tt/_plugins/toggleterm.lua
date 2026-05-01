@@ -44,11 +44,14 @@ function M.setup()
     -- built-in :terminal — toggleterm's `direction` only supports edge
     -- placements (horizontal/vertical/tab/float), not arbitrary window splits.
     local function split_term(direction)
+        local in_terminal = vim.bo.buftype == "terminal"
         if direction == "horizontal" then
-            vim.cmd "belowright new | terminal"
+            local mod = in_terminal and "belowright" or "botright"
+            vim.cmd(mod .. " new | terminal")
             vim.cmd.startinsert()
         elseif direction == "vertical" then
-            vim.cmd "rightbelow vnew | terminal"
+            local mod = in_terminal and "rightbelow" or "botright"
+            vim.cmd(mod .. " vnew | terminal")
             vim.cmd.startinsert()
         elseif direction == "tab" then
             vim.cmd "tabnew | terminal"
