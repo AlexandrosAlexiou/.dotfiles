@@ -59,7 +59,6 @@ function M.setup()
             kotlin = { "ktfmt" },
             lua = { "stylua" },
             python = { "autopep8" },
-            rust = { "rustfmt" },
             sh = { "shfmt" },
             javascript = { "prettierd" },
             javascriptreact = { "prettierd" },

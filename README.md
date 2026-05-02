@@ -74,6 +74,7 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── barbecue.lua
 │       │   ├── blink-cmp.lua
 │       │   ├── comment.lua
+│       │   ├── dap.lua
 │       │   ├── dial.lua
 │       │   ├── dressing.lua
 │       │   ├── flash.lua

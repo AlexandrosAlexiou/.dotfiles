@@ -55,12 +55,6 @@ function M.setup()
     local servers = require "tt._plugins.lsp.config.servers"
     local formatters = require("tt._plugins.format.conform").get_formatters()
 
-    -- Formatters that should not be installed via Mason (e.g. installed via rustup)
-    local excluded_formatters = { rustfmt = true }
-    formatters = vim.tbl_filter(function(f)
-        return not excluded_formatters[f]
-    end, formatters)
-
     require("mason").setup {
         -- The directory in which to install packages
         install_root_dir = utils.join_paths(vim.fn.stdpath "data", "mason"),
