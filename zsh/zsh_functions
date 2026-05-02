@@ -175,10 +175,8 @@ z() {
 }
 
 # Dynamically switch between installed JDK versions on macOS
-sjdk() {
-
-    local CURRENT_SELECTION="/usr/libexec/java_home -X | jc --plist | jq -r --arg version "$(echo {1})" '.[] | select(.JVMVersion == \$version)'"
-
+sjdk () {
+    local CURRENT_SELECTION='/usr/libexec/java_home -X | jc --plist | jq -r --arg version {} ".[] | select(.JVMVersion == \$version)"'
     local jdk_version=$(
         echo $(/usr/libexec/java_home -X) \
         | jc --plist \
@@ -193,11 +191,10 @@ sjdk() {
         echo "${RED}No JDK version selected.${NC}"
         return 1
     fi
-
-    export JAVA_HOME=$(/usr/libexec/java_home -v "$jdk_version")
-
+    export JAVA_HOME=$(echo $(/usr/libexec/java_home -X) \
+        | jc --plist \
+        | jq -r --arg version "$jdk_version" '.[] | select(.JVMVersion == $version) | .JVMHomePath')
     echo "${BLUE}$(java --version)${NC}"
-
     echo "${RED}JAVA_HOME: ${JAVA_HOME} ${NC}"
 }
 
