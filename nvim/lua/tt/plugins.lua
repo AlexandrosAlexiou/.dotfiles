@@ -973,6 +973,10 @@ return {
     -- Full-text search powered by Tantivy
     {
         dir = "/Users/alexioualexandros/sources/sakuin.nvim",
+        build = function()
+            require("sakuin.install").ensure_binary()
+        end,
+
         dependencies = { "folke/snacks.nvim" },
         lazy = false,
         config = function()
