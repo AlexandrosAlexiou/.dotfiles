@@ -859,15 +859,69 @@ return {
     {
         "mfussenegger/nvim-dap",
         keys = {
-            { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "DAP: toggle breakpoint" },
-            { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input "Condition: ") end, desc = "DAP: conditional breakpoint" },
-            { "<leader>dc", function() require("dap").continue() end, desc = "DAP: continue" },
-            { "<leader>do", function() require("dap").step_over() end, desc = "DAP: step over" },
-            { "<leader>di", function() require("dap").step_into() end, desc = "DAP: step into" },
-            { "<leader>dO", function() require("dap").step_out() end, desc = "DAP: step out" },
-            { "<leader>dr", function() require("dap").repl.toggle() end, desc = "DAP: toggle REPL" },
-            { "<leader>dl", function() require("dap").run_last() end, desc = "DAP: run last" },
-            { "<leader>dq", function() require("dap").terminate() end, desc = "DAP: terminate" },
+            {
+                "<leader>db",
+                function()
+                    require("dap").toggle_breakpoint()
+                end,
+                desc = "DAP: toggle breakpoint",
+            },
+            {
+                "<leader>dB",
+                function()
+                    require("dap").set_breakpoint(vim.fn.input "Condition: ")
+                end,
+                desc = "DAP: conditional breakpoint",
+            },
+            {
+                "<leader>dc",
+                function()
+                    require("dap").continue()
+                end,
+                desc = "DAP: continue",
+            },
+            {
+                "<leader>do",
+                function()
+                    require("dap").step_over()
+                end,
+                desc = "DAP: step over",
+            },
+            {
+                "<leader>di",
+                function()
+                    require("dap").step_into()
+                end,
+                desc = "DAP: step into",
+            },
+            {
+                "<leader>dO",
+                function()
+                    require("dap").step_out()
+                end,
+                desc = "DAP: step out",
+            },
+            {
+                "<leader>dr",
+                function()
+                    require("dap").repl.toggle()
+                end,
+                desc = "DAP: toggle REPL",
+            },
+            {
+                "<leader>dl",
+                function()
+                    require("dap").run_last()
+                end,
+                desc = "DAP: run last",
+            },
+            {
+                "<leader>dq",
+                function()
+                    require("dap").terminate()
+                end,
+                desc = "DAP: terminate",
+            },
         },
         config = function()
             require("tt._plugins.dap").setup()
@@ -976,7 +1030,6 @@ return {
         build = function()
             require("sakuin.install").ensure_binary()
         end,
-
         dependencies = { "folke/snacks.nvim" },
         lazy = false,
         config = function()
