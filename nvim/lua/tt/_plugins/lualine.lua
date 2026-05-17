@@ -130,6 +130,7 @@ function M.setup()
                 },
                 {
                     "filename",
+                    path = 1,
                     padding = { left = 0 },
                 },
             },
