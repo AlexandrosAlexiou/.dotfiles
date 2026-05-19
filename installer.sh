@@ -119,6 +119,7 @@ function _print() {
 function _git_config() {
     _check_file git/gitconfig
     _print s ".gitconfig"
+    /opt/homebrew/bin/gln -sv --backup=numbered "${SCRIPT_DIR}/git/gitconfig" "$HOME"/.gitconfig
 }
 
 function _zshrc() {
