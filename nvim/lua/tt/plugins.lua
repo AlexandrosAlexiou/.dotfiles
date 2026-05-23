@@ -675,7 +675,7 @@ return {
         cmd = "GrugFar",
         keys = {
             "<leader>sr",
-            "<leader>sw",
+            "<leader>sW",
             "<leader>sf",
         },
         config = function()
@@ -1033,7 +1033,11 @@ return {
         dependencies = { "folke/snacks.nvim" },
         lazy = false,
         config = function()
-            require("sakuin").setup {}
+            require("sakuin").setup {
+                keymaps = {
+                    search_cword = "<leader>sw",
+                },
+            }
         end,
     },
 }
