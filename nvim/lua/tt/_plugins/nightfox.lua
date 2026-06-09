@@ -71,6 +71,8 @@ function M.setup()
                 SnacksPickerTitle = { fg = spec.bg4 },
                 SniprunFloatingWinErr = { link = "Error" },
                 SniprunFloatingWinOk = { fg = colors.cyan },
+                TroubleNormal = { link = "Normal" },
+                TroubleNormalNC = { link = "Normal" },
             },
             carbonfox = {
                 ActionPreviewTitle = { link = "Title" },
