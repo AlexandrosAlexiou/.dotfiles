@@ -66,20 +66,6 @@ function M.setup()
                     buf = 0,
                 },
             },
-            lsp_document_symbols_float = {
-                mode = "lsp_document_symbols",
-                win = {
-                    type = "float",
-                    relative = "editor",
-                    border = "rounded",
-                    title = "LSP document symbols",
-                    title_pos = "center",
-                    size = {
-                        width = 0.7,
-                        height = 0.7,
-                    },
-                },
-            },
             lsp_references = {
                 preview = {
                     type = "float",
@@ -107,7 +93,7 @@ function M.setup()
     utils.map("n", "<leader>tq", "<Cmd>Trouble quickfix toggle<CR>", { desc = "Trouble quickfix" })
     utils.map("n", "<leader>tr", "<Cmd>Trouble lsp_references toggle<CR>", { desc = "Trouble lsp references" })
     utils.map("n", "<leader>ti", "<Cmd>Trouble lsp_implementations toggle<CR>", { desc = "Trouble lsp implementations" })
-    utils.map("n", "<leader>ts", "<Cmd>Trouble lsp_document_symbols_float toggle<CR>", { desc = "Trouble lsp document symbols float" })
+    utils.map("n", "<leader>ts", "<Cmd>Trouble lsp_document_symbols toggle<CR>", { desc = "Trouble lsp document symbols" })
     utils.map("n", "gr", "<Cmd>Trouble lsp_references toggle<CR>", { desc = "Trouble lsp references" })
     utils.map("n", "gi", "<Cmd>Trouble lsp_implementations toggle<CR>", { desc = "Trouble lsp implementations" })
     utils.map("n", "<C-LeftMouse>", "<Cmd>Trouble lsp_references toggle<CR>", { desc = "Trouble lsp references" })
