@@ -1028,11 +1028,14 @@ return {
     {
         "AlexandrosAlexiou/sakuin.nvim",
         build = function()
-            require("sakuin.install").ensure_binary()
+            require("sakuin.install").build()
         end,
         dependencies = { "folke/snacks.nvim" },
         config = function()
             require("sakuin").setup {
+                search = {
+                    debounce = 50,
+                },
                 keymaps = {
                     search_cword = "<leader>sw",
                 },
