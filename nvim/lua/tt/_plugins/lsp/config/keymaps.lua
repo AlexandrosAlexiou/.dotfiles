@@ -85,6 +85,7 @@ function M.on_attach(_, bufnr)
     end, opts "Go to the definition of the symbol in a horizontal split")
     utils.map("n", "dl", "<Cmd>lua vim.diagnostic.setloclist()<CR>", opts "Add buffer diagnostics to the loclist")
     utils.map("n", "dq", "<Cmd>lua vim.diagnostic.setqflist()<CR>", opts "Add buffer diagnostics to the qflist")
+    utils.map("n", "gd", vim.lsp.buf.definition, { desc = "Go to Definition" })
 
     local ft = vim.bo.filetype
     if ft == "c" or ft == "cpp" or ft == "h" or ft == "hpp" then
