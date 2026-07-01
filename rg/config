@@ -1,5 +1,3 @@
 --pretty
 --smart-case
 --max-columns-preview
---sort=path
---threads=12
