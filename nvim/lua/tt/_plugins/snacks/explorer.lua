@@ -6,6 +6,8 @@ local M = {}
 ---Source code adapted from: https://github.com/folke/snacks.nvim/discussions/1306#discussioncomment-12248922
 ---@type snacks.picker.Config
 M.explorer = {
+    hidden = true, -- Show hidden files (dotfiles) by default
+    ignored = true, -- Also show gitignored files (e.g. .claude/, .sakuin/)
     layout = {
         preview = "main",
         layout = {
@@ -26,6 +28,15 @@ M.explorer = {
 
         ---@param win snacks.win
         local update = function(win)
+            -- Bail out if the root or target window is gone (e.g. the explorer
+            -- was closed), otherwise the WinResized callback below fires against
+            -- an invalid window handle and errors out.
+            if not (root.win and vim.api.nvim_win_is_valid(root.win)) then
+                return
+            end
+            if not (win and win:win_valid()) then
+                return
+            end
             win.opts.row = vim.api.nvim_win_get_position(root.win)[1]
             win.opts.col = vim.api.nvim_win_get_width(root.win) + window_gap
             win.opts.height = 0.85
