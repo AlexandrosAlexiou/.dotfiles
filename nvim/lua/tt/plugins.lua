@@ -1026,7 +1026,7 @@ return {
 
     -- Full-text search powered by Tantivy
     {
-        "AlexandrosAlexiou/sakuin.nvim",
+        dir = "~/sources/sakuin.nvim",
         build = function()
             require("sakuin.install").build()
         end,
@@ -1034,7 +1034,7 @@ return {
         config = function()
             require("sakuin").setup {
                 search = {
-                    debounce = 50,
+                    debounce = 0,
                 },
                 keymaps = {
                     search_cword = "<leader>sw",
