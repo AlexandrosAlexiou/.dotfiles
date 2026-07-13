@@ -2,6 +2,36 @@ local format_utils = require "tt._plugins.format.utils"
 
 local M = {}
 
+--- Cache, keyed by project root, of whether the project's spotless uses palantir-java-format.
+---@type table<string, boolean>
+local palantir_cache = {}
+
+--- Detects whether the buffer belongs to a project whose spotless config uses palantirJavaFormat.
+--- The palantir config typically lives in the root (multi-module) pom, so we key off the .git root.
+---@param bufnr Buffer
+---@return boolean
+local function project_uses_palantir(bufnr)
+    local fname = vim.api.nvim_buf_get_name(bufnr)
+    local start = fname ~= "" and vim.fs.dirname(fname) or (vim.uv or vim.loop).cwd()
+
+    local git = vim.fs.find(".git", { upward = true, path = start })[1]
+    local root = git and vim.fs.dirname(git) or start
+
+    if palantir_cache[root] ~= nil then
+        return palantir_cache[root]
+    end
+
+    local result = false
+    local pom = root .. "/pom.xml"
+    if vim.fn.filereadable(pom) == 1 then
+        local content = table.concat(vim.fn.readfile(pom), "\n")
+        result = content:find("palantirJavaFormat", 1, true) ~= nil
+    end
+
+    palantir_cache[root] = result
+    return result
+end
+
 --- Formats the current buffer, with optional customization through specified opts.
 ---@param opts? conform.FormatOpts
 function M.format(opts)
@@ -55,7 +85,12 @@ function M.setup()
             cpp = { "clang-format" },
             go = { "goimports", "gofumpt" },
             graphql = { "prettierd" },
-            java = { "google-java-format" },
+            java = function(bufnr)
+                if project_uses_palantir(bufnr) then
+                    return { "palantir-java-format" }
+                end
+                return { "google-java-format" }
+            end,
             kotlin = { "ktfmt" },
             lua = { "stylua" },
             python = { "autopep8" },
@@ -69,6 +104,15 @@ function M.setup()
         formatters = {
             ["clang-format"] = {
                 prepend_args = { "-style=file" },
+            },
+            ["palantir-java-format"] = {
+                command = "palantir-java-format",
+                -- `--palantir` selects the Palantir style (4-space, 120-col); without it the CLI runs in
+                -- google-java-format compatibility mode (2-space). `--skip-reflowing-long-strings` matches
+                -- spotless, which does not break long string literals across lines. Together these produce
+                -- byte-identical output to the project's `spotless:apply`.
+                args = { "--palantir", "--skip-reflowing-long-strings", "-" },
+                stdin = true,
             },
             ktfmt = {
                 prepend_args = { "--kotlinlang-style" },
