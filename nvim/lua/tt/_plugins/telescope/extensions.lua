@@ -30,7 +30,6 @@ M.extensions = {
         override_file_sorter = true, -- Override the file sorter
         case_mode = "smart_case", -- "ignore_case" or "respect_case" or "smart_case"
     },
-    grapple = {},
     ---@module "telescope._extensions.lazy"
     ---@type TelescopeLazy.Config
     lazy = {

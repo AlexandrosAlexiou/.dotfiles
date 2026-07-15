@@ -78,7 +78,6 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── dial.lua
 │       │   ├── dressing.lua
 │       │   ├── flash.lua
-│       │   ├── grapple.lua
 │       │   ├── grug-far.lua
 │       │   ├── hydra.lua
 │       │   ├── indent-blankline.lua

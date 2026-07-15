@@ -1,7 +1,6 @@
 local M = {}
 
 function M.setup()
-    local grapple = require "grapple"
     local noice = require "noice"
     local icons = require "tt.icons"
 
@@ -109,10 +108,6 @@ function M.setup()
             },
             lualine_b = { "branch" },
             lualine_c = {
-                {
-                    grapple.statusline,
-                    cond = grapple.exists,
-                },
                 {
                     "diagnostics",
                     symbols = {

@@ -425,18 +425,6 @@ return {
         opts = {},
     },
 
-    -- Tag important files
-    {
-        "cbochs/grapple.nvim",
-        event = {
-            "BufReadPost",
-            "BufNewFile",
-        },
-        config = function()
-            require("tt._plugins.grapple").setup()
-        end,
-    },
-
     --  Treesitter to autoclose and autorename html tags
     {
         "windwp/nvim-ts-autotag",
