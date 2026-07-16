@@ -171,6 +171,7 @@ M.lsp_servers = {
             },
         },
     },
+    zls = {},
 }
 
 -- List of servers that should be manually installed via Mason

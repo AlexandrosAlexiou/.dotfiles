@@ -46,6 +46,7 @@ function M.setup_treesitter()
         "yaml",
         "vue",
         "xml",
+        "zig",
     }
 
     -- Setup syntax highlighting

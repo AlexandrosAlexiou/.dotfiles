@@ -21,6 +21,7 @@ M.filetypes = {
     typescript = false,
     typescriptreact = true,
     vue = true,
+    zig = true,
 }
 
 --- A set of buffers for which format should be disabled.
