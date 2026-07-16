@@ -821,25 +821,6 @@ return {
         end,
     },
 
-    -- Interacting with tests within neovim
-    {
-        "nvim-neotest/neotest",
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "nvim-neotest/neotest-plenary",
-            "nvim-neotest/neotest-vim-test",
-            "nvim-neotest/nvim-nio",
-            "antoinemadec/FixCursorHold.nvim",
-            "nvim-treesitter/nvim-treesitter",
-            "marilari88/neotest-vitest",
-            "thenbe/neotest-playwright",
-            "nvim-neotest/neotest-python",
-        },
-        config = function()
-            require("tt._plugins.neotest").setup()
-        end,
-    },
-
     -- Git integration
     { "tpope/vim-fugitive" },
 
