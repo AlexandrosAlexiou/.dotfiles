@@ -167,7 +167,6 @@ function _zsh_plugins() {
     _install_zsh_plugin https://github.com/zdharma-continuum/fast-syntax-highlighting plugins/fast-syntax-highlighting
     _install_zsh_plugin https://github.com/wfxr/forgit.git plugins/forgit
     _install_zsh_plugin https://github.com/tamcore/autoupdate-oh-my-zsh-plugins plugins/autoupdate
-    _install_zsh_plugin https://github.com/reegnz/jq-zsh-plugin.git plugins/jq
 }
 
 function _oh_my_zsh() {
