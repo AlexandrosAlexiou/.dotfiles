@@ -27,63 +27,15 @@ local function setup_generic_keymaps()
     Snacks.toggle.dim():map("<leader>sd", { desc = "Toggle dim mode" })
 end
 
-local function setup_terminal_keymaps()
-    utils.map("n", { "<leader>lg", "<leader>lt" }, function()
-        Snacks.lazygit()
-    end, { desc = "Open Lazygit" })
-
-    utils.map({ "n", "t" }, "<leader>ft", function()
-        Snacks.terminal.toggle(nil, {
-            env = {
-                snacks_terminal_float = "1",
-            },
-            win = {
-                border = "rounded",
-                position = "float",
-                height = 0.99,
-                width = 0.99,
-            },
-        })
-    end, { desc = "Toggle float terminal" })
-
-    utils.map({ "n", "t" }, "<leader>ht", function()
-        Snacks.terminal.toggle(nil, {
-            env = {
-                snacks_terminal_horizontal = "1",
-            },
-            win = {
-                position = "bottom",
-            },
-        })
-    end, { desc = "Toggle horizontal terminal" })
-
-    utils.map({ "n", "t" }, "<leader>vt", function()
-        Snacks.terminal.toggle(nil, {
-            env = {
-                snacks_terminal_vertical = "1",
-            },
-            win = {
-                position = "right",
-            },
-        })
-    end, { desc = "Toggle vertical terminal" })
-
-    utils.map({ "n", "t" }, "<leader>bt", function()
-        Snacks.terminal.toggle("btop", {
-            win = {
-                height = 0.85,
-                width = 0.85,
-            },
-        })
-    end, { desc = "Toggle btop terminal" })
-end
-
 local function setup_picker_keymaps()
     utils.map("n", "<leader>F", Snacks.picker.pick, { desc = "Snacks pickers" })
     utils.map("n", "<leader>fa", Snacks.picker.autocmds, { desc = "Search autocommands" })
     utils.map("n", "<leader>fb", Snacks.picker.buffers, { desc = "Search for open buffers" })
     utils.map("n", "<leader>fc", Snacks.picker.commands, { desc = "Search commands" })
-    utils.map("n", "<leader>fe", Snacks.picker.explorer, { desc = "Snacks explorer" })
+    utils.map("n", "<leader>fe", function()
+        require("tt._plugins.snacks.terminal").hide_all()
+        Snacks.picker.explorer()
+    end, { desc = "Snacks explorer" })
     utils.map("n", "<leader>ff", Snacks.picker.files, { desc = "Search for files" })
     utils.map("n", "<leader>fg", Snacks.picker.grep, { desc = "Live grep" })
     utils.map("n", "<leader>fh", Snacks.picker.help, { desc = "Search for help tags" })
@@ -116,11 +68,17 @@ local function setup_picker_keymaps()
     utils.map("n", "<leader>fS", custom_pickers.show_sessions, { desc = "Search for saved sessions" })
 end
 
+local function setup_lazygit_keymaps()
+    utils.map("n", { "<leader>lg", "<leader>lt" }, function()
+        Snacks.lazygit()
+    end, { desc = "Open Lazygit" })
+end
+
 function M.setup()
     local setups = {
         setup_generic_keymaps,
-        setup_terminal_keymaps,
         setup_picker_keymaps,
+        setup_lazygit_keymaps(),
     }
 
     for _, setup in ipairs(setups) do

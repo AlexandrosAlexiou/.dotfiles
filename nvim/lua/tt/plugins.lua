@@ -38,7 +38,9 @@ return {
     -- Statusline
     {
         "nvim-lualine/lualine.nvim",
-        event = "BufRead",
+        -- `TermOpen` ensures the statusline is initialized when a terminal is the
+        -- first buffer opened, since terminals don't fire `BufRead`.
+        event = { "BufRead", "TermOpen" },
         dependencies = {
             "nvim-tree/nvim-web-devicons",
             "SmiteshP/nvim-navic",

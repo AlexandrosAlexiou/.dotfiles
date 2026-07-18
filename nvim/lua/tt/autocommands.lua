@@ -48,8 +48,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     desc = "Enable highlighting when yanking text",
 })
 
--- Immediately enter insert mode when in a terminal
-vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter", "WinEnter" }, {
+-- Immediately enter insert mode when opening a terminal
+vim.api.nvim_create_autocmd("TermOpen", {
     group = vim.api.nvim_create_augroup("tt.Terminal", { clear = true }),
     pattern = "*",
     callback = function()
@@ -57,7 +57,7 @@ vim.api.nvim_create_autocmd({ "TermOpen", "BufEnter", "WinEnter" }, {
             vim.cmd.startinsert()
         end
     end,
-    desc = "Immediately enter insert mode when in a terminal",
+    desc = "Immediately enter insert mode when opening a terminal",
 })
 
 -- Remove line numbers when in a terminal

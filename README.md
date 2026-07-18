@@ -62,6 +62,8 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   │   ├── picker.lua
 │       │   │   ├── scratch.lua
 │       │   │   ├── styles.lua
+│       │   │   ├── terminal.lua
+│       │   │   ├── terminal.md
 │       │   │   └── zen.lua
 │       │   ├── telescope/
 │       │   │   ├── commands.lua
