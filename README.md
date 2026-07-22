@@ -52,6 +52,11 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   │   ├── mason.lua
 │       │   │   └── nvim-navic.lua
 │       │   ├── snacks/
+│       │   │   ├── terminal/
+│       │   │   │   ├── init.lua
+│       │   │   │   ├── layout.lua
+│       │   │   │   ├── state.lua
+│       │   │   │   └── window.lua
 │       │   │   ├── actions.lua
 │       │   │   ├── commands.lua
 │       │   │   ├── custom_pickers.lua
@@ -62,7 +67,6 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   │   ├── picker.lua
 │       │   │   ├── scratch.lua
 │       │   │   ├── styles.lua
-│       │   │   ├── terminal.lua
 │       │   │   ├── terminal.md
 │       │   │   └── zen.lua
 │       │   ├── telescope/
