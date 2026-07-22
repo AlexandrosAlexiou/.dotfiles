@@ -30,13 +30,6 @@ vim.api.nvim_create_autocmd("FileType", {
     desc = "Enable spellcheck for specific filetypes",
 })
 
--- Automatically resize windows when host resizes
-vim.api.nvim_create_autocmd("VimResized", {
-    group = vim.api.nvim_create_augroup("tt.AutoResize", { clear = true }),
-    pattern = "*",
-    command = "tabdo wincmd =",
-    desc = "Automatically resize windows when host resizes",
-})
 
 -- Enable highlighting when yanking text
 vim.api.nvim_create_autocmd("TextYankPost", {
