@@ -419,4 +419,319 @@ utils.map("v", "<leader>d", function()
 end)
 --}}}
 
-vim.cmd.colorscheme "habamax"
+--{{{Autocommands
+
+-- Highlight on yanked text
+vim.api.nvim_create_autocmd("TextYankPost", {
+    group = vim.api.nvim_create_augroup("tt.Highlight", { clear = true }),
+    pattern = "*",
+    callback = function()
+        vim.hl.hl_op { timeout = 200 }
+    end,
+    desc = "Enable highlighting when yanking text",
+})
+
+-- Jump back to the last position when entering a buffer
+vim.api.nvim_create_autocmd("BufReadPost", {
+    group = vim.api.nvim_create_augroup("tt.JumpLastLocation", { clear = true }),
+    pattern = "*",
+    callback = function()
+        local mark = vim.api.nvim_buf_get_mark(0, '"')
+        local line_count = vim.api.nvim_buf_line_count(0)
+        if mark[1] > 0 and mark[1] <= line_count then
+            pcall(vim.api.nvim_win_set_cursor, 0, mark)
+        end
+    end,
+    desc = "Jump to the last location when opening a buffer",
+})
+
+-- Automatic toggling between hybrid and absolute line numbers
+vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, {
+    group = vim.api.nvim_create_augroup("tt.NumberToggle", { clear = true }),
+    pattern = "*",
+    callback = function()
+        if vim.o.number and vim.api.nvim_get_mode().mode ~= "i" then
+            vim.o.relativenumber = true
+        end
+    end,
+    desc = "Automatic toggling between hybrid and absolute line numbers",
+})
+vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "WinLeave" }, {
+    group = vim.api.nvim_create_augroup("tt.NumberToggle", { clear = false }),
+    pattern = "*",
+    callback = function()
+        if vim.o.number then
+            vim.o.relativenumber = false
+        end
+    end,
+    desc = "Automatic toggling between hybrid and absolute line numbers",
+})
+---}}}
+
+--{{{Plugins
+local function add_plugins(plugins)
+    local specs = {}
+    for _, src in pairs(plugins) do
+        specs[#specs + 1] = { src = src }
+    end
+    vim.pack.add(specs)
+end
+
+local function setup_plugins(plugin_setups)
+    for _, setup in pairs(plugin_setups) do
+        setup()
+    end
+end
+
+local plugins = {
+    oil = "https://github.com/stevearc/oil.nvim",
+    nightfox = "https://github.com/EdenEast/nightfox.nvim",
+}
+
+local plugin_setups = {
+    oil = function()
+        --- Helper variable for toggling Oil detailed view
+        local detailed_view = false
+        ---
+        --- Function for toggling Oil detailed view
+        local function show_detailed_view()
+            detailed_view = not detailed_view
+            if detailed_view then
+                require("oil").set_columns { "icon", "permissions", "size", "mtime" }
+            else
+                require("oil").set_columns { "icon" }
+            end
+        end
+
+        require("oil").setup {
+            skip_confirm_for_simple_edits = true,
+            win_options = {
+                wrap = true,
+            },
+            use_default_keymaps = false,
+            preview_win = {
+                preview_method = "load",
+            },
+            float = {
+                padding = 0,
+                get_win_title = function()
+                    return ""
+                end,
+            },
+            keymaps = {
+                ["g?"] = "actions.show_help",
+                ["<CR>"] = "actions.select",
+                ["."] = "actions.select",
+                ["="] = "actions.select",
+                ["+"] = "actions.select",
+                [">"] = "actions.select",
+                ["<"] = "actions.parent",
+                ["-"] = "actions.parent",
+                ["_"] = "actions.open_cwd",
+                ["<C-c>d"] = "actions.cd",
+                ["gs"] = "actions.change_sort",
+                ["gx"] = "actions.open_external",
+                ["gd"] = {
+                    callback = show_detailed_view,
+                    desc = "Toggle file detailed view",
+                },
+                ["g\\"] = "actions.toggle_trash",
+                ["H"] = "actions.toggle_hidden",
+                ["P"] = "actions.preview",
+                ["<C-v>"] = {
+                    "actions.select",
+                    opts = { vertical = true },
+                    desc = "Open the entry in a vertical split",
+                },
+                ["<C-x>"] = {
+                    "actions.select",
+                    opts = { horizontal = true },
+                    desc = "Open the entry in a horizontal split",
+                },
+                ["<C-t>"] = {
+                    "actions.select",
+                    opts = { tab = true },
+                    desc = "Open the entry in new tab",
+                },
+                ["<C-d>"] = "actions.preview_scroll_down",
+                ["<C-u>"] = "actions.preview_scroll_up",
+                ["<C-l>"] = "actions.refresh",
+                ["<C-q>"] = "actions.close",
+                ["q"] = "actions.close",
+            },
+        }
+
+        utils.map("n", "<leader>e", function()
+            local open_method = vim.v.count == 0 and require("oil").open or require("oil").open_float
+            open_method()
+        end, { desc = "Open Oil file explorer. If a count is passed it opens in floating mode." })
+    end,
+
+    nightfox = function()
+        require("nightfox").setup()
+        vim.cmd.colorscheme "carbonfox"
+    end,
+}
+
+add_plugins(plugins)
+setup_plugins(plugin_setups)
+
+-- Mini
+
+local mini_plugins = {
+    files = "https://github.com/nvim-mini/mini.files",
+    pick = "https://github.com/nvim-mini/mini.pick",
+    icons = "https://github.com/nvim-mini/mini.icons",
+    surround = "https://github.com/nvim-mini/mini.surround",
+    pairs = "https://github.com/nvim-mini/mini.pairs",
+    move = "https://github.com/nvim-mini/mini.move",
+    indentscope = "https://github.com/nvim-mini/mini.indentscope",
+    completion = "https://github.com/nvim-mini/mini.completion",
+}
+
+local mini_plugin_setups = {
+    files = function()
+        require("mini.files").setup()
+    end,
+
+    pick = function()
+        local pick = require "mini.pick"
+
+        pick.setup {
+            mappings = {
+                move_down = "<C-j>",
+                move_up = "<C-k>",
+                toggle_preview = "?",
+                stop = "<C-q>",
+            },
+        }
+
+        -- Customization
+        MiniPick.registry.buffers = function(local_opts)
+            local wipeout_current = function()
+                local current = MiniPick.get_picker_matches().current
+                if current and current.bufnr then
+                    vim.api.nvim_buf_delete(current.bufnr, { force = false })
+
+                    -- Immediately refresh the list inside the UI
+                    local updated_items = vim.tbl_filter(function(item)
+                        return item.bufnr ~= current.bufnr
+                    end, MiniPick.get_picker_items() or {})
+                    MiniPick.set_picker_items(updated_items)
+                end
+            end
+
+            -- Forward parameters to the builtin picker, injecting your local mapping
+            return MiniPick.builtin.buffers(local_opts, {
+                mappings = {
+                    wipeout = { char = "<C-d>", func = wipeout_current },
+                },
+            })
+        end
+
+        -- Mappings
+        utils.map("n", "<leader>ff", function()
+            pick.builtin.files()
+        end, { desc = "Find files" })
+
+        utils.map("n", "<leader>fg", function()
+            pick.builtin.grep_live()
+        end, { desc = "Grep files" })
+
+        utils.map("n", "<leader>fh", function()
+            pick.builtin.help()
+        end, { desc = "Help" })
+
+        utils.map("n", "<leader>fb", function()
+            pick.builtin.buffers()
+        end, { desc = "Buffers" })
+    end,
+
+    icons = function()
+        require("mini.icons").setup()
+    end,
+
+    surround = function()
+        require("mini.surround").setup {
+            custom_surroundings = {
+                ["B"] = {
+                    input = { "%b{}", "^.().*().$" },
+                    output = { left = "{", right = "}" },
+                },
+                [">"] = {
+                    input = { "%b<>", "^.%s*().-()%s*.$" },
+                    output = { left = "< ", right = " >" },
+                },
+                ["<"] = {
+                    input = { "%b<>", "^.().*().$" },
+                    output = { left = "<", right = ">" },
+                },
+            },
+            mappings = {
+                add = "ys",
+                delete = "ds",
+                highlight = "gs",
+                replace = "cs",
+                find = "",
+                find_left = "",
+                update_n_lines = "",
+                suffix_last = "",
+                suffix_next = "",
+            },
+            search_method = "cover_or_next",
+            highlight_duration = 2000,
+        }
+
+        -- Delete this mapping from mini-surround
+        pcall(vim.keymap.del, "x", "ys")
+
+        utils.map("x", "S", [[:<C-u>lua MiniSurround.add('visual')<CR>]], { desc = "Add surrounding" })
+        utils.map("n", "yss", "ys_", { desc = "Add surrounding for line", remap = true })
+    end,
+
+    pairs = function()
+        require("mini.pairs").setup()
+    end,
+
+    move = function()
+        require("mini.move").setup {
+            mappings = {
+                -- Visual mode
+                left = "<C-h>",
+                right = "<C-l>",
+                down = "<C-j>",
+                up = "<C-k>",
+
+                -- Normal mode
+                line_left = "<C-h>",
+                line_right = "<C-l>",
+                line_down = "<C-j>",
+                line_up = "<C-k>",
+            },
+        }
+    end,
+
+    indentscope = function()
+        require("mini.indentscope").setup {
+            draw = {
+                animation = require("mini.indentscope").gen_animation.quadratic {
+                    easing = "out",
+                    duration = 150,
+                    unit = "total",
+                },
+            },
+            symbol = "│",
+        }
+    end,
+
+    completion = function()
+        require("mini.completion").setup()
+
+        utils.map("i", "<Tab>", [[pumvisible() ? "\<C-n>" : "\<Tab>"]], { expr = true })
+        utils.map("i", "<S-Tab>", [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], { expr = true })
+    end,
+}
+
+add_plugins(mini_plugins)
+setup_plugins(mini_plugin_setups)
+---}}}
