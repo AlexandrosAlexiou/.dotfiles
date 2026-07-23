@@ -442,12 +442,14 @@ end
 ---Falls back to equalize_terminals() if snapshot doesn't match current state.
 function M.restore_layout()
     local wins = win.all_terminal_windows()
-    if #wins < 2 then
+    if #wins == 0 then
         return
     end
 
     if not state.saved_layout then
-        M.equalize_terminals()
+        if #wins >= 2 then
+            M.equalize_terminals()
+        end
         return
     end
 
@@ -463,7 +465,9 @@ function M.restore_layout()
     local snap_keys = all_snapshot_keys(state.saved_layout)
 
     if not vim.deep_equal(current_keys, snap_keys) then
-        M.equalize_terminals()
+        if #wins >= 2 then
+            M.equalize_terminals()
+        end
         return
     end
 
