@@ -132,6 +132,34 @@ local function subtree_height(node)
     return mx
 end
 
+---Per-direction dispatch for size/units/window mutation.
+---`row` splits distribute width.
+---`col` splits distribute height.
+---@class tt.terminal.Axis
+---@field subtree_size fun(node: tt.terminal.WinLayoutNode): integer
+---@field units fun(node: tt.terminal.WinLayoutNode, term_set: tt.terminal.TermSet): integer
+---@field min integer Minimum size (cells) to keep a window usable
+---@field unfix_flag "winfixwidth"|"winfixheight"
+---@field set_size fun(win: integer, size: integer)
+
+---@type table<tt.terminal.WinLayoutDir, tt.terminal.Axis>
+local AXIS = {
+    row = {
+        subtree_size = subtree_width,
+        units = column_units,
+        min = 10,
+        unfix_flag = "winfixwidth",
+        set_size = vim.api.nvim_win_set_width,
+    },
+    col = {
+        subtree_size = subtree_height,
+        units = row_units,
+        min = 4,
+        unfix_flag = "winfixheight",
+        set_size = vim.api.nvim_win_set_height,
+    },
+}
+
 ---Walk the layout tree and equalize terminal windows proportionally.
 ---@param node tt.terminal.WinLayoutNode Layout tree node
 ---@param term_set tt.terminal.TermSet
@@ -152,40 +180,21 @@ local function equalize_node(node, term_set)
     end
 
     if #infos >= 2 then
-        if dir == "row" then
-            local total_w, total_units = 0, 0
-            for _, info in ipairs(infos) do
-                info.w = subtree_width(info.node)
-                info.units = column_units(info.node, term_set)
-                total_w = total_w + info.w
-                total_units = total_units + info.units
-            end
-            if total_units > 0 then
-                for i = 1, #infos - 1 do
-                    local target = math.max(10, math.floor(total_w * infos[i].units / total_units))
-                    local w = first_leaf_win(infos[i].node)
-                    if w and vim.api.nvim_win_is_valid(w) then
-                        vim.wo[w].winfixwidth = false
-                        vim.api.nvim_win_set_width(w, target)
-                    end
-                end
-            end
-        else
-            local total_h, total_units = 0, 0
-            for _, info in ipairs(infos) do
-                info.h = subtree_height(info.node)
-                info.units = row_units(info.node, term_set)
-                total_h = total_h + info.h
-                total_units = total_units + info.units
-            end
-            if total_units > 0 then
-                for i = 1, #infos - 1 do
-                    local target = math.max(4, math.floor(total_h * infos[i].units / total_units))
-                    local w = first_leaf_win(infos[i].node)
-                    if w and vim.api.nvim_win_is_valid(w) then
-                        vim.wo[w].winfixheight = false
-                        vim.api.nvim_win_set_height(w, target)
-                    end
+        local axis = AXIS[dir]
+        local total_size, total_units = 0, 0
+        for _, info in ipairs(infos) do
+            info.size = axis.subtree_size(info.node)
+            info.units = axis.units(info.node, term_set)
+            total_size = total_size + info.size
+            total_units = total_units + info.units
+        end
+        if total_units > 0 then
+            for i = 1, #infos - 1 do
+                local target = math.max(axis.min, math.floor(total_size * infos[i].units / total_units))
+                local w = first_leaf_win(infos[i].node)
+                if w and vim.api.nvim_win_is_valid(w) then
+                    vim.wo[w][axis.unfix_flag] = false
+                    axis.set_size(w, target)
                 end
             end
         end
@@ -252,7 +261,7 @@ local function snapshot_node(node, term_map)
     for _, child in ipairs(children) do
         local keys = collect_term_keys(child, term_map)
         if #keys > 0 then
-            local size = dir == "row" and subtree_width(child) or subtree_height(child)
+            local size = AXIS[dir].subtree_size(child)
             term_infos[#term_infos + 1] = {
                 keys_id = table.concat(keys, ","),
                 size = size,
@@ -371,13 +380,9 @@ local function restore_node(node, term_map, snap)
             local info = term_infos[1]
             local w = first_leaf_win(info.child)
             if w and vim.api.nvim_win_is_valid(w) then
-                if dir == "col" then
-                    vim.wo[w].winfixheight = false
-                    vim.api.nvim_win_set_height(w, snap.size)
-                else
-                    vim.wo[w].winfixwidth = false
-                    vim.api.nvim_win_set_width(w, snap.size)
-                end
+                local axis = AXIS[dir]
+                vim.wo[w][axis.unfix_flag] = false
+                axis.set_size(w, snap.size)
             end
             if snap.sub then
                 restore_node(info.child, term_map, snap.sub)
@@ -423,25 +428,20 @@ local function restore_node(node, term_map, snap)
     end
 
     if all_matched then
+        local axis = AXIS[dir]
         local total = 0
         for _, info in ipairs(term_infos) do
-            total = total + (dir == "row" and subtree_width(info.child) or subtree_height(info.child))
+            total = total + axis.subtree_size(info.child)
         end
 
         if total > 0 then
             for _, info in ipairs(term_infos) do
                 local sc = snap_lookup[info.keys_id]
-                local min_size = dir == "row" and 10 or 4
-                local target = math.max(min_size, math.floor(total * sc.fraction + 0.5))
+                local target = math.max(axis.min, math.floor(total * sc.fraction + 0.5))
                 local w = first_leaf_win(info.child)
                 if w and vim.api.nvim_win_is_valid(w) then
-                    if dir == "row" then
-                        vim.wo[w].winfixwidth = false
-                        vim.api.nvim_win_set_width(w, target)
-                    else
-                        vim.wo[w].winfixheight = false
-                        vim.api.nvim_win_set_height(w, target)
-                    end
+                    vim.wo[w][axis.unfix_flag] = false
+                    axis.set_size(w, target)
                 end
             end
         end
