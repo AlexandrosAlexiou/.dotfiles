@@ -12,6 +12,15 @@ M.terminal = {
             term_normal = {
                 "<esc>",
                 function()
+                    -- Let lazygit (and other TUIs that need <esc>) handle the key themselves.
+                    local st = vim.b.snacks_terminal
+                    local cmd = st and st.cmd
+                    if type(cmd) == "table" then
+                        cmd = cmd[1]
+                    end
+                    if type(cmd) == "string" and cmd:match "lazygit" then
+                        return "<esc>"
+                    end
                     return "<C-\\><C-n>"
                 end,
                 mode = "t",
