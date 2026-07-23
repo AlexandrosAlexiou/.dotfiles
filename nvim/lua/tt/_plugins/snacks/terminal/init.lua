@@ -46,7 +46,8 @@ M.terminal = {
 }
 
 ---Create a new split terminal at the given position.
----@param position "right"|"bottom"
+---@param position tt.terminal.Position Where to anchor the new split
+---@return nil
 local function create_terminal(position)
     local vertical = position == "right"
     local orientation = vertical and "vertical" or "horizontal"
@@ -92,7 +93,8 @@ local function create_terminal(position)
 end
 
 ---Toggle a specific terminal by its registry key.
----@param key string Terminal key ("orientation:count")
+---@param key tt.terminal.Key Terminal key ("orientation:count")
+---@return nil
 local function toggle_terminal(key)
     local cfg = state.registry[key]
     if not cfg then
@@ -149,6 +151,8 @@ local function toggle_terminal(key)
     end
 end
 
+---Toggle every managed split terminal (hide all if any visible, else restore).
+---@return nil
 local function toggle_all_terminals()
     local vis = win.visible_terminal_keys()
     local lr = vim.o.lazyredraw
@@ -240,6 +244,7 @@ local function toggle_all_terminals()
 end
 
 ---Hide all visible terminals (stashes them for restore).
+---@return nil
 function M.hide_all()
     local vis = win.visible_terminal_keys()
     if #vis == 0 then
@@ -261,6 +266,8 @@ function M.hide_all()
     state.restoring = false
 end
 
+---Register autocmds and keymaps for the split terminal system.
+---@return nil
 function M.setup()
     -- Layout persistence autocmds
     local group = vim.api.nvim_create_augroup("tt_snacks_terminal_size", { clear = true })

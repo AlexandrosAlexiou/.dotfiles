@@ -3,9 +3,9 @@ local state = require "tt._plugins.snacks.terminal.state"
 local M = {}
 
 ---Find the window handle for a specific terminal by orientation and count.
----@param orientation string "vertical"|"horizontal"
----@param count integer
----@return integer|nil win Window handle or nil
+---@param orientation tt.terminal.Orientation
+---@param count integer 1-based per-orientation Snacks terminal id
+---@return integer|nil win Window handle from `nvim_tabpage_list_wins`, or nil
 function M.find_terminal_window(orientation, count)
     local marker = "snacks_terminal_" .. orientation
     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
@@ -21,9 +21,9 @@ end
 
 ---Find the Snacks terminal object by scanning all known terminals.
 ---More reliable than Snacks.terminal.get() which can fail if cwd changed.
----@param orientation string "vertical"|"horizontal"
----@param count integer
----@return table|nil terminal Snacks terminal object
+---@param orientation tt.terminal.Orientation
+---@param count integer 1-based per-orientation Snacks terminal id
+---@return snacks.win|nil terminal Snacks terminal (window) object, or nil
 function M.find_snacks_terminal_obj(orientation, count)
     local marker = "snacks_terminal_" .. orientation
     for _, t in ipairs(Snacks.terminal.list()) do
@@ -38,7 +38,7 @@ function M.find_snacks_terminal_obj(orientation, count)
 end
 
 ---Collect ALL visible terminal windows (both orientations).
----@return integer[] wins List of window handles
+---@return integer[] wins Window handles of every managed split terminal on the current tabpage
 function M.all_terminal_windows()
     local wins = {}
     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
@@ -59,15 +59,19 @@ end
 
 ---Collect visible terminal keys from the current tabpage.
 ---Registers unknown terminals discovered during the scan.
----@return string[] keys List of terminal keys ("orientation:count")
+---@return tt.terminal.Key[] keys Ordered list of "orientation:count" keys currently visible
 function M.visible_terminal_keys()
-    local keys, seen = {}, {}
+    ---@type tt.terminal.Key[]
+    local keys = {}
+    ---@type table<tt.terminal.Key, boolean>
+    local seen = {}
     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
         if not vim.api.nvim_win_is_valid(win) then
             goto skip
         end
         local t = vim.b[vim.api.nvim_win_get_buf(win)].snacks_terminal
         if t and type(t) == "table" and type(t.env) == "table" then
+            ---@type tt.terminal.Orientation|nil
             local orientation
             if t.env.snacks_terminal_vertical then
                 orientation = "vertical"
@@ -97,8 +101,9 @@ function M.visible_terminal_keys()
 end
 
 ---Build a map from window-id to terminal key ("vertical:1", etc.)
----@return table<integer, string> map
+---@return table<integer, tt.terminal.Key> map Window handle → terminal key
 function M.build_term_map()
+    ---@type table<integer, tt.terminal.Key>
     local map = {}
     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
         if not vim.api.nvim_win_is_valid(win) then
@@ -106,6 +111,7 @@ function M.build_term_map()
         end
         local t = vim.b[vim.api.nvim_win_get_buf(win)].snacks_terminal
         if t and type(t) == "table" and type(t.env) == "table" then
+            ---@type tt.terminal.Orientation|nil
             local orientation
             if t.env.snacks_terminal_vertical then
                 orientation = "vertical"
@@ -123,6 +129,7 @@ end
 
 ---Prevent Snacks' built-in equalize from grouping unrelated terminals.
 ---Gives each managed terminal a unique position tag.
+---@return nil
 function M.defuse_snacks_equalize()
     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
         if not vim.api.nvim_win_is_valid(win) then
@@ -131,6 +138,7 @@ function M.defuse_snacks_equalize()
         local buf = vim.api.nvim_win_get_buf(win)
         local t = vim.b[buf].snacks_terminal
         if t and type(t) == "table" and type(t.env) == "table" then
+            ---@type tt.terminal.Orientation|nil
             local orientation
             if t.env.snacks_terminal_vertical then
                 orientation = "vertical"

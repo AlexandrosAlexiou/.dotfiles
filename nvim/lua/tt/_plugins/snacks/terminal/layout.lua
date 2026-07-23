@@ -1,12 +1,24 @@
 local state = require "tt._plugins.snacks.terminal.state"
 local win = require "tt._plugins.snacks.terminal.window"
 
+---@alias tt.terminal.WinLayoutDir "row"|"col"
+
+---Layout tree node returned by `vim.fn.winlayout()`.
+---Shape is one of:
+---  - Leaf:   `{ "leaf", winid: integer }`
+---  - Branch: `{ "row"|"col", children: tt.terminal.WinLayoutNode[] }`
+---Typed as plain `table` because LuaLS cannot narrow the tuple union on `node[1]`.
+---@alias tt.terminal.WinLayoutNode table
+
+---@alias tt.terminal.TermSet table<integer, boolean>          # window handle → present
+---@alias tt.terminal.TermMap table<integer, tt.terminal.Key>  # window handle → "orientation:count"
+
 local M = {}
 
 ---Count terminal leaf windows inside a layout-tree node.
----@param node table Layout tree node from vim.fn.winlayout()
----@param term_set table<integer, boolean> Set of terminal window handles
----@return integer
+---@param node tt.terminal.WinLayoutNode Layout tree node from `vim.fn.winlayout()`
+---@param term_set tt.terminal.TermSet Set of terminal window handles
+---@return integer count Number of terminal leaves in the subtree
 local function count_term_leaves(node, term_set)
     if node[1] == "leaf" then
         return term_set[node[2]] and 1 or 0
@@ -20,9 +32,9 @@ end
 
 ---Count visual columns for width distribution.
 ---A leaf or vertical stack ("col") = 1 column; a row = sum of children's columns.
----@param node table
----@param term_set table<integer, boolean>
----@return integer
+---@param node tt.terminal.WinLayoutNode
+---@param term_set tt.terminal.TermSet
+---@return integer columns Column units contributed by this subtree
 local function column_units(node, term_set)
     if node[1] == "leaf" then
         return term_set[node[2]] and 1 or 0
@@ -42,9 +54,9 @@ end
 
 ---Count visual rows for height distribution.
 ---A leaf or horizontal row ("row") = 1 row; a col = sum of children's rows.
----@param node table
----@param term_set table<integer, boolean>
----@return integer
+---@param node tt.terminal.WinLayoutNode
+---@param term_set tt.terminal.TermSet
+---@return integer rows Row units contributed by this subtree
 local function row_units(node, term_set)
     if node[1] == "leaf" then
         return term_set[node[2]] and 1 or 0
@@ -63,8 +75,8 @@ local function row_units(node, term_set)
 end
 
 ---Return the first leaf window-id in a subtree.
----@param node table
----@return integer|nil
+---@param node tt.terminal.WinLayoutNode
+---@return integer|nil win Window handle of the first descendant leaf, or nil
 local function first_leaf_win(node)
     if node[1] == "leaf" then
         return node[2]
@@ -73,8 +85,8 @@ local function first_leaf_win(node)
 end
 
 ---Compute total width of a layout subtree (leaves + separators).
----@param node table
----@return integer
+---@param node tt.terminal.WinLayoutNode
+---@return integer width Combined width in screen cells, including vertical separators
 local function subtree_width(node)
     if node[1] == "leaf" then
         return vim.api.nvim_win_is_valid(node[2]) and vim.api.nvim_win_get_width(node[2]) or 0
@@ -97,8 +109,8 @@ local function subtree_width(node)
 end
 
 ---Compute total height of a layout subtree (leaves + statuslines).
----@param node table
----@return integer
+---@param node tt.terminal.WinLayoutNode
+---@return integer height Combined height in screen cells, including status lines
 local function subtree_height(node)
     if node[1] == "leaf" then
         return vim.api.nvim_win_is_valid(node[2]) and vim.api.nvim_win_get_height(node[2]) or 0
@@ -121,8 +133,9 @@ local function subtree_height(node)
 end
 
 ---Walk the layout tree and equalize terminal windows proportionally.
----@param node table Layout tree node
----@param term_set table<integer, boolean>
+---@param node tt.terminal.WinLayoutNode Layout tree node
+---@param term_set tt.terminal.TermSet
+---@return nil
 local function equalize_node(node, term_set)
     if node[1] == "leaf" then
         return
@@ -184,11 +197,13 @@ local function equalize_node(node, term_set)
 end
 
 ---Equalize all terminal windows by walking the layout tree.
+---@return nil
 function M.equalize_terminals()
     local wins = win.all_terminal_windows()
     if #wins < 2 then
         return
     end
+    ---@type tt.terminal.TermSet
     local term_set = {}
     for _, w in ipairs(wins) do
         term_set[w] = true
@@ -203,9 +218,9 @@ function M.equalize_terminals()
 end
 
 ---Recursively collect sorted terminal keys from a layout subtree.
----@param node table
----@param term_map table<integer, string>
----@return string[]
+---@param node tt.terminal.WinLayoutNode
+---@param term_map tt.terminal.TermMap
+---@return tt.terminal.Key[] keys Sorted list of terminal keys found in the subtree
 local function collect_term_keys(node, term_map)
     if node[1] == "leaf" then
         local key = term_map[node[2]]
@@ -222,9 +237,9 @@ local function collect_term_keys(node, term_map)
 end
 
 ---Capture proportional layout as a tree snapshot.
----@param node table
----@param term_map table<integer, string>
----@return table|nil snapshot
+---@param node tt.terminal.WinLayoutNode
+---@param term_map tt.terminal.TermMap
+---@return tt.terminal.LayoutSnapshot|nil snapshot Snapshot of the subtree, or nil if no terminals found
 local function snapshot_node(node, term_map)
     if node[1] == "leaf" then
         return nil
@@ -280,7 +295,7 @@ local function snapshot_node(node, term_map)
 end
 
 ---Capture a full layout snapshot of all terminal windows.
----@return table|nil
+---@return tt.terminal.LayoutSnapshot|nil snapshot Root snapshot, or nil if no terminals
 function M.snapshot_layout()
     local term_map = win.build_term_map()
     if vim.tbl_isempty(term_map) then
@@ -290,9 +305,10 @@ function M.snapshot_layout()
 end
 
 ---Collect all terminal keys mentioned in a snapshot.
----@param snap table|nil
----@return table<string, boolean>
+---@param snap tt.terminal.LayoutSnapshot|nil
+---@return table<tt.terminal.Key, boolean> keys Set of terminal keys referenced in the snapshot
 local function all_snapshot_keys(snap)
+    ---@type table<tt.terminal.Key, boolean>
     local keys = {}
     if not snap then
         return keys
@@ -327,9 +343,10 @@ local function all_snapshot_keys(snap)
 end
 
 ---Apply a saved snapshot to the current window tree.
----@param node table
----@param term_map table<integer, string>
----@param snap table
+---@param node tt.terminal.WinLayoutNode
+---@param term_map tt.terminal.TermMap
+---@param snap tt.terminal.LayoutSnapshot|nil
+---@return nil
 local function restore_node(node, term_map, snap)
     if not snap or node[1] == "leaf" then
         return
@@ -440,6 +457,7 @@ end
 
 ---Restore terminal layout from saved snapshot.
 ---Falls back to equalize_terminals() if snapshot doesn't match current state.
+---@return nil
 function M.restore_layout()
     local wins = win.all_terminal_windows()
     if #wins == 0 then
@@ -458,6 +476,7 @@ function M.restore_layout()
         return
     end
 
+    ---@type table<tt.terminal.Key, boolean>
     local current_keys = {}
     for _, key in pairs(term_map) do
         current_keys[key] = true
@@ -482,6 +501,7 @@ function M.restore_layout()
 end
 
 ---Capture current layout proportions (called on WinResized/WinLeave).
+---@return nil
 function M.capture_layout()
     if state.restoring then
         return
