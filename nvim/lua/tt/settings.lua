@@ -74,6 +74,10 @@ opt.inccommand = "split"
 opt.splitbelow = true
 opt.splitright = true
 
+-- Keep buffer text pinned in place when splits open/close instead of
+-- scrolling to keep the cursor centered.
+opt.splitkeep = "screen"
+
 -- Set automatic wrap to display lines in next line (this is the default)
 opt.wrap = true
 
