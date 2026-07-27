@@ -224,6 +224,7 @@ function M.equalize_terminals()
         end
     end
     equalize_node(vim.fn.winlayout(), term_set)
+    win.lock_terminals()
 end
 
 ---Recursively collect sorted terminal keys from a layout subtree.
@@ -498,6 +499,7 @@ function M.restore_layout()
     end
 
     restore_node(vim.fn.winlayout(), term_map, state.saved_layout)
+    win.lock_terminals()
 end
 
 ---Capture current layout proportions (called on WinResized/WinLeave).

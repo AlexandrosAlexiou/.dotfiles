@@ -127,6 +127,31 @@ function M.build_term_map()
     return map
 end
 
+---Re-apply Snacks' default size locks to every managed terminal window.
+---Vertical (right) terminals fix their width; horizontal (bottom) terminals
+---fix their height (mirrors snacks/win.lua). The layout code unfixes these to
+---apply manual sizes; re-locking afterwards lets a plain `wincmd =` (e.g. the
+---VimResized autocmd) equalize normal splits without flattening terminals.
+---@return nil
+function M.lock_terminals()
+    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+        if not vim.api.nvim_win_is_valid(win) then
+            goto continue
+        end
+        local t = vim.b[vim.api.nvim_win_get_buf(win)].snacks_terminal
+        if t and type(t) == "table" and type(t.env) == "table" then
+            if t.env.snacks_terminal_vertical then
+                vim.wo[win].winfixwidth = true
+                vim.wo[win].winfixheight = false
+            elseif t.env.snacks_terminal_horizontal then
+                vim.wo[win].winfixheight = true
+                vim.wo[win].winfixwidth = false
+            end
+        end
+        ::continue::
+    end
+end
+
 ---Prevent Snacks' built-in equalize from grouping unrelated terminals.
 ---Gives each managed terminal a unique position tag.
 ---@return nil
