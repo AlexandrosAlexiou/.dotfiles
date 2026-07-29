@@ -950,6 +950,7 @@ return {
                     lambda_receivers_parameters = true, -- Show lambda receivers/parameters
                     value_ranges = true, -- Show value ranges
                     kotlin_time = true, -- Show kotlin.time warnings
+                    call_chains = true, -- Show call-chain intermediate types
                 },
             }
         end,
