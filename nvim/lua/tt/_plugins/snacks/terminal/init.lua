@@ -64,6 +64,7 @@ local function create_terminal(position)
 
     local lr = vim.o.lazyredraw
     vim.o.lazyredraw = true
+    local ea = vim.o.equalalways
     vim.o.equalalways = false
 
     for _, w in ipairs(win.all_terminal_windows()) do
@@ -88,6 +89,7 @@ local function create_terminal(position)
     layout.equalize_terminals()
     layout.equalize_terminals()
 
+    vim.o.equalalways = ea
     vim.o.lazyredraw = lr
     vim.cmd "redraw"
 end
