@@ -7,15 +7,6 @@ return {
                 require("tt._plugins.nightfox").setup()
             end,
         },
-        {
-            "rose-pine/neovim",
-            lazy = true,
-            name = "rose-pine",
-            config = function()
-                require("tt._plugins.rose-pine").setup()
-            end,
-        },
-        { "Mofiqul/vscode.nvim", lazy = true },
     },
 
     -- Snacks a collection of QoL plugins
