@@ -52,7 +52,6 @@ function M.setup()
         },
         groups = {
             all = {
-                BarbecueSeparator = { fg = colors.white },
                 BlinkCmpKind = { bg = colors.bg0 },
                 BlinkCmpLabelMatch = { style = "bold" },
                 BlinkCmpMenu = { bg = colors.bg0 },
