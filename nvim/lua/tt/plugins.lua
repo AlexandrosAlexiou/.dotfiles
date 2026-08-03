@@ -50,19 +50,6 @@ return {
         end,
     },
 
-    -- Winbar
-    {
-        "utilyre/barbecue.nvim",
-        event = "BufRead",
-        dependencies = {
-            "SmiteshP/nvim-navic",
-            "nvim-tree/nvim-web-devicons",
-        },
-        config = function()
-            require("tt._plugins.barbecue").setup()
-        end,
-    },
-
     -- Completely overhaul the UI
     {
         "folke/noice.nvim",
