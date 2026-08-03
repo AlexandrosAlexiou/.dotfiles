@@ -319,6 +319,8 @@ return {
                 require("tt._plugins.git.git-conflict").setup()
             end,
         },
+        -- Git integration
+        { "tpope/vim-fugitive" },
     },
 
     -- Autocomplete menu and snippets
@@ -451,31 +453,6 @@ return {
         end,
     },
 
-    -- Telescope fuzzy finding
-    {
-        "nvim-telescope/telescope.nvim",
-        cmd = "Telescope",
-        keys = {
-            "<leader>fp",
-            "<leader>T",
-            "<leader>gb",
-            -- "<leader>gv",
-        },
-        dependencies = {
-            { "nvim-lua/plenary.nvim" },
-            {
-                "nvim-telescope/telescope-fzf-native.nvim",
-                build = vim.fn.executable "make" == 1 and "make" or "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && \
-                    cmake --build build --config Release  &&  cmake --install build --prefix build",
-            },
-            { "fdschmidt93/telescope-egrepify.nvim" },
-            { "tsakirist/telescope-lazy.nvim" },
-        },
-        config = function()
-            require("tt._plugins.telescope").setup()
-        end,
-    },
-
     -- Smart and powerful comment plugin
     {
         "numToStr/Comment.nvim",
@@ -497,27 +474,6 @@ return {
         event = "BufReadPre",
         config = function()
             require("tt._plugins.indent-blankline").setup()
-        end,
-    },
-
-    -- Highlight current context
-    {
-        "shellRaining/hlchunk.nvim",
-        event = { "BufReadPre", "BufNewFile" },
-        config = function()
-            ---@type HlChunk.UserConf
-            require("hlchunk").setup {
-                chunk = {
-                    enable = true,
-                    style = {
-                        { fg = "#806d9c" },
-                        { fg = "#806d9c" },
-                    },
-                    delay = 50,
-                    duration = 200,
-                    textobject = "ii",
-                },
-            }
         end,
     },
 
@@ -650,15 +606,6 @@ return {
         end,
     },
 
-    -- Peak lines easily with :<number>
-    {
-        "nacro90/numb.nvim",
-        event = "BufRead",
-        config = function()
-            require("tt._plugins.numb").setup()
-        end,
-    },
-
     -- Search & Replace UI
     {
         "MagicDuck/grug-far.nvim",
@@ -670,19 +617,6 @@ return {
         },
         config = function()
             require("tt._plugins.grug-far").setup()
-        end,
-    },
-
-    -- Create custom submodes and menus
-    {
-        "nvimtools/hydra.nvim",
-        keys = {
-            "<leader>w",
-            "<leader>rs",
-        },
-        dependencies = { "lewis6991/gitsigns.nvim", "mrjones2014/smart-splits.nvim" },
-        config = function()
-            require("tt._plugins.hydra").setup()
         end,
     },
 
@@ -779,30 +713,6 @@ return {
         opts = {},
     },
 
-    -- Improve Markdown rendering
-    {
-        "MeanderingProgrammer/render-markdown.nvim",
-        ft = "markdown",
-        dependencies = {
-            "nvim-treesitter/nvim-treesitter",
-            "nvim-tree/nvim-web-devicons",
-        },
-        opts = {
-            code = {
-                position = "right",
-                width = "block",
-                right_pad = 1,
-                left_pad = 1,
-            },
-        },
-    },
-
-    -- Nice looking animation for the current buffer
-    {
-        "eandrju/cellular-automaton.nvim",
-        cmd = "CellularAutomaton",
-    },
-
     -- Minimal Eye-candy keys screencaster
     {
         "nvchad/showkeys",
@@ -820,82 +730,6 @@ return {
         cmd = "StartupTime",
         config = function()
             vim.g.startuptime_tries = 10
-        end,
-    },
-
-    -- Git integration
-    { "tpope/vim-fugitive" },
-
-    -- Debug Adapter Protocol client (used by jdtls and kotlin.nvim)
-    {
-        "mfussenegger/nvim-dap",
-        keys = {
-            {
-                "<leader>db",
-                function()
-                    require("dap").toggle_breakpoint()
-                end,
-                desc = "DAP: toggle breakpoint",
-            },
-            {
-                "<leader>dB",
-                function()
-                    require("dap").set_breakpoint(vim.fn.input "Condition: ")
-                end,
-                desc = "DAP: conditional breakpoint",
-            },
-            {
-                "<leader>dc",
-                function()
-                    require("dap").continue()
-                end,
-                desc = "DAP: continue",
-            },
-            {
-                "<leader>do",
-                function()
-                    require("dap").step_over()
-                end,
-                desc = "DAP: step over",
-            },
-            {
-                "<leader>di",
-                function()
-                    require("dap").step_into()
-                end,
-                desc = "DAP: step into",
-            },
-            {
-                "<leader>dO",
-                function()
-                    require("dap").step_out()
-                end,
-                desc = "DAP: step out",
-            },
-            {
-                "<leader>dr",
-                function()
-                    require("dap").repl.toggle()
-                end,
-                desc = "DAP: toggle REPL",
-            },
-            {
-                "<leader>dl",
-                function()
-                    require("dap").run_last()
-                end,
-                desc = "DAP: run last",
-            },
-            {
-                "<leader>dq",
-                function()
-                    require("dap").terminate()
-                end,
-                desc = "DAP: terminate",
-            },
-        },
-        config = function()
-            require("tt._plugins.dap").setup()
         end,
     },
 
@@ -953,46 +787,6 @@ return {
                     call_chains = true, -- Show call-chain intermediate types
                 },
             }
-        end,
-    },
-
-    -- Plugin for the yazi terminal file manager
-    {
-        "mikavilpas/yazi.nvim",
-        event = "VeryLazy",
-        dependencies = {
-            { "nvim-lua/plenary.nvim", lazy = true },
-        },
-        keys = {
-            {
-                "<leader>yc",
-                mode = { "n", "v" },
-                "<cmd>Yazi<cr>",
-                desc = "Open yazi at the current file",
-            },
-            {
-                -- Open in the current working directory
-                "<leader>cw",
-                "<cmd>Yazi cwd<cr>",
-                desc = "Open the file manager in nvim's working directory",
-            },
-            {
-                "<c-up>",
-                "<cmd>Yazi toggle<cr>",
-                desc = "Resume the last yazi session",
-            },
-        },
-        opts = {
-            open_for_directories = false,
-            keymaps = {
-                show_help = "<f1>",
-            },
-        },
-        init = function()
-            -- mark netrw as loaded so it's not loaded at all.
-            --
-            -- More details: https://github.com/mikavilpas/yazi.nvim/issues/802
-            vim.g.loaded_netrwPlugin = 1
         end,
     },
 

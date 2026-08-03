@@ -69,23 +69,13 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   │   ├── styles.lua
 │       │   │   ├── terminal.md
 │       │   │   └── zen.lua
-│       │   ├── telescope/
-│       │   │   ├── commands.lua
-│       │   │   ├── extensions.lua
-│       │   │   ├── init.lua
-│       │   │   ├── keymaps.lua
-│       │   │   ├── pickers.lua
-│       │   │   ├── previewers.lua
-│       │   │   └── utils.lua
 │       │   ├── barbecue.lua
 │       │   ├── blink-cmp.lua
 │       │   ├── comment.lua
-│       │   ├── dap.lua
 │       │   ├── dial.lua
 │       │   ├── dressing.lua
 │       │   ├── flash.lua
 │       │   ├── grug-far.lua
-│       │   ├── hydra.lua
 │       │   ├── indent-blankline.lua
 │       │   ├── jdtls.lua
 │       │   ├── lualine.lua
@@ -95,7 +85,6 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── nightfox.lua
 │       │   ├── noice.lua
 │       │   ├── notify.lua
-│       │   ├── numb.lua
 │       │   ├── oil.lua
 │       │   ├── resession.lua
 │       │   ├── rose-pine.lua
