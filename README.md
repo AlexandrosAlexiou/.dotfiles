@@ -86,7 +86,6 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 │       │   ├── notify.lua
 │       │   ├── oil.lua
 │       │   ├── resession.lua
-│       │   ├── rose-pine.lua
 │       │   ├── rustaceanvim.lua
 │       │   ├── smart-splits.lua
 │       │   ├── startify.lua
