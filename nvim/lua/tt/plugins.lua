@@ -93,21 +93,6 @@ return {
                 require("tt._plugins.lsp.mason").setup()
             end,
         },
-        -- Incremental LSP based renaming with command preview
-        {
-            "smjonas/inc-rename.nvim",
-            keys = { "<leader>rn", "<F2>" },
-            config = function()
-                require("inc_rename").setup {
-                    show_message = false,
-                }
-
-                local utils = require "tt.utils"
-                utils.map("n", { "<leader>rn", "<F2>" }, function()
-                    return ":IncRename " .. vim.fn.expand "<cword>"
-                end, { expr = true, desc = "Incremental LSP rename with preview" })
-            end,
-        },
         -- File operations using LSP
         {
             "antosha417/nvim-lsp-file-operations",
@@ -117,14 +102,6 @@ return {
                 "nvim-neo-tree/neo-tree.nvim",
             },
             config = true,
-        },
-        -- Show current code context
-        {
-            "SmiteshP/nvim-navic",
-            event = "BufReadPre",
-            config = function()
-                require("tt._plugins.lsp.nvim-navic").setup()
-            end,
         },
         -- Better LSP utilities
         {
@@ -144,35 +121,6 @@ return {
                         multilines = true,
                     },
                 }
-            end,
-        },
-        -- Sidebar with LSP symbols
-        {
-            "oskarrrrrrr/symbols.nvim",
-            keys = {
-                { "<leader>ss", "<Cmd>SymbolsToggle<CR>", mode = "n", desc = "Toggle the symbols sidebar" },
-            },
-            config = function()
-                local recipes = require "symbols.recipes"
-                require("symbols").setup(recipes.DefaultFilters, {
-                    sidebar = {
-                        auto_peek = true,
-                        open_direction = "right",
-                        close_on_goto = true,
-                        cursor_follow = false,
-                        keymaps = {
-                            ["go"] = "goto-symbol",
-                            ["P"] = "open-preview",
-                        },
-                    },
-                    providers = {
-                        lsp = {
-                            kinds = {
-                                default = require("tt.icons").kind,
-                            },
-                        },
-                    },
-                })
             end,
         },
         -- LSP diagnostics for all files
