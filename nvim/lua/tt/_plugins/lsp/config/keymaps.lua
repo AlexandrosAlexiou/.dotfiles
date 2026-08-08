@@ -36,38 +36,35 @@ local function hover_on_new_window()
 end
 
 local function goto_definition_split(split_type)
-    local definition_done = false
-
-    vim.lsp.buf_request(
-        0,
-        "textDocument/definition",
-        vim.lsp.util.make_position_params(0, "utf-8"),
-        function(_, result, ctx)
-            if definition_done then
+    -- Resolve the definition first, then open the target buffer directly in a
+    -- new split — the original buffer never appears in it (no flicker).
+    vim.lsp.buf.definition {
+        on_list = function(options)
+            local item = options.items and options.items[1]
+            if not item then
+                vim.notify("No definition found", vim.log.levels.INFO)
                 return
             end
 
-            if result and result[1] then
-                definition_done = true
-
-                -- Always create the split first
-                vim.cmd(split_type == "v" and "vsplit" or "split")
-
-                -- Check if target is a directory
-                local uri = result[1].uri or result[1].targetUri
-                local target_path = vim.uri_to_fname(uri)
-
-                if vim.fn.isdirectory(target_path) == 1 then
-                    -- Open oil in the new split
-                    require("oil").open(target_path)
-                else
-                    -- Normal file, show document in the new split
-                    local client = vim.lsp.get_client_by_id(ctx.client_id)
-                    vim.lsp.util.show_document(result[1], client and client.offset_encoding or "utf-8")
-                end
+            if vim.fn.isdirectory(item.filename) == 1 then
+                vim.cmd(split_type == "v" and "rightbelow vsplit" or "rightbelow split")
+                vim.w.goto_split = true
+                require("oil").open(item.filename)
+                return
             end
-        end
-    )
+
+            -- bufadd + nvim_open_win loads the buffer straight into the new
+            -- window (BufReadCmd handles jar://jrt:// decompiled sources)
+            local buf = vim.fn.bufadd(item.filename)
+            vim.bo[buf].buflisted = true
+            local win = vim.api.nvim_open_win(buf, true, {
+                split = split_type == "v" and "right" or "below",
+                win = 0,
+            })
+            vim.w[win].goto_split = true
+            pcall(vim.api.nvim_win_set_cursor, win, { item.lnum, item.col - 1 })
+        end,
+    }
 end
 
 function M.on_attach(_, bufnr)

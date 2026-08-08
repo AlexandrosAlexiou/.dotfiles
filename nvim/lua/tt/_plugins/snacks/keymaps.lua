@@ -12,7 +12,20 @@ local function setup_generic_keymaps()
         Snacks.notifier.hide()
     end, { desc = "Hide all notifications" })
 
-    utils.map("n", "<leader>bd", Snacks.bufdelete.delete, { desc = "Delete current buffer" })
+    utils.map("n", "<leader>bd", function()
+        -- In a goto-split window (gv/gh), close the window instead of
+        -- swapping in the previous buffer (avoids duplicate splits)
+        if vim.w.goto_split and #vim.api.nvim_tabpage_list_wins(0) > 1 then
+            local buf = vim.api.nvim_get_current_buf()
+            vim.api.nvim_win_close(0, false)
+            -- Delete the buffer too if no other window shows it
+            if vim.fn.getbufinfo(buf)[1] and #vim.fn.getbufinfo(buf)[1].windows == 0 then
+                Snacks.bufdelete.delete { buf = buf }
+            end
+            return
+        end
+        Snacks.bufdelete.delete()
+    end, { desc = "Delete current buffer" })
 
     utils.map("n", "<leader>bD", function()
         Snacks.bufdelete.delete { force = true }
