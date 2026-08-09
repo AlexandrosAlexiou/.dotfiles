@@ -12,7 +12,7 @@ local function zoom_toggle_new_tab()
 
     -- Get the windows in the current tab, excluding those with filetypes listed in `excluded_filetypes`
     local function get_tab_windows()
-        local excluded_filetypes = { ["smear-cursor"] = true, snacks_notif = true, noice = true }
+        local excluded_filetypes = { snacks_notif = true, noice = true }
         local tab_windows = vim.api.nvim_tabpage_list_wins(0)
         return vim.iter(tab_windows)
             :filter(function(window)
