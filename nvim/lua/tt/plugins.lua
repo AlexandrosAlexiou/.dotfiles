@@ -659,13 +659,55 @@ return {
         end,
     },
 
-    -- Java development utilities
+    -- IntelliJ LSP server
     {
-        "mfussenegger/nvim-jdtls",
-        ft = { "java" },
-        dependencies = { "neovim/nvim-lspconfig" },
+        dir = "~/sources/intellij-server.nvim",
+        ft = { "java", "kotlin" },
+        dependencies = { "mfussenegger/nvim-dap" },
+        build = ":IntellijServerInstall",
         config = function()
-            require("tt._plugins.jdtls").setup()
+            require("intellij-server").setup {
+                autostart = true,
+                on_attach = function(_, bufnr)
+                    local utils = require "tt.utils"
+                    utils.map({ "n", "v" }, "<leader>fi", function()
+                        vim.lsp.buf.format { async = true, name = "intellij-server" }
+                    end, { buffer = bufnr, desc = "Format buffer with IntelliJ" })
+                end,
+                -- stylua: ignore
+                settings = {
+                    -- Kotlin inlay hint categories
+                    ["jetbrains.kotlin.hints.parameters"] = true,                  -- parameter names
+                    ["jetbrains.kotlin.hints.parameters.compiled"] = true,         -- parameter names from compiled code
+                    ["jetbrains.kotlin.hints.parameters.excluded"] = false,        -- parameter names for excluded methods
+                    ["jetbrains.kotlin.hints.settings.types.property"] = true,     -- property types
+                    ["jetbrains.kotlin.hints.settings.types.variable"] = true,     -- local variable types
+                    ["jetbrains.kotlin.hints.type.function.return"] = true,        -- function return types
+                    ["jetbrains.kotlin.hints.type.function.parameter"] = true,     -- function parameter types
+                    ["jetbrains.kotlin.hints.settings.lambda.return"] = true,      -- lambda return types
+                    ["jetbrains.kotlin.hints.lambda.receivers.parameters"] = true, -- lambda receivers/parameters
+                    ["jetbrains.kotlin.hints.settings.value.ranges"] = true,       -- value ranges
+                    ["jetbrains.kotlin.hints.value.kotlin.time"] = true,           -- kotlin.time values
+                    ["jetbrains.kotlin.hints.call.chains"] = false,                -- call-chain intermediate types
+                    -- Java inlay hint categories
+                    ["jetbrains.java.hints.settings.method parameter"] = true,     -- parameter names
+                    ["jetbrains.java.hints.types.local variable"] = true,          -- local variable types
+                    ["jetbrains.java.hints.collapse complex types"] = true,        -- collapse complex types
+                    ["jetbrains.java.hints.types.call chain"] = true,              -- call-chain types
+                },
+                inlay_hints = { enabled = false },
+                folding = { enabled = true },
+                code_lens = { enabled = true },
+                inline_completion = {
+                    enabled = true,
+                    keymaps = {
+                        show = "<M-\\>",
+                        accept = "<Tab>",
+                        dismiss = "<Esc>",
+                    },
+                },
+                dap = { enabled = true },
+            }
         end,
     },
 
@@ -680,41 +722,41 @@ return {
         end,
     },
 
-    -- Kotlin development utilities
-    {
-        "AlexandrosAlexiou/kotlin.nvim",
-        ft = { "kotlin" },
-        dependencies = { "mason.nvim", "mason-lspconfig.nvim", "oil.nvim" },
-        config = function()
-            require("kotlin").setup {
-                root_markers = {
-                    "gradlew",
-                    ".git",
-                    "mvnw",
-                    "settings.gradle",
-                },
-                jvm_args = {
-                    "-Xmx4G",
-                    "-Xms4G",
-                },
-                inlay_hints = {
-                    enabled = true, -- Enable inlay hints (auto-enable on LSP attach)
-                    parameters = true, -- Show parameter names
-                    parameters_compiled = true, -- Show compiled parameter names
-                    parameters_excluded = false, -- Show excluded parameter names
-                    types_property = true, -- Show property types
-                    types_variable = true, -- Show local variable types
-                    function_return = true, -- Show function return types
-                    function_parameter = true, -- Show function parameter types
-                    lambda_return = true, -- Show lambda return types
-                    lambda_receivers_parameters = true, -- Show lambda receivers/parameters
-                    value_ranges = true, -- Show value ranges
-                    kotlin_time = true, -- Show kotlin.time warnings
-                    call_chains = true, -- Show call-chain intermediate types
-                },
-            }
-        end,
-    },
+    -- -- Kotlin development utilities
+    -- {
+    --     "AlexandrosAlexiou/kotlin.nvim",
+    --     ft = { "kotlin" },
+    --     dependencies = { "mason.nvim", "mason-lspconfig.nvim", "oil.nvim" },
+    --     config = function()
+    --         require("kotlin").setup {
+    --             root_markers = {
+    --                 "gradlew",
+    --                 ".git",
+    --                 "mvnw",
+    --                 "settings.gradle",
+    --             },
+    --             jvm_args = {
+    --                 "-Xmx4G",
+    --                 "-Xms4G",
+    --             },
+    --             inlay_hints = {
+    --                 enabled = true, -- Enable inlay hints (auto-enable on LSP attach)
+    --                 parameters = true, -- Show parameter names
+    --                 parameters_compiled = true, -- Show compiled parameter names
+    --                 parameters_excluded = false, -- Show excluded parameter names
+    --                 types_property = true, -- Show property types
+    --                 types_variable = true, -- Show local variable types
+    --                 function_return = true, -- Show function return types
+    --                 function_parameter = true, -- Show function parameter types
+    --                 lambda_return = true, -- Show lambda return types
+    --                 lambda_receivers_parameters = true, -- Show lambda receivers/parameters
+    --                 value_ranges = true, -- Show value ranges
+    --                 kotlin_time = true, -- Show kotlin.time warnings
+    --                 call_chains = true, -- Show call-chain intermediate types
+    --             },
+    --         }
+    --     end,
+    -- },
 
     -- Full-text search powered by Tantivy
     {
