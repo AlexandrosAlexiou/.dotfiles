@@ -133,14 +133,13 @@ local function toggle_terminal(key)
     win.defuse_snacks_equalize()
 
     if was_visible then
-        if #win.visible_terminal_keys() == 0 then
-            vim.o.equalalways = ea
-        end
+        vim.o.equalalways = ea
         vim.o.lazyredraw = lr
         vim.cmd.stopinsert()
     else
         layout.restore_layout()
         layout.restore_layout()
+        vim.o.equalalways = ea
         vim.o.lazyredraw = lr
         vim.cmd "redraw"
         local snap = state.saved_layout
@@ -190,6 +189,7 @@ local function toggle_all_terminals()
         return sa < sb
     end)
 
+    local ea = vim.o.equalalways
     vim.o.equalalways = false
     state.restoring = true
 
@@ -233,6 +233,7 @@ local function toggle_all_terminals()
     layout.restore_layout()
     layout.restore_layout()
     state.restoring = false
+    vim.o.equalalways = ea
     vim.o.lazyredraw = lr
     vim.cmd "redraw"
 
@@ -254,6 +255,7 @@ function M.hide_all()
     end
     state.restore_snapshot = vis
     state.restoring = true
+    local ea = vim.o.equalalways
     vim.o.equalalways = false
     for _, key in ipairs(vis) do
         local cfg = state.registry[key]
@@ -265,6 +267,7 @@ function M.hide_all()
             })
         end
     end
+    vim.o.equalalways = ea
     state.restoring = false
 end
 
