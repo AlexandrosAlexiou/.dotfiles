@@ -19,6 +19,13 @@ function M.setup()
             enabled = true,
         },
         completion = {
+            accept = {
+                auto_brackets = {
+                    -- intellij-server inserts brackets server-side (applyEdit);
+                    -- blink's client-side () would double up.
+                    blocked_filetypes = { "java", "kotlin" },
+                },
+            },
             menu = {
                 border = "padded",
                 draw = {
