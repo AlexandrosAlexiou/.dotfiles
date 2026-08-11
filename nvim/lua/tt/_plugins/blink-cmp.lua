@@ -11,6 +11,9 @@ function M.setup()
         end,
         signature = {
             enabled = true,
+            window = {
+                border = "rounded",
+            },
         },
         appearance = {
             kind_icons = require("tt.icons").kind_trimmed,

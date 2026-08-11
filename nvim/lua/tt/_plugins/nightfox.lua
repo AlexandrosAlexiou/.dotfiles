@@ -58,6 +58,8 @@ function M.setup()
                 BlinkCmpMenuBorder = { fg = colors.bg0, bg = colors.bg0 },
                 BlinkCmpMenuSelection = { fg = colors.bg0, bg = colors.blue.bright },
                 BlinkCmpSource = { link = "Comment" },
+                BlinkCmpSignatureHelp = { bg = colors.bg1 },
+                BlinkCmpSignatureHelpBorder = { fg = colors.blue.bright, bg = colors.bg1 },
                 GitSignsAddInline = { bg = Color(spec.bg1):blend(Color(colors.green.dim), 0.55):to_css() },
                 GitSignsChangeInline = { bg = Color(spec.bg1):blend(Color(colors.yellow.dim), 0.55):to_css() },
                 GitSignsDeleteInline = { bg = Color(spec.bg1):blend(Color(colors.red.dim), 0.55):to_css() },
