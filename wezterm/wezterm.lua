@@ -53,8 +53,8 @@ config.adjust_window_size_when_changing_font_size = false
 config.pane_focus_follows_mouse = false
 
 -- Cursor
-config.default_cursor_style = "BlinkingBar"
-config.animation_fps = 1
+config.default_cursor_style = "SteadyBar"
+config.animation_fps = 60
 
 -- Command palette
 config.command_palette_fg_color = colors.blue

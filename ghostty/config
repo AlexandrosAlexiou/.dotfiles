@@ -7,6 +7,9 @@ adjust-cell-height = 35%
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2
 
+cursor-style = bar
+cursor-style-blink = false
+
 window-padding-balance = true
 window-save-state = always
 macos-titlebar-style=transparent
