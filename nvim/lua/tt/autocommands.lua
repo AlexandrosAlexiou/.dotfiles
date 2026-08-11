@@ -30,6 +30,13 @@ vim.api.nvim_create_autocmd("FileType", {
     desc = "Enable spellcheck for specific filetypes",
 })
 
+-- Automatically resize windows when host resizes
+vim.api.nvim_create_autocmd("VimResized", {
+    group = vim.api.nvim_create_augroup("tt.AutoResize", { clear = true }),
+    pattern = "*",
+    command = "tabdo wincmd =",
+    desc = "Automatically resize windows when host resizes",
+})
 
 -- Equalize splits when the host window (Neovide/terminal) is resized.
 -- Managed terminals are winfix-locked (see terminal/window.lua lock_terminals),
