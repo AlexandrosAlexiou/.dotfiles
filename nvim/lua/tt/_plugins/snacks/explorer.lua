@@ -69,6 +69,17 @@ M.explorer = {
         root:on("WinResized", function()
             update(preview_win)
         end)
+
+        -- Trigger split responsiveness when explorer opens
+        vim.schedule(function()
+            vim.cmd "wincmd ="
+        end)
+    end,
+    on_hide = function(picker)
+        -- Trigger split responsiveness when explorer closes
+        vim.schedule(function()
+            vim.cmd "wincmd ="
+        end)
     end,
     actions = {
         toggle_preview = function(picker)
