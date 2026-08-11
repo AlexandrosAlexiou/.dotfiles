@@ -279,7 +279,13 @@ function M.setup()
     vim.api.nvim_create_autocmd({ "WinResized", "WinLeave" }, {
         group = group,
         desc = "Persist snacks terminal layout proportions",
-        callback = layout.capture_layout,
+        callback = function()
+            -- Re-equalize terminals after external changes (e.g., wincmd =)
+            vim.schedule(function()
+                layout.equalize_terminals()
+                layout.capture_layout()
+            end)
+        end,
     })
 
     -- Last-terminal tracking
