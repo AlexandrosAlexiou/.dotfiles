@@ -78,12 +78,11 @@ opt.splitright = true
 -- scrolling to keep the cursor centered.
 opt.splitkeep = "screen"
 
--- Set automatic wrap to display lines in next line (this is the default)
-opt.wrap = true
+-- Keep long lines on a single screen line
+opt.wrap = false
 
--- Set the maximum text width before vim automatically wraps it, this inserts the EOL character
--- This is considered a hard-wrap, one can use linebreak to soft-wrap the lines w/o inserting EOL
-opt.textwidth = 120
+-- Disable automatic hard-wrapping while typing
+opt.textwidth = 0
 
 -- How text with conceal syntax will be shown
 opt.conceallevel = 0
