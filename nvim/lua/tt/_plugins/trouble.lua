@@ -70,9 +70,7 @@ function M.setup()
                 preview = {
                     type = "float",
                     relative = "win",
-                    border = "rounded",
-                    title = "LSP reference preview",
-                    title_pos = "center",
+                    border = "none",
                     size = {
                         height = 1,
                         width = 0.5,
