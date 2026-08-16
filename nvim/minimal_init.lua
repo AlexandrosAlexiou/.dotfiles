@@ -375,10 +375,6 @@ utils.map("n", "<Esc>^[", "<Esc>^[")
 -- Whole-word search
 utils.map("n", "<leader>/", ":/\\<\\><Left><Left>", { silent = false })
 
--- Change the default mouse scrolling wheel option
-utils.map({ "n", "x" }, "<ScrollWheelUp>", "4<C-y>")
-utils.map({ "n", "x" }, "<ScrollWheelDown>", "4<C-e>")
-
 -- Set a mark when moving more than 5 lines upwards/downards
 -- this will populate the jumplist enabling us to jump back with Ctrl-O
 utils.map("n", "k", [[(v:count > 5 ? "m'" . v:count : "") . 'k']], { expr = true })
