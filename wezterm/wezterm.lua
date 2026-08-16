@@ -7,6 +7,9 @@ local config = wezterm.config_builder()
 config.initial_cols = 170
 config.initial_rows = 55
 
+-- Rendering
+config.max_fps = 120
+
 -- Color
 config.color_scheme = "carbonfox"
 local colorscheme = wezterm.color.get_builtin_schemes()[config.color_scheme]
@@ -53,8 +56,10 @@ config.adjust_window_size_when_changing_font_size = false
 config.pane_focus_follows_mouse = false
 
 -- Cursor
-config.default_cursor_style = "SteadyBar"
-config.animation_fps = 60
+config.default_cursor_style = "BlinkingBlock"
+config.cursor_blink_rate = 600
+config.cursor_blink_ease_in = "Constant"
+config.cursor_blink_ease_out = "Constant"
 
 -- Command palette
 config.command_palette_fg_color = colors.blue
