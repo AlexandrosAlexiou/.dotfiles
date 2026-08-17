@@ -41,6 +41,9 @@ config.colors = {
 	},
 }
 
+-- How many lines of scrollback you want to retain
+config.scrollback_lines = 10000
+
 -- Tab
 config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
