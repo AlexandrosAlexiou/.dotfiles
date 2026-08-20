@@ -14,7 +14,7 @@ opt.showmode = false
 
 -- Highlight the current line and also highlight the column @120 (ruler)
 -- o.colorcolumn = 120
-opt.cursorline = true
+opt.cursorline = false
 
 -- Set hidden to on so as to be able to change buffers without saving first
 opt.hidden = true
