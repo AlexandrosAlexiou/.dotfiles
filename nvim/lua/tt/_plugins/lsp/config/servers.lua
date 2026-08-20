@@ -112,17 +112,15 @@ M.lsp_servers = {
             vim.lsp.enable "vue_ls"
         end,
         settings = {
-            complete_function_calls = true,
             vtsls = {
                 enableMoveToFileCodeAction = true,
-                tsserver = {
-                    enableMoveToFileCodeAction = true,
-                    autoUseWorkspaceTsdk = true,
-                    experimental = {
-                        completion = {
-                            enableServerSideFuzzyMatch = true,
-                        },
+                autoUseWorkspaceTsdk = true,
+                experimental = {
+                    completion = {
+                        enableServerSideFuzzyMatch = true,
                     },
+                },
+                tsserver = {
                     globalPlugins = {
                         {
                             name = "@vue/typescript-plugin",
@@ -139,6 +137,9 @@ M.lsp_servers = {
                 updateImportsOnFileMove = {
                     enabled = "always",
                 },
+                suggest = {
+                    completeFunctionCalls = true,
+                },
                 inlayHints = {
                     includeInlayParameterNameHints = "all",
                     includeInlayParameterNameHintsWhenArgumentMatchesName = false,
@@ -150,6 +151,9 @@ M.lsp_servers = {
                 },
             },
             javascript = {
+                suggest = {
+                    completeFunctionCalls = true,
+                },
                 inlayHints = {
                     includeInlayParameterNameHints = "all",
                     includeInlayParameterNameHintsWhenArgumentMatchesName = false,
