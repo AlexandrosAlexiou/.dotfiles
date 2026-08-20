@@ -103,13 +103,13 @@ function M.setup()
 
     utils.map({ "n", "i" }, "<C-d>", function()
         if not require("noice.lsp").scroll(4) then
-            return "<C-d>zz"
+            return "<C-d>"
         end
     end, { expr = true, desc = "Scroll window downwards" })
 
     utils.map({ "n", "i" }, "<C-u>", function()
         if not require("noice.lsp").scroll(-4) then
-            return "<C-u>zz"
+            return "<C-u>"
         end
     end, { expr = true, desc = "Scroll window upwards" })
 end
