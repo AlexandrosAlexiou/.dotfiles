@@ -249,8 +249,9 @@ local keys = {
 				if line == nil then
 					return
 				end
-				-- Will either set the new tab title to the line or fallback to the default mechanism
-				window:active_tab():set_title(line)
+				-- Will either pin the tab to the given title, or with an empty
+				-- line hand it back to the automatic naming
+				wezterm_extras.set_manual_title(window:active_tab(), line)
 			end),
 		}),
 	},
