@@ -668,6 +668,9 @@ return {
         config = function()
             require("intellij-server").setup {
                 autostart = true,
+                -- The server ships with a 2 GB heap, which pkl and other
+                -- dependency-heavy projects exhaust during import
+                jvm_args = { "-Xmx8g" },
                 on_attach = function(_, bufnr)
                     local utils = require "tt.utils"
                     utils.map({ "n", "v" }, "<leader>fi", function()
