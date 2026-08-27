@@ -63,7 +63,7 @@ local common_keys = {
     ["<C-v>"] = { "edit_vsplit", mode = { "n", "i" } },
     ["<C-x>"] = { "edit_split", mode = { "n", "i" } },
     ["g?"] = { "toggle_help_list", mode = { "n", "i" } },
-    ["?"] = { "toggle_preview", mode = { "n", "i" } },
+    ["<M-p>"] = { "toggle_preview", mode = { "n", "i" } },
 }
 
 ---Recent picker filter to avoid excluding files that reside in the stdpath("data") directory
