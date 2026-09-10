@@ -21,7 +21,7 @@ M.lsp_servers = {
             "--pch-storage=memory",
         },
     },
-    cmake = {},
+    neocmake = {},
     cssls = {},
     eslint = {
         settings = {
