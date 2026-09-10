@@ -661,7 +661,7 @@ return {
 
     -- IntelliJ LSP server
     {
-        dir = "~/sources/intellij-server.nvim",
+        dir = "~/Sources/intellij-server.nvim",
         ft = { "java", "kotlin" },
         dependencies = { "mfussenegger/nvim-dap" },
         build = ":IntellijServerInstall",
@@ -763,7 +763,7 @@ return {
 
     -- Full-text search powered by Tantivy
     {
-        dir = "~/sources/sakuin.nvim",
+        dir = "~/Sources/sakuin.nvim",
         build = function()
             require("sakuin.install").build()
         end,

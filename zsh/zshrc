@@ -114,9 +114,14 @@ export RIPGREP_CONFIG_PATH="$HOME/.config/rg/config"
 # Add ~/.local/bin to PATH
 export PATH="$HOME/.local/bin:$PATH"
 
-# Activate mise
-if command -v mise &>/dev/null; then
-  eval "$(mise activate zsh)"
+# mise is activated by the oh-my-zsh `mise` plugin above. Drop its per-prompt
+# hook: it spawns `mise hook-env` on every prompt, which is slow on machines
+# where process launches are inspected (e.g. Defender). The chpwd hook stays,
+# so tools still switch on `cd`. Run `mise hook-env` manually after editing a
+# .mise.toml in the current directory.
+if (( $+functions[_mise_hook_precmd] )); then
+  autoload -Uz add-zsh-hook
+  add-zsh-hook -d precmd _mise_hook_precmd
 fi
 
 # Activate zoxide
@@ -159,17 +164,6 @@ export JAVA_HOME=`/usr/libexec/java_home -v 25`
 # This is done by evaluating the output of fnm env.
 # To automatically run fnm use when a directory contains a .node-version or .nvmrc files
 eval "$(fnm env --use-on-cd)"
-
-# Setup the path for ripgrep configuration
-export RIPGREP_CONFIG_PATH="$HOME/.config/rg/config"
-
-# Activate mise
-if command -v mise &>/dev/null; then
-  eval "$(mise activate zsh)"
-fi
-
-# Add ~/.local/bin to PATH
-export PATH="$HOME/.local/bin:$PATH"
 
 # Add the GNU libtool to PATH
 export PATH="/opt/homebrew/opt/libtool/libexec/gnubin:$PATH"
