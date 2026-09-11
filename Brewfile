@@ -4,6 +4,7 @@ tap "homebrew/bundle"
 tap "jesseduffield/lazygit"
 
 # brew
+brew "azure-cli"
 brew "bat"
 brew "btop"
 brew "cmake"
@@ -25,6 +26,8 @@ brew "helm"
 brew "htop"
 brew "jc"
 brew "jq"
+brew "k9s"
+brew "kubernetes-cli"
 brew 'ncdu'
 brew 'mas'
 brew "mise"
