@@ -1,3 +1,13 @@
+# Enable Powerlevel10k instant prompt. This MUST stay at the very top of this
+# file: it replays a cached render of the prompt so the command line is usable
+# within a few milliseconds, while the rest of this file (oh-my-zsh, compinit,
+# plugins, mise, ...) keeps loading behind it. Anything placed above it delays
+# the prompt by exactly that much, so only put initialization here that may
+# require console input (password prompts, [y/n] confirmations, etc.).
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # This is required to load zsh along with everything else as sudo
 # This effectively ignores permission issues and loads the system normally
 ZSH_DISABLE_COMPFIX=true
@@ -77,21 +87,46 @@ zstyle :omz:plugins:ssh-agent lazy yes
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions fast-syntax-highlighting colored-man-pages ssh-agent forgit autoupdate mise)
+#
+# `autoupdate` is deliberately absent: `zstyle ':omz:update' mode disabled`
+# above makes it a no-op, yet it still forks `tput` five times on every start
+# just to pick colors it never prints. Run `upgrade_oh_my_zsh_all` by hand, or
+# re-add the plugin, if you want custom plugins updated automatically again.
+#
+# `mise` is deliberately absent too; it is activated by hand below so that its
+# completion is not regenerated on every single shell start. See there.
+plugins=(git zsh-autosuggestions fast-syntax-highlighting colored-man-pages ssh-agent forgit)
 
 # zsh-autosuggestions re-binds every ZLE widget on each prompt unless told not
 # to. That costs ~13 ms per prompt for nothing; bindings do not change at
 # runtime here. Rebind manually with `_zsh_autosuggest_bind_widgets` if needed.
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
+# oh-my-zsh unconditionally runs `scutil --get LocalHostName` here to build
+# $SHORT_HOST, which it only uses to name the .zcompdump file. That is a ~10 ms
+# fork on this machine and there is no supported way to skip it: shadowing
+# `scutil` with a cached function works, but when the cache is empty it
+# silently yields `.zcompdump--5.9` and forces a full compinit rebuild. Not
+# worth the blast radius for ~10 ms of time that no longer blocks the prompt.
+
 # Fire up oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 
-# Enable Powerlevel10k instant prompt.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block, everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# Activate mise directly rather than through the oh-my-zsh `mise` plugin. The
+# plugin runs the same `eval "$(mise activate zsh)"`, but also re-runs
+# `mise completion zsh` in the background on *every* shell start to rewrite a
+# file that only changes when mise itself is upgraded -- one wasted exec per
+# terminal tab. `mise activate` bakes the live $PATH into its output, so that
+# fork genuinely cannot be cached; only the completion refresh is conditional.
+if (( $+commands[mise] )); then
+  eval "$(mise activate zsh)"
+  () {
+    local comp="${ZSH_CACHE_DIR:-$ZSH/cache}/completions/_mise"
+    [[ -s $comp && ! ${commands[mise]} -nt $comp ]] && return
+    command mkdir -p $comp:h
+    # Backgrounded and detached: nothing this shell does depends on it.
+    ( command mise completion zsh >| $comp 2>/dev/null & )
+  }
 fi
 
 # Set history configuration settings
@@ -119,19 +154,64 @@ export RIPGREP_CONFIG_PATH="$HOME/.config/rg/config"
 # Add ~/.local/bin to PATH
 export PATH="$HOME/.local/bin:$PATH"
 
-# mise is activated by the oh-my-zsh `mise` plugin above. Drop its per-prompt
-# hook: it spawns `mise hook-env` on every prompt, which is slow on machines
-# where process launches are inspected (e.g. Defender). The chpwd hook stays,
-# so tools still switch on `cd`. Run `mise hook-env` manually after editing a
-# .mise.toml in the current directory.
+# mise is activated by hand above, just after oh-my-zsh. Its hooks spawn
+# `mise hook-env` (~15 ms, spiky on machines where process launches are
+# inspected, e.g. Defender). Two changes keep tool switching but avoid the
+# spawn where it cannot matter:
+#   1. Drop the per-prompt hook entirely.
+#   2. On `cd`, only run hook-env when the set of mise config files visible
+#      from the new directory (walking up to /) or their mtimes changed. Moving
+#      around inside one project therefore costs a few stat() calls, not a
+#      process. mise here reads only its own files + .tool-versions
+#      (idiomatic_version_file_enable_tools is empty), so the list below is
+#      complete for this setup. If you enable idiomatic files, add them.
 if (( $+functions[_mise_hook_precmd] )); then
   autoload -Uz add-zsh-hook
   add-zsh-hook -d precmd _mise_hook_precmd
 fi
+if (( $+functions[_mise_hook_chpwd] )); then
+  zmodload -F zsh/stat b:zstat
+  typeset -ga __mise_config_names=(
+    mise.toml .mise.toml mise.local.toml .mise.local.toml
+    .config/mise.toml .config/mise/config.toml mise/config.toml .mise/config.toml
+    .tool-versions
+  )
+  # Fingerprint of every mise config file from $PWD up to /, with mtimes.
+  function __mise_fingerprint() {
+    local d=$PWD f; local -a st; REPLY=
+    while :; do
+      for f in $__mise_config_names; do
+        if [[ -f $d/$f ]]; then
+          zstat -A st +mtime -- $d/$f 2>/dev/null && REPLY+="$d/$f@$st[1];"
+        fi
+      done
+      [[ $d == / ]] && break
+      d=${d:h}
+    done
+  }
+  __mise_fingerprint; typeset -g __mise_last_fp=$REPLY
+  function _mise_hook_chpwd() {
+    export __MISE_ZSH_CHPWD_RAN=1
+    __mise_fingerprint
+    [[ $REPLY == $__mise_last_fp ]] && return 0
+    __mise_last_fp=$REPLY
+    _mise_hook --reason chpwd
+  }
+fi
 
 # Activate zoxide
-if command -v zoxide &>/dev/null; then
-    eval "$(zoxide init zsh)"
+if (( $+commands[zoxide] )); then
+    # `zoxide init zsh` prints the same static ~150-line script regardless of
+    # $PWD, $PATH or $_ZO_DATA_DIR (verified by diffing), so there is no reason
+    # to fork zoxide for it on every shell start. Cache it, and regenerate only
+    # when the binary itself is newer than the cache, i.e. after an upgrade.
+    () {
+        local cache="${XDG_CACHE_HOME:-$HOME/.cache}/zoxide-init.zsh"
+        if [[ ! -s $cache || ${commands[zoxide]} -nt $cache ]]; then
+            command zoxide init zsh >| $cache || return
+        fi
+        source $cache
+    }
     # zoxide's chpwd hook spawns `zoxide add` synchronously (~25 ms per cd).
     # Recording the directory does not need to block the prompt: do it in a
     # detached subshell so the next prompt appears immediately.
@@ -155,6 +235,13 @@ fi
 # Source my fzf configurations
 [ -f ~/.fzf.config ] && . ~/.fzf.config
 
+# Opt-in prompt latency profiler: `ZSH_PROMPT_PROFILE=1 exec zsh`, then work
+# normally. Prompts slower than 30 ms are logged to ~/.cache/zsh-prompt-profile.log
+# with a per-hook breakdown. Lives next to this file in the dotfiles repo.
+if [[ -n $ZSH_PROMPT_PROFILE ]]; then
+  source "${${(%):-%x}:A:h}/prompt-profile.zsh"
+fi
+
 # Setup custom keybinds
 # '^M' or '\n' play the role of <Enter> so that the command can run automatically
 bindkey -s '^F' 'foc\n'
@@ -168,8 +255,21 @@ bindkey -s '^P' 'spy\n'
 # Add gnubin to path
 export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 
-# Set to the default JDK
-export JAVA_HOME=`/usr/libexec/java_home -v 25`
+# Set to the default JDK. `/usr/libexec/java_home` forks a process on every
+# shell start to answer a question whose result only changes when a JDK is
+# installed, removed or upgraded, so cache the answer on disk. `home` is a
+# local, never the inherited $JAVA_HOME: mise exports its own JAVA_HOME from
+# the activation above and reusing it would silently make this line a no-op.
+() {
+  local cache="${XDG_CACHE_HOME:-$HOME/.cache}/java_home-25" home=
+  # `$(<file)` is read by the shell itself, no fork.
+  [[ -r $cache ]] && home="$(<$cache)"
+  if [[ ! -x $home/bin/java ]]; then
+    home="$(/usr/libexec/java_home -v 25 2>/dev/null)"
+    [[ -n $home ]] && print -r -- $home >| $cache
+  fi
+  [[ -n $home ]] && export JAVA_HOME=$home
+}
 
 # fnm is no longer activated here: node is managed by mise (global `node = "lts"`
 # in ~/.config/mise/config.toml, per-project via .tool-versions/.nvmrc/.node-version,
@@ -184,6 +284,3 @@ export PATH="/opt/homebrew/opt/libtool/libexec/gnubin:$PATH"
 export NEOVIDE_FRAMELESS=true
 export NEOVIDE_FRAME=none
 
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/alexioualexandros/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
