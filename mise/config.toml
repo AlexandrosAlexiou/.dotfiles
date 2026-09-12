@@ -12,11 +12,15 @@ fzf = "latest"
 go = "latest"
 glow = "latest"
 hyperfine = "latest"
+java = "temurin-25"
 jq = "latest"
 lazydocker = "latest"
 lazygit = "latest"
 node = "lts"
 rg = "latest"
+# components: rustup components mise re-adds on every install, so a new
+# `latest` toolchain does not lose rust-analyzer (used by Neovim).
+rust = { version = "latest", components = ["rust-analyzer"] }
 usage = "latest"
 yazi = "latest"
 zoxide = "latest"
@@ -24,3 +28,8 @@ zoxide = "latest"
 [settings]
 experimental = true
 not_found_auto_install = false
+
+[settings.npm]
+# mise's built-in npm installer (aube) skips lifecycle scripts, which leaves
+# `npm:pnpm` >= 10 as a broken stub. Real npm produces a working install.
+package_manager = "npm"
