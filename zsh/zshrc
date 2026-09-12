@@ -79,6 +79,11 @@ zstyle :omz:plugins:ssh-agent lazy yes
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git zsh-autosuggestions fast-syntax-highlighting colored-man-pages ssh-agent forgit autoupdate mise)
 
+# zsh-autosuggestions re-binds every ZLE widget on each prompt unless told not
+# to. That costs ~13 ms per prompt for nothing; bindings do not change at
+# runtime here. Rebind manually with `_zsh_autosuggest_bind_widgets` if needed.
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
 # Fire up oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 
@@ -127,6 +132,12 @@ fi
 # Activate zoxide
 if command -v zoxide &>/dev/null; then
     eval "$(zoxide init zsh)"
+    # zoxide's chpwd hook spawns `zoxide add` synchronously (~25 ms per cd).
+    # Recording the directory does not need to block the prompt: do it in a
+    # detached subshell so the next prompt appears immediately.
+    function __zoxide_hook() {
+        ( command zoxide add -- "$PWD" &>/dev/null & )
+    }
 fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -160,10 +171,11 @@ export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 # Set to the default JDK
 export JAVA_HOME=`/usr/libexec/java_home -v 25`
 
-# Environment variables need to be setup before you can start using fnm.
-# This is done by evaluating the output of fnm env.
-# To automatically run fnm use when a directory contains a .node-version or .nvmrc files
-eval "$(fnm env --use-on-cd)"
+# fnm is no longer activated here: node is managed by mise (global `node = "lts"`
+# in ~/.config/mise/config.toml, per-project via .tool-versions/.nvmrc/.node-version,
+# which mise also reads). fnm's `--use-on-cd` hook spawned `fnm use` on every cd
+# into a directory with a package.json, and its PATH entry could shadow mise's node.
+# To use fnm ad hoc: eval "$(fnm env)"
 
 # Add the GNU libtool to PATH
 export PATH="/opt/homebrew/opt/libtool/libexec/gnubin:$PATH"
