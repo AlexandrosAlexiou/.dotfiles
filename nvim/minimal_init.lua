@@ -602,22 +602,22 @@ local mini_plugin_setups = {
         }
 
         -- Customization
-        MiniPick.registry.buffers = function(local_opts)
+        pick.registry.buffers = function(local_opts)
             local wipeout_current = function()
-                local current = MiniPick.get_picker_matches().current
+                local current = pick.get_picker_matches().current
                 if current and current.bufnr then
                     vim.api.nvim_buf_delete(current.bufnr, { force = false })
 
                     -- Immediately refresh the list inside the UI
                     local updated_items = vim.tbl_filter(function(item)
                         return item.bufnr ~= current.bufnr
-                    end, MiniPick.get_picker_items() or {})
-                    MiniPick.set_picker_items(updated_items)
+                    end, pick.get_picker_items() or {})
+                    pick.set_picker_items(updated_items)
                 end
             end
 
             -- Forward parameters to the builtin picker, injecting your local mapping
-            return MiniPick.builtin.buffers(local_opts, {
+            return pick.builtin.buffers(local_opts, {
                 mappings = {
                     wipeout = { char = "<C-d>", func = wipeout_current },
                 },

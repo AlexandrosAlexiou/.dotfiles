@@ -90,6 +90,10 @@ do
         Watch._watches[cwd] = handle
     end
 
+    -- Deliberate monkey-patch of upstream's Watch.watch() (see the note above).
+    -- lua_ls cannot tell this apart from an accidental redefinition, so the
+    -- duplicate-set-field warning is suppressed for this line only.
+    ---@diagnostic disable-next-line: duplicate-set-field
     function Watch.watch()
         if scheduled then
             return
