@@ -680,8 +680,10 @@ return {
             require("intellij-server").setup {
                 autostart = true,
                 -- The server ships with a 2 GB heap, which pkl and other
-                -- dependency-heavy projects exhaust during import
-                jvm_args = { "-Xmx8g" },
+                -- dependency-heavy projects exhaust during import. The socket
+                -- mode server is shared, so this one heap serves every open
+                -- project at once — sized for concurrent imports.
+                jvm_args = { "-Xmx12g" },
                 on_attach = function(_, bufnr)
                     local utils = require "tt.utils"
                     utils.map({ "n", "v" }, "<leader>fi", function()
@@ -791,5 +793,83 @@ return {
                 },
             }
         end,
+    },
+
+    -- dap config
+    {
+        "mfussenegger/nvim-dap",
+
+        keys = {
+            {
+                "<leader>dc",
+                function()
+                    require("dap").continue()
+                end,
+                desc = "Debug: Continue",
+            },
+            {
+                "<leader>db",
+                function()
+                    require("dap").toggle_breakpoint()
+                end,
+                desc = "Debug: Toggle breakpoint",
+            },
+            {
+                "<leader>do",
+                function()
+                    require("dap").step_over()
+                end,
+                desc = "Debug: Step over",
+            },
+            {
+                "<leader>di",
+                function()
+                    require("dap").step_into()
+                end,
+                desc = "Debug: Step into",
+            },
+            {
+                "<leader>dO",
+                function()
+                    require("dap").step_out()
+                end,
+                desc = "Debug: Step out",
+            },
+            {
+                "<leader>dt",
+                function()
+                    require("dap").terminate()
+                end,
+                desc = "Debug: Terminate",
+            },
+            {
+                "<leader>dr",
+                function()
+                    require("dap").repl.open()
+                end,
+                desc = "Debug: REPL",
+            },
+            {
+                "<leader>dp",
+                function()
+                    require("dap").pause()
+                end,
+                desc = "Debug: Pause",
+            },
+            {
+                "<leader>du",
+                function()
+                    require("dap").up()
+                end,
+                desc = "Debug: Up stack frame",
+            },
+            {
+                "<leader>dd",
+                function()
+                    require("dap").down()
+                end,
+                desc = "Debug: Down stack frame",
+            },
+        },
     },
 }
