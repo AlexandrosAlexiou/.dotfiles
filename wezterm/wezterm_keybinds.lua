@@ -7,43 +7,43 @@ local M = {}
 local keys = {
 	{
 		key = "p",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.ActivateCommandPalette,
 	},
 	{
 		key = "O",
-		mods = "CTRL",
+		mods = "SUPER",
 		action = action.ShowDebugOverlay,
 	},
 	{
 		key = "=",
-		mods = "CTRL",
+		mods = "SUPER",
 		action = action.IncreaseFontSize,
 	},
 	{
 		key = "-",
-		mods = "CTRL",
+		mods = "SUPER",
 		action = action.DecreaseFontSize,
 	},
 	{
 		key = "0",
-		mods = "CTRL",
+		mods = "SUPER",
 		action = action.ResetFontSize,
 	},
 	{
 		key = ")",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.ResetFontSize,
 	},
 	{
 		key = "c",
 		mods = "SUPER",
-		action = wezterm.action.CopyTo("Clipboard"),
+		action = action.CopyTo("Clipboard"),
 	},
 	{
 		key = "v",
 		mods = "SUPER",
-		action = wezterm.action.PasteFrom("Clipboard"),
+		action = action.PasteFrom("Clipboard"),
 	},
 	{
 		key = "w",
@@ -52,12 +52,12 @@ local keys = {
 	},
 	{
 		key = "W",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.CloseCurrentPane({ confirm = true }),
 	},
 	{
 		key = "9",
-		mods = "CTRL",
+		mods = "SUPER|SHIFT",
 		action = action.ShowTabNavigator,
 	},
 	{
@@ -66,7 +66,7 @@ local keys = {
 	},
 	{
 		key = "z",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.TogglePaneZoomState,
 	},
 	{
@@ -82,21 +82,27 @@ local keys = {
 	{
 		key = "|",
 		mods = "SUPER",
-		action = action.SplitHorizontal({ domain = "CurrentPaneDomain", cwd = wezterm.home_dir }),
+		action = action.SplitHorizontal({
+			domain = "CurrentPaneDomain",
+			cwd = wezterm.home_dir,
+		}),
 	},
 	{
 		key = "Enter",
 		mods = "SUPER",
-		action = action.SplitVertical({ domain = "CurrentPaneDomain", cwd = wezterm.home_dir }),
+		action = action.SplitVertical({
+			domain = "CurrentPaneDomain",
+			cwd = wezterm.home_dir,
+		}),
 	},
 	{
 		key = "Tab",
-		mods = "CTRL",
+		mods = "SUPER",
 		action = action.ActivateTabRelative(1),
 	},
 	{
 		key = "Tab",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.ActivateTabRelative(-1),
 	},
 	{
@@ -166,22 +172,22 @@ local keys = {
 	},
 	{
 		key = "LeftArrow",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.ActivatePaneDirection("Left"),
 	},
 	{
 		key = "RightArrow",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.ActivatePaneDirection("Right"),
 	},
 	{
 		key = "UpArrow",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.ActivatePaneDirection("Up"),
 	},
 	{
 		key = "DownArrow",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.ActivatePaneDirection("Down"),
 	},
 	{
@@ -206,7 +212,7 @@ local keys = {
 	},
 	{
 		key = "r",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.ActivateKeyTable({
 			name = "resize_pane",
 			one_shot = false,
@@ -214,7 +220,7 @@ local keys = {
 	},
 	{
 		key = "a",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.ActivateKeyTable({
 			name = "activate_pane",
 			one_shot = true,
@@ -227,7 +233,7 @@ local keys = {
 	},
 	{
 		key = "x",
-		mods = "CTRL|SHIFT",
+		mods = "SUPER|SHIFT",
 		action = action.ActivateCopyMode,
 	},
 	{
@@ -249,6 +255,7 @@ local keys = {
 				if line == nil then
 					return
 				end
+
 				-- Will either pin the tab to the given title, or with an empty
 				-- line hand it back to the automatic naming
 				wezterm_extras.set_manual_title(window:active_tab(), line)
@@ -261,45 +268,119 @@ M.keys = wezterm_extras.merge_keys(keys, wezterm_extras.keys)
 
 M.key_tables = {
 	resize_pane = {
-		{ key = "LeftArrow", action = action.AdjustPaneSize({ "Left", 5 }) },
-		{ key = "RightArrow", action = action.AdjustPaneSize({ "Right", 5 }) },
-		{ key = "UpArrow", action = action.AdjustPaneSize({ "Up", 5 }) },
-		{ key = "DownArrow", action = action.AdjustPaneSize({ "Down", 5 }) },
-		{ key = "h", action = action.AdjustPaneSize({ "Left", 5 }) },
-		{ key = "l", action = action.AdjustPaneSize({ "Right", 5 }) },
-		{ key = "k", action = action.AdjustPaneSize({ "Up", 5 }) },
-		{ key = "j", action = action.AdjustPaneSize({ "Down", 5 }) },
-		{ key = "Escape", action = "PopKeyTable" },
+		{
+			key = "LeftArrow",
+			action = action.AdjustPaneSize({ "Left", 5 }),
+		},
+		{
+			key = "RightArrow",
+			action = action.AdjustPaneSize({ "Right", 5 }),
+		},
+		{
+			key = "UpArrow",
+			action = action.AdjustPaneSize({ "Up", 5 }),
+		},
+		{
+			key = "DownArrow",
+			action = action.AdjustPaneSize({ "Down", 5 }),
+		},
+		{
+			key = "h",
+			action = action.AdjustPaneSize({ "Left", 5 }),
+		},
+		{
+			key = "l",
+			action = action.AdjustPaneSize({ "Right", 5 }),
+		},
+		{
+			key = "k",
+			action = action.AdjustPaneSize({ "Up", 5 }),
+		},
+		{
+			key = "j",
+			action = action.AdjustPaneSize({ "Down", 5 }),
+		},
+		{
+			key = "Escape",
+			action = "PopKeyTable",
+		},
 	},
+
 	-- No keybind for this yet, `Action.PaneSelect` is more suitable instead of this
 	activate_pane = {
-		{ key = "LeftArrow", action = action.ActivatePaneDirection("Left") },
-		{ key = "RightArrow", action = action.ActivatePaneDirection("Right") },
-		{ key = "UpArrow", action = action.ActivatePaneDirection("Up") },
-		{ key = "DownArrow", action = action.ActivatePaneDirection("Down") },
-		{ key = "h", action = action.ActivatePaneDirection("Left") },
-		{ key = "l", action = action.ActivatePaneDirection("Right") },
-		{ key = "k", action = action.ActivatePaneDirection("Up") },
-		{ key = "j", action = action.ActivatePaneDirection("Down") },
-		{ key = "Escape", action = "PopKeyTable" },
+		{
+			key = "LeftArrow",
+			action = action.ActivatePaneDirection("Left"),
+		},
+		{
+			key = "RightArrow",
+			action = action.ActivatePaneDirection("Right"),
+		},
+		{
+			key = "UpArrow",
+			action = action.ActivatePaneDirection("Up"),
+		},
+		{
+			key = "DownArrow",
+			action = action.ActivatePaneDirection("Down"),
+		},
+		{
+			key = "h",
+			action = action.ActivatePaneDirection("Left"),
+		},
+		{
+			key = "l",
+			action = action.ActivatePaneDirection("Right"),
+		},
+		{
+			key = "k",
+			action = action.ActivatePaneDirection("Up"),
+		},
+		{
+			key = "j",
+			action = action.ActivatePaneDirection("Down"),
+		},
+		{
+			key = "Escape",
+			action = "PopKeyTable",
+		},
 	},
 }
 
 -- NOTE: Shift mod needs to be pressed for these
 M.mouse_bindings = {
 	{
-		event = { Up = { streak = 1, button = "Left" } },
+		event = {
+			Up = {
+				streak = 1,
+				button = "Left",
+			},
+		},
 		mods = "CTRL",
 		action = action.OpenLinkAtMouseCursor,
 	},
 	{
-		event = { Down = { streak = 1, button = { WheelUp = 1 } } },
-		mods = "CTRL",
+		event = {
+			Down = {
+				streak = 1,
+				button = {
+					WheelUp = 1,
+				},
+			},
+		},
+		mods = "SUPER",
 		action = action.IncreaseFontSize,
 	},
 	{
-		event = { Down = { streak = 1, button = { WheelDown = 1 } } },
-		mods = "CTRL",
+		event = {
+			Down = {
+				streak = 1,
+				button = {
+					WheelDown = 1,
+				},
+			},
+		},
+		mods = "SUPER",
 		action = action.DecreaseFontSize,
 	},
 }

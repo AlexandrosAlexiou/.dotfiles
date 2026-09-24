@@ -1,5 +1,5 @@
 local wezterm = require("wezterm")
-local wezterm_bindings = require("wezterm_bindings")
+local wezterm_keybinds = require("wezterm_keybinds")
 local wezterm_extras = require("wezterm_extras")
 local config = wezterm.config_builder()
 
@@ -72,9 +72,9 @@ config.command_palette_font_size = 13
 
 -- Bindings
 config.disable_default_key_bindings = true
-config.keys = wezterm_bindings.keys
-config.key_tables = wezterm_bindings.key_tables
-config.mouse_bindings = wezterm_bindings.mouse_bindings
+config.keys = wezterm_keybinds.keys
+config.key_tables = wezterm_keybinds.key_tables
+config.mouse_bindings = wezterm_keybinds.mouse_bindings
 
 -- Show which key table is active in the status area, and keep the tab titles in
 -- step with what each tab is running. This event is on a timer, which is what
