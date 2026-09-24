@@ -38,6 +38,7 @@ function M.setup_treesitter()
         "regex",
         "rust",
         "scss",
+        "sql",
         "toml",
         "tsx",
         "typescript",
