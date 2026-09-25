@@ -1,13 +1,3 @@
-# Enable Powerlevel10k instant prompt. This MUST stay at the very top of this
-# file: it replays a cached render of the prompt so the command line is usable
-# within a few milliseconds, while the rest of this file (oh-my-zsh, compinit,
-# plugins, mise, ...) keeps loading behind it. Anything placed above it delays
-# the prompt by exactly that much, so only put initialization here that may
-# require console input (password prompts, [y/n] confirmations, etc.).
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # This is required to load zsh along with everything else as sudo
 # This effectively ignores permission issues and loads the system normally
 ZSH_DISABLE_COMPFIX=true
@@ -111,6 +101,13 @@ ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
 # Fire up oh-my-zsh
 source $ZSH/oh-my-zsh.sh
+
+# Powerlevel10k instant prompt. Deliberately placed after oh-my-zsh: at the
+# top it paints a cached prompt and then git status pops in ~250 ms later,
+# which feels slower than rendering the full prompt once.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # Activate mise directly rather than through the oh-my-zsh `mise` plugin. The
 # plugin runs the same `eval "$(mise activate zsh)"`, but also re-runs
