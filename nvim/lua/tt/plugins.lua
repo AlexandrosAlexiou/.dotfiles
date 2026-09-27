@@ -9,6 +9,17 @@ return {
         },
     },
 
+    -- File icons
+    {
+        "nvim-tree/nvim-web-devicons",
+        lazy = true,
+        opts = {
+            override_by_extension = {
+                swift = { icon = "󰛥", color = "#F05138", name = "Swift" },
+            },
+        },
+    },
+
     -- Snacks a collection of QoL plugins
     {
         "folke/snacks.nvim",

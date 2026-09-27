@@ -39,6 +39,7 @@ function M.setup_treesitter()
         "rust",
         "scss",
         "sql",
+        "swift",
         "toml",
         "tsx",
         "typescript",

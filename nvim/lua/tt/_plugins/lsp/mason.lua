@@ -121,9 +121,14 @@ function M.setup()
     }
 
     -- Bridge between 'mason' and 'lspconfig' allowing for easy installation and setup of LSP severs
+    local mason_servers = vim.tbl_keys(servers.lsp_servers)
+    -- Exclude servers not in mason registry
+    mason_servers = vim.tbl_filter(function(server)
+        return server ~= "sourcekit"
+    end, mason_servers)
     require("mason-lspconfig").setup {
         -- A list of servers to automatically install if they're not already installed
-        ensure_installed = vim.tbl_keys(servers.lsp_servers),
+        ensure_installed = mason_servers,
 
         -- Do not automatically enable all the lsp servers here as it's handled in 'servers.lua'
         automatic_enable = false,

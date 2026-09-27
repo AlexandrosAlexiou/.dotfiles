@@ -176,6 +176,28 @@ M.lsp_servers = {
         },
     },
     zls = {},
+    sourcekit = {
+        -- clangd handles C/C++/ObjC
+        filetypes = { "swift" },
+        root_dir = function(bufnr, on_dir)
+            local fname = vim.api.nvim_buf_get_name(bufnr)
+            -- Generated interfaces (/var/folders/.../sourcekit-lsp) and SwiftPM
+            -- checkouts (.build/) belong to the already running project client
+            if fname:find("/sourcekit%-lsp/") or fname:find("/%.build/") then
+                local client = vim.lsp.get_clients({ name = "sourcekit" })[1]
+                if client and client.root_dir then
+                    return on_dir(client.root_dir)
+                end
+            end
+            local util = require("lspconfig.util")
+            on_dir(
+                util.root_pattern("buildServer.json", ".bsp")(fname)
+                    or util.root_pattern("*.xcodeproj", "*.xcworkspace")(fname)
+                    or util.root_pattern("compile_commands.json", "Package.swift")(fname)
+                    or vim.fs.root(fname, ".git")
+            )
+        end,
+    },
 }
 
 -- List of servers that should be manually installed via Mason
