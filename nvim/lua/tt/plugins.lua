@@ -201,6 +201,9 @@ return {
                 "DiffviewClose",
                 "DiffviewFileHistory",
             },
+            keys = {
+                { "<leader>gl", "<Cmd>DiffviewFileHistory %<CR>", desc = "File history" },
+            },
             init = function()
                 vim.cmd.cnoreabbrev "dvo DiffviewOpen"
                 vim.cmd.cnoreabbrev "dvc DiffviewClose"
