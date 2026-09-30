@@ -12,6 +12,8 @@ config.max_fps = 120
 
 -- Color
 config.color_scheme = "carbonfox"
+config.foreground_text_hsb = { hue = 1.0, saturation = 1.08, brightness = 1.1 }
+config.inactive_pane_hsb = { saturation = 1.0, brightness = 1.0 }
 local colorscheme = wezterm.color.get_builtin_schemes()[config.color_scheme]
 local colors = {
 	black = colorscheme.ansi[1],
