@@ -6,6 +6,7 @@ local config = wezterm.config_builder()
 -- Terminal
 config.initial_cols = 170
 config.initial_rows = 55
+config.enable_kitty_keyboard = true -- unambiguous Esc, fixes lazygit esc
 
 -- Rendering
 config.max_fps = 120
