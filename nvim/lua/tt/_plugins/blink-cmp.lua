@@ -103,6 +103,8 @@ function M.setup()
             ["<Tab>"] = { "select_next", "fallback" },
             ["<S-Tab>"] = { "select_prev", "fallback" },
             ["<M-x>"] = { "show_signature", "hide_signature", "fallback" },
+            ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+            ["<C-u>"] = { "scroll_documentation_up", "fallback" },
             ["<C-k>"] = false, -- Disable <C-k> as this interferes with insert mode mapping movement
         },
     }
