@@ -52,10 +52,19 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.api.nvim_create_autocmd("TermOpen", {
     group = vim.api.nvim_create_augroup("tt.Terminal", { clear = true }),
     pattern = "*",
-    callback = function()
-        if vim.o.buftype == "terminal" and vim.o.filetype ~= "lazy" then
-            vim.cmd.startinsert()
+    callback = function(args)
+        if vim.bo[args.buf].buftype ~= "terminal" or vim.bo[args.buf].filetype == "lazy" then
+            return
         end
+        -- `startinsert` applies to whichever window is current once control
+        -- returns to the main loop. nvim-dap opens its terminal split and
+        -- switches straight back to the code window, so only enter insert
+        -- mode if the terminal is still the current buffer by then.
+        vim.schedule(function()
+            if vim.api.nvim_get_current_buf() == args.buf then
+                vim.cmd.startinsert()
+            end
+        end)
     end,
     desc = "Immediately enter insert mode when opening a terminal",
 })
