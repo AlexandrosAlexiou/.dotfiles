@@ -180,3 +180,27 @@ end
 
 -- Use Ctrl-i to jump to the last cursor position
 utils.map("n", "<c-i>", "<c-i>")
+
+-- Hide the terminal cursor while wheel scrolling. Neovim splits large redraws
+-- into several synchronized-output chunks and the terminal shows its cursor at
+-- the paint position between them, which looks like a white box jumping around.
+-- Workaround for a TUI bug present in Neovim 0.12.x, fixed on master by
+-- https://github.com/neovim/neovim/commit/f54b4f15afa42a3e735ebef7d01b2ed5bb5260f7
+-- ("fix(tui): keep synchronized output active across partial flushes").
+-- Remove this block once running a release that includes that commit.
+local timer, saved_guicursor = assert(vim.uv.new_timer()), nil
+for _, key in ipairs { "<ScrollWheelUp>", "<ScrollWheelDown>" } do
+    utils.map({ "n", "x", "i" }, key, function()
+        if not saved_guicursor then
+            saved_guicursor = vim.o.guicursor
+            -- `blend` alone gets no attribute id, so a colour is needed for the TUI to honour it
+            vim.api.nvim_set_hl(0, "HiddenCursor", { bg = "#000000", blend = 100 })
+            vim.o.guicursor = saved_guicursor .. ",a:HiddenCursor"
+        end
+        timer:stop()
+        timer:start(300, 0, vim.schedule_wrap(function()
+            vim.o.guicursor, saved_guicursor = saved_guicursor, nil
+        end))
+        return key
+    end, { expr = true, desc = "Hide the cursor while wheel scrolling" })
+end
