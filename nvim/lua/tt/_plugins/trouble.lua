@@ -14,6 +14,75 @@ local function setup_autocommands()
         end,
         desc = "Automatically open Trouble when quickfix list is opened.",
     })
+
+    -- Trouble's float preview uses minimal window options and Neovim remembers window options
+    -- per buffer, so jumping to a previewed file can inherit them in the main window.
+    local minimal_opts = {
+        "cursorcolumn",
+        "cursorline",
+        "cursorlineopt",
+        "fillchars",
+        "list",
+        "number",
+        "relativenumber",
+        "signcolumn",
+        "spell",
+        "statuscolumn",
+        "winfixheight",
+        "winfixwidth",
+        "winhighlight",
+        "wrap",
+    }
+    vim.api.nvim_create_autocmd("BufWinEnter", {
+        group = vim.api.nvim_create_augroup("tt.TroubleWinOpts", { clear = true }),
+        callback = function(event)
+            local win = vim.api.nvim_get_current_win()
+            if
+                vim.bo[event.buf].buftype ~= ""
+                or vim.api.nvim_win_get_config(win).relative ~= ""
+                or not vim.wo[win].winhighlight:find "Trouble"
+            then
+                return
+            end
+            for _, name in ipairs(minimal_opts) do
+                vim.wo[win][name] = vim.api.nvim_get_option_value(name, { scope = "global" })
+            end
+        end,
+        desc = "Restore window options leaked from Trouble's preview window.",
+    })
+end
+
+-- Neovim 0.12 parses treesitter trees in the decoration provider's `on_start`, which Trouble
+-- doesn't hook, so only the initially visible results got highlighted. Parse the visible range
+-- in `on_win` instead.
+local function setup_treesitter_highlight()
+    local TroubleTS = require "trouble.view.treesitter"
+    local TSHighlighter = vim.treesitter.highlighter
+    TroubleTS.setup()
+
+    local function wrap(name)
+        return function(_, win, buf, ...)
+            if not TroubleTS.cache[buf] then
+                return false
+            end
+            for _, hl in pairs(TroubleTS.cache[buf]) do
+                if hl.enabled then
+                    if name == "_on_win" then
+                        local topline, botline = ...
+                        hl.parser:parse { topline, botline + 1 }
+                    end
+                    TSHighlighter.active[buf] = hl.highlighter
+                    TSHighlighter[name](_, win, buf, ...)
+                end
+            end
+            TSHighlighter.active[buf] = nil
+        end
+    end
+
+    vim.api.nvim_set_decoration_provider(vim.api.nvim_create_namespace "trouble.treesitter", {
+        on_win = wrap "_on_win",
+        on_range = wrap "_on_range",
+    })
 end
 
 function M.setup()
@@ -82,6 +151,7 @@ function M.setup()
     }
 
     setup_autocommands()
+    setup_treesitter_highlight()
 
     -- stylua: ignore start
     local utils = require "tt.utils"
