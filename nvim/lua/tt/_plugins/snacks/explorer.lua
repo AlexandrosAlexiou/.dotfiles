@@ -313,6 +313,27 @@ local function collapse_async(picker, root, gen)
     step()
 end
 
+--[[
+Snacks opens sidebar layouts with `topleft vsplit | vertical resize N`, and the
+resize hands all freed width to the neighbouring window, so the remaining splits
+end up unequal. Snacks also force-flushes a redraw while rendering the list,
+before `on_show` runs, so equalizing there (or in a vim.schedule) paints the
+unequal layout first and then jumps. Snacks sets `winfixwidth` on the sidebar
+right after the resize and offers no other hook for that moment (`on_win` is
+dropped for split layouts), so equalize on that OptionSet instead. The sidebar
+keeps its width thanks to winfixwidth; closing is handled by 'equalalways'.
+]]
+vim.api.nvim_create_autocmd("OptionSet", {
+    group = vim.api.nvim_create_augroup("tt.SnacksSidebarEqualize", { clear = true }),
+    pattern = "winfixwidth",
+    callback = function()
+        if vim.v.option_new and vim.bo.filetype == "snacks_layout_box" and vim.fn.win_gettype() == "" then
+            vim.cmd "wincmd ="
+        end
+    end,
+    desc = "Equalize splits when a snacks sidebar opens",
+})
+
 ---Source code adapted from: https://github.com/folke/snacks.nvim/discussions/1306#discussioncomment-12248922
 ---@type snacks.picker.Config
 M.explorer = {
