@@ -405,16 +405,6 @@ M.explorer = {
         toggle_preview = function(picker)
             picker.preview.win:toggle()
         end,
-        scroll_down = function(picker)
-            if picker.list and picker.list.win and picker.list.win.win then
-                picker:action "list_down"
-            end
-        end,
-        scroll_up = function(picker)
-            if picker.list and picker.list.win and picker.list.win.win then
-                picker:action "list_up"
-            end
-        end,
         expand_recursive = function(picker, item)
             local node = item and Tree:node(item.file)
             if not node or not node.dir then
@@ -448,8 +438,8 @@ M.explorer = {
                 ["<C-t>"] = "tab",
                 ["<C-f>"] = "focus_input",
                 ["<M-h>"] = false,
-                ["<C-u>"] = "scroll_up", -- Scroll up with Ctrl+u
-                ["<C-d>"] = "scroll_down", -- Scroll down with Ctrl+d
+                ["<C-u>"] = "list_scroll_up", -- Scroll up half a page
+                ["<C-d>"] = "list_scroll_down", -- Scroll down half a page
             },
         },
     },
