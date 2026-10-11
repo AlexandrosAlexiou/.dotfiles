@@ -5,13 +5,13 @@ function M.setup()
 
     smart_splits.setup {
         -- The amount of lines/columns to resize by at a time
-        default_amount = 3,
+        resize = { amount = 3 },
 
         -- Cursor follows when swapping buffers
-        cursor_follows_swapped_bufs = true,
+        swap = { move_cursor = true },
 
         -- Cursor will move on the same row when moving between buffers regardless of line numbers
-        move_cursor_same_row = true,
+        move = { same_row = true },
     }
 
     -- Floats embedded in a split (e.g. the snacks explorer input/list, which are relative to the
