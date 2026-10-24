@@ -736,7 +736,7 @@ return {
                         dismiss = "<Esc>",
                     },
                 },
-                dap = { enabled = true },
+                dap = { enabled = true, build_args = { "-Dmaven.build.cache.enabled=false" } },
             }
         end,
         enabled = true,
