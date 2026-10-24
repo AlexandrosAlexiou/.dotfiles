@@ -757,7 +757,7 @@ return {
     {
         dir = "~/Sources/kotlin.nvim",
         ft = { "kotlin" },
-        dependencies = { "mason.nvim", "mason-lspconfig.nvim", "oil.nvim" },
+        dependencies = { "mason.nvim", "mason-lspconfig.nvim", "oil.nvim", "mfussenegger/nvim-dap" },
         config = function()
             require("kotlin").setup {
                 root_markers = {
