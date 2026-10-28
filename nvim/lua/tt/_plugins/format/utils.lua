@@ -84,12 +84,12 @@ end
 function M.is_autoformat_disabled_by_marker()
     local root_markers = { ".git", ".disable-autoformat" }
     local root_dir = vim.fs.dirname(vim.fs.find(root_markers, { upward = true })[1])
-    
+
     if root_dir then
         local marker_file = root_dir .. "/.disable-autoformat"
         return vim.fn.filereadable(marker_file) == 1
     end
-    
+
     return false
 end
 
@@ -103,7 +103,7 @@ function M.should_format(filetype, bufnr)
     if M.is_autoformat_disabled_by_marker() then
         return false
     end
-    
+
     if M.has_filetype(filetype) then
         if M.should_format_filetype(filetype) then
             return M.should_format_buffer(bufnr)
