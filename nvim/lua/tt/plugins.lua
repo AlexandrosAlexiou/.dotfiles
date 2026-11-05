@@ -728,15 +728,7 @@ return {
                 inlay_hints = { enabled = false },
                 folding = { enabled = true },
                 code_lens = { enabled = true },
-                inline_completion = {
-                    enabled = true,
-                    keymaps = {
-                        show = "<M-\\>",
-                        accept = "<Tab>",
-                        dismiss = "<Esc>",
-                    },
-                },
-                dap = { enabled = true, build_args = { "-Dmaven.build.cache.enabled=false" } },
+                dap = { enabled = true },
             }
         end,
         enabled = true,
