@@ -11,12 +11,12 @@ function update_readme_tree() {
 
         # Find the range for the to-be modified text
         declare -r start_marker="^\`\`\`bash"
-        declare -r end_marker="\`\`\`$"
         declare -r readme="README.md"
 
         declare -i start end
-        start=$(grep -n $start_marker $readme | cut -d ":" -f1)
-        end=$(grep -n $end_marker $readme | cut -d ":" -f1)
+        start=$(grep -n -m1 "$start_marker" "$readme" | cut -d ":" -f1)
+        # The first closing fence after the tree: the README has other code blocks.
+        end=$(awk -v s="$start" 'NR > s && /^```$/ { print NR; exit }' "$readme")
 
         # Clear out the previous tree output
         gsed -i "$((start + 1)),$((end - 1))d" $readme
