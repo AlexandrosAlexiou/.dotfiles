@@ -109,7 +109,6 @@ M.lsp_servers = {
             conform.add_pre_format_handler(bufnr, function()
                 vim.cmd "VtsExec remove_unused_imports"
             end)
-            vim.lsp.enable "vue_ls"
         end,
         settings = {
             vtsls = {
@@ -167,14 +166,8 @@ M.lsp_servers = {
         },
     },
     yamlls = {},
-    vue_ls = {
-        filetypes = { "vue" },
-        init_options = {
-            vue = {
-                hybridMode = true,
-            },
-        },
-    },
+    -- lspconfig's vue_ls forwards its tsserver requests to vtsls (retrying until it is up)
+    vue_ls = {},
     zls = {},
     sourcekit = {
         -- clangd handles C/C++/ObjC
@@ -236,16 +229,11 @@ function M.setup()
     -- Define servers to exclude from config and auto-enable
     local excluded_servers = { jdtls = true, kotlin_lsp = true }
 
-    -- Define servers to configure but not auto-enable (only enabled via on_attach)
-    local no_auto_enable = { vue_ls = true }
-
     -- Setup settings per server and enable auto start
     local function configure_server(server)
         if not excluded_servers[server] then
             vim.lsp.config(server, M.lsp_servers[server])
-            if not no_auto_enable[server] then
-                vim.lsp.enable(server)
-            end
+            vim.lsp.enable(server)
         end
     end
 
