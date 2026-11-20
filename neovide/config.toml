@@ -1,7 +1,8 @@
+srgb = false
+system-native-tabs = true
+frame = "full"
+neovim-bin = "/opt/homebrew/bin/nvim"
+
 [font]
 normal = ["CaskaydiaMono Nerd Font Mono"]
 size = 12
-
-srgb = false
-frame = "full"
-neovim-bin = "/usr/local/bin/nvim"

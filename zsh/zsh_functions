@@ -221,7 +221,7 @@ spy() {
 
 # Open the current directory in Neovide
  nvd () {
-     nohup /Applications/Neovide.app/Contents/MacOS/neovide "${1:-.}" > /dev/null 2>&1 &
+     nohup neovide "${1:-.}" > /dev/null 2>&1 &
      disown
  }
 

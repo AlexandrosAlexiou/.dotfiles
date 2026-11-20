@@ -174,10 +174,6 @@ export PATH="$HOME/.local/bin:$PATH"
 # Add the GNU libtool to PATH
 export PATH="/opt/homebrew/opt/libtool/libexec/gnubin:$PATH"
 
-# Neovide config variables
-export NEOVIDE_FRAMELESS=true
-export NEOVIDE_FRAME=none
-
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/alexioualexandros/.rd/bin:$PATH"
 ### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
