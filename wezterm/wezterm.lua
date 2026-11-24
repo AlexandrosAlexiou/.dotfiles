@@ -55,7 +55,7 @@ config.hide_tab_bar_if_only_one_tab = false
 config.tab_and_split_indices_are_zero_based = true
 
 -- Window
-config.window_decorations = "RESIZE"
+config.window_decorations = "TITLE | RESIZE"
 config.window_background_opacity = 1
 config.adjust_window_size_when_changing_font_size = false
 
