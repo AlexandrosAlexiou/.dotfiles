@@ -1,24 +1,25 @@
 # Don't set default aliases
 export FORGIT_NO_ALIASES=1
 
-# Forgit custom aliases
-alias fadd='forgit::add'
-alias fbd='forgit::branch::delete'
-alias fblame='forgit::blame'
-alias fcb='forgit::checkout::branch'
-alias fcc='forgit::checkout::commit'
-alias fcf='forgit::checkout::file'
-alias fclean='forgit::clean'
-alias fcp='forgit::cherry::pick::from::branch'
-alias fct='forgit::checkout::tag'
-alias fdiff='forgit::diff'
-alias ffixup='forgit::fixup'
-alias fignore='forgit::ignore'
-alias flog='forgit::log'
-alias frebase='forgit::rebase'
-alias freset='forgit::reset::head'
-alias frevert='forgit::revert::commit'
-alias fstash='forgit::stash::show'
+# Call git-forgit directly to avoid loading its plugin during startup.
+FORGIT="$HOME/.oh-my-zsh/custom/plugins/forgit/bin/git-forgit"
+alias fadd='$FORGIT add'
+alias fbd='$FORGIT branch_delete'
+alias fblame='$FORGIT blame'
+alias fcb='$FORGIT checkout_branch'
+alias fcc='$FORGIT checkout_commit'
+alias fcf='$FORGIT checkout_file'
+alias fclean='$FORGIT clean'
+alias fcp='$FORGIT cherry_pick_from_branch'
+alias fct='$FORGIT checkout_tag'
+alias fdiff='$FORGIT diff'
+alias ffixup='$FORGIT fixup'
+alias fignore='$FORGIT ignore'
+alias flog='$FORGIT log'
+alias frebase='$FORGIT rebase'
+alias freset='$FORGIT reset_head'
+alias frevert='$FORGIT revert_commit'
+alias fstash='$FORGIT stash_show'
 
 # Forgit custom copy command
 export FORGIT_COPY_CMD='xclip -selection clipboard'

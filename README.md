@@ -108,6 +108,21 @@ of **neovim**, located at: `${HOME}/.config/nvim`
 
 </details>
 
+### Terminal startup
+
+The prompt appears when the line editor is ready. Git gets a maximum of 10 ms
+to include status in that first render; slower queries finish asynchronously.
+
+Mise uses shims to resolve project tool versions when commands run, removing
+tool resolution from startup and directory changes. Shell-level environment
+activation, if needed, is available with `eval "$(mise activate zsh)"`.
+Zoxide records visits in the background. `z <query>` returns an error on a
+missing match; only bare `z` opens the interactive directory picker.
+
+Kubernetes, Azure and Google Cloud prompt indicators are disabled to avoid
+startup lookups; their CLI commands are unaffected. To restore them, set
+`ZSH_PROMPT_CLOUD_CONTEXT=1` before starting zsh.
+
 <h2 align="center">Installer</h2>
 
 The installer is a text-based user-interface (TUI) made with

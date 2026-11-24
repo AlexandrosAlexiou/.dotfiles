@@ -171,7 +171,11 @@ function y() {
 # otherwise display an interactive 'fzf' prompt
 unalias z 2>/dev/null
 z() {
-    [ $# -gt 0 ] && __zoxide_z "$@" || __zoxide_zi
+    if [[ $# -gt 0 ]]; then
+        __zoxide_z "$@"
+    else
+        __zoxide_zi
+    fi
 }
 
 # Dynamically switch between installed JDK versions on macOS
@@ -224,4 +228,3 @@ spy() {
      nohup neovide "${1:-.}" > /dev/null 2>&1 &
      disown
  }
-
