@@ -150,6 +150,8 @@ end, { desc = "Copy current filename according to the supplied modifier" })
 if vim.g.neovide then
     vim.opt.guifont = { "CaskaydiaMono Nerd Font Mono", ":h12" }
     vim.g.neovide_show_border = true
+    vim.g.neovide_opacity = 0.85
+    vim.g.neovide_window_blurred = true
     vim.g.neovide_position_animation_length = 0
     vim.g.neovide_cursor_animation_length = 0.00
     vim.g.neovide_cursor_trail_size = 0
@@ -159,6 +161,25 @@ if vim.g.neovide then
     vim.g.neovide_scroll_animation_length = 0.00
     vim.g.neovide_input_macos_option_key_is_meta = "both"
     vim.g.neovide_progress_bar_enabled = false
+
+    -- Neovide only applies opacity to cells without an explicit background, so drop the
+    -- background of groups that just repeat the Normal/NormalFloat one (snacks pickers, floats).
+    local function clear_opaque_backgrounds()
+        local function bg_of(name)
+            return vim.api.nvim_get_hl(0, { name = name, link = false }).bg
+        end
+        local targets = { [bg_of "Normal" or -1] = true, [bg_of "NormalFloat" or -1] = true }
+        for name, hl in pairs(vim.api.nvim_get_hl(0, {})) do
+            if name ~= "Normal" and not hl.link and hl.bg and targets[hl.bg] then
+                hl.bg = nil
+                vim.api.nvim_set_hl(0, name, hl)
+            end
+        end
+    end
+    vim.api.nvim_create_autocmd("ColorScheme", { callback = clear_opaque_backgrounds })
+    if vim.g.colors_name then
+        clear_opaque_backgrounds()
+    end
     vim.api.nvim_set_keymap(
         "n",
         "<D-=>",
@@ -198,9 +219,13 @@ for _, key in ipairs { "<ScrollWheelUp>", "<ScrollWheelDown>" } do
             vim.o.guicursor = saved_guicursor .. ",a:HiddenCursor"
         end
         timer:stop()
-        timer:start(300, 0, vim.schedule_wrap(function()
-            vim.o.guicursor, saved_guicursor = saved_guicursor, nil
-        end))
+        timer:start(
+            300,
+            0,
+            vim.schedule_wrap(function()
+                vim.o.guicursor, saved_guicursor = saved_guicursor, nil
+            end)
+        )
         return key
     end, { expr = true, desc = "Hide the cursor while wheel scrolling" })
 end
